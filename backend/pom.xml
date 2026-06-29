@@ -6,10 +6,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.0</version>
-        <relativePath/>
+        <groupId>com.bazarak</groupId>
+        <artifactId>bazarak-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>com.bazarak</groupId>
