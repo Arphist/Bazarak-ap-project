@@ -68,14 +68,28 @@ spring-boot-devtools.properties
 **/application-prod.properties
 
 # ============================================
-# FRONTEND (future)
+# FRONTEND (JavaFX)
 # ============================================
 **/node_modules/
 **/dist/
 **/build/
 **/.angular/
 
+# JavaFX SDK (don't push this!)
+javafx-sdk-*/
+javafx-sdk-*.zip
+
 # ============================================
 # DOCKER
 # ============================================
 **/docker-compose.override.yml
+
+# ============================================
+# DLL FILES
+# ============================================
+*.dll
+
+# ============================================
+# SPRING BOOT HELP
+# ============================================
+HELP.md
