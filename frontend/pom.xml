@@ -100,7 +100,7 @@
                     <mainClass>com.bazarak.BazarakFrontendApplication</mainClass>
                     <options>
                         <option>--module-path</option>
-                        <option>C:\Users\razmj\Downloads\javafx-sdk-25.0.3\lib</option>
+                        <option>F:\Programming\Java\AP\final-project\bazarak-ap-project\frontend\javafx-sdk-21.0.2\lib</option>
                         <option>--add-modules</option>
                         <option>javafx.controls,javafx.fxml</option>
                     </options>
