@@ -60,9 +60,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // Optional: For email verification (good practice)
-    @Column(name = "email_verified")
-    private boolean emailVerified = false;
 
     // CONSTRUCTORS
 
@@ -157,14 +154,6 @@ public class User {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
     }
 
 
