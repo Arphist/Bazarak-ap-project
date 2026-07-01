@@ -13,9 +13,24 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // Handle database errors (like unique constraint violations)
+    /**
+     * Check if any error occurred in database, this situation is handles
+     * by costume exception-handlers (in user package), but these errors
+     * happen if TWO users register at the EXACT SAME time with the same username.
+     * @param ex spring class to handle errors
+     * @return if duplicate field were passed to database, the database will throw a unique constraint violation.
+     */
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
+        // This is a fallback - should rarely happen because you have custom checks
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "A field with this value already exists or is invalid");
+        error.put("details", ex.getMostSpecificCause().getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
-
-    // these are our costume error handlers
+    // these are our custom error handlers
 
     /**
      * This method is used if username already exist or not.
