@@ -64,11 +64,6 @@ public class User {
     @Column(name = "email_verified")
     private boolean emailVerified = false;
 
-    //TODO: I'll work on that later
-//    // Optional: For tracking last login
-//    @Column(name = "last_login")
-//    private LocalDateTime lastLogin;
-
     // CONSTRUCTORS
 
     public User() {
@@ -164,13 +159,13 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-//    public boolean isEmailVerified() {
-//        return emailVerified;
-//    }
-//
-//    public void setEmailVerified(boolean emailVerified) {
-//        this.emailVerified = emailVerified;
-//    }
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
 
 
     // ENUMS
