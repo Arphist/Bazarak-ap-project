@@ -21,7 +21,7 @@ public class AuthController {
     // REGISTER ENDPOINT
 
     /**
-     * This method is used after registration is valid
+     * This method is used after registration is valid, and sends the user into the system.
      * @param user the user who passed the registration
      * @return Returns a success response with HTTP status 201 CREATED and The registered user (without password)
      */
