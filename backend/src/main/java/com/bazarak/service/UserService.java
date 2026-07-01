@@ -33,7 +33,6 @@ public class UserService {
         // Set defaults
         user.setRole(User.Role.USER);
         user.setStatus(User.UserStatus.ACTIVE);
-        user.setEmailVerified(false);
         user.setCreatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
@@ -56,5 +55,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    // USERNAME EXISTS
+
+    /**
+     * Check if the username exists in database
+     * @param username entered username
+     * @return true if the username exists, false if not.
+     */
+    public boolean usernameExists (String username){
+        return userRepository.existsByUsername(username);
+    }
     // TODO: rest of the methods (findById, updateUser, etc.) with proper exceptions
 }
