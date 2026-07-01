@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+/**
+ * This interface is an API to communicate with database:
+ */
+// The class that uses the database (the class which sets the table)
+//                                                     |      ,-the primary key type
 public interface UserRepository extends JpaRepository<User, Long> {
 
     // BASIC FIND METHODS (Spring Data JPA generates these automatically)
@@ -70,12 +75,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<User> searchByUsername(@Param("searchTerm") String searchTerm);
-
-    /**
-     * Find users who haven't verified their email
-     */
-    @Query("SELECT u FROM User u WHERE u.emailVerified = false")
-    List<User> findUnverifiedUsers();
 
     // NATIVE SQL QUERIES (Direct SQL)
 
