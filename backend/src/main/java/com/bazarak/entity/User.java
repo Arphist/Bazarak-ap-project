@@ -60,11 +60,11 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // Optional: For email verification (good practice)
+    @Column(name = "email_verified")
+    private boolean emailVerified = false;
+
     //TODO: I'll work on that later
-//    // Optional: For email verification (good practice)
-//    @Column(name = "email_verified")
-//    private boolean emailVerified = false;
-//
 //    // Optional: For tracking last login
 //    @Column(name = "last_login")
 //    private LocalDateTime lastLogin;
