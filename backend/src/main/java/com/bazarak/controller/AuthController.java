@@ -28,6 +28,15 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
+            // ️ SPRING AUTOMATICALLY:
+            //    user.setUsername
+            //    user.setPassword
+            //    user.setFullName
+            //    user.setEmail
+            //    user.setPhoneNumber
+
+            // THEN passes this User object to service
+
             // Call the UserService to register the user
             User registeredUser = userService.registerUser(user);
             // Remove password before sending response
@@ -44,6 +53,7 @@ public class AuthController {
     }
 
     // LOGIN ENDPOINT
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
