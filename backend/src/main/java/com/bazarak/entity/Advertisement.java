@@ -98,5 +98,160 @@ public class Advertisement {
         ACCEPTED, PENDING, REJECTED, SOLD, DELETED
     }
 
+    // HELPER METHODS
+
+    public boolean isPending() {
+        return this.status == AdStatus.PENDING;
+    }
+
+    public boolean isActive() {
+        return this.status == AdStatus.ACCEPTED;
+    }
+
+    public boolean isRejected() {
+        return this.status == AdStatus.REJECTED;
+    }
+
+    public boolean isSold() {
+        return this.status == AdStatus.SOLD;
+    }
+
+    public boolean isDeleted() {
+        return this.status == AdStatus.DELETED;
+    }
+
+    public boolean isEditable() {
+        return this.status == AdStatus.PENDING || this.status == AdStatus.ACCEPTED;
+    }
+
+    // GETTERS & SETTERS
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public AdStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AdStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getApprovedAt() {
+        return approvedAt;
+    }
+
+    public void setApprovedAt(LocalDateTime approvedAt) {
+        this.approvedAt = approvedAt;
+    }
+
+    public LocalDateTime getSoldAt() {
+        return soldAt;
+    }
+
+    public void setSoldAt(LocalDateTime soldAt) {
+        this.soldAt = soldAt;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
+    }
+
+    // HELPER METHODS FOR IMAGES
+
+    public void addImage(Image image) {
+        images.add(image);
+        // 'setAd' is a method in 'Image' which represents the ad that image relates to
+        image.setAd(this);
+    }
+
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setAd(null);
+    }
+
+    @Override
+    public String toString() {
+        return "Ad{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", status=" + status +
+                ", owner=" + (owner != null ? owner.getUsername() : null) +
+                '}';
+    }
 
 }
