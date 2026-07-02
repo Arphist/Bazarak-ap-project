@@ -78,5 +78,25 @@ public class Advertisement {
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
+    // CONSTRUCTORS
+
+    public Advertisement() {
+    }
+
+    public Advertisement(String title, String description, Long price, User owner, Category category, City city) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.owner = owner;
+        this.category = category;
+        this.city = city;
+    }
+
+    // ENUM
+
+    private enum AdStatus {
+        ACCEPTED, PENDING, REJECTED, SOLD, DELETED
+    }
+
 
 }
