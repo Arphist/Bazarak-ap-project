@@ -29,6 +29,8 @@ public class UserService {
         if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             throw new PhoneAlreadyExistsException("Phone number already registered");
         }
+        // The other fields are set by this method automatically:
+        // Spring maps from JSON → @RequestBody
 
         // Set defaults
         user.setRole(User.Role.USER);
