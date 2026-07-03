@@ -1,6 +1,7 @@
 package com.bazarak.exception;
 
 import com.bazarak.exception.user.*;
+import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -109,5 +110,45 @@ public class GlobalExceptionHandler {
         error.put("error", message);
         error.put("status", String.valueOf(status.value()));
         return ResponseEntity.status(status).body(error);
+    }
+
+    /**
+     * Check if the advertisement exist.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> NOT_FOUND
+     */
+    @ExceptionHandler(AdNotFoundException.class)
+    public ResponseEntity<?> handleAdNotFound(AdNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Check if the advertisement is already deleted.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> BAD_REQUEST
+     */
+    @ExceptionHandler(InvalidOperationException.class)
+    public ResponseEntity<?> handleInvalidOperation(InvalidOperationException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    /**
+     * Check if the entered price is positive.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> BAD_REQUEST
+     */
+    @ExceptionHandler(InvalidPriceInputException.class)
+    public ResponseEntity<?> handleInvalidInput(InvalidPriceInputException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    /**
+     * Check if the user attempting to do the operation owns the ad.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> FORBIDDEN
+     */
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<?> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 }
