@@ -94,7 +94,7 @@ public class Advertisement {
 
     // ENUM
 
-    private enum AdStatus {
+    public enum AdStatus {
         ACCEPTED, PENDING, REJECTED, SOLD, DELETED
     }
 
