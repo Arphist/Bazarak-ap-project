@@ -56,9 +56,7 @@ public class AdvertisementService {
         return adRepository.save(ad);
     }
 
-    // ============================================
     // FIND METHODS
-    // ============================================
 
     /**
      * Find advertisement by ID
@@ -126,9 +124,7 @@ public class AdvertisementService {
         return adRepository.findByCityId(cityId);
     }
 
-    // ============================================
     // SEARCH METHODS
-    // ============================================
 
     /**
      * Search ads by keyword (title or description)
@@ -163,9 +159,7 @@ public class AdvertisementService {
 //                .toList();
 //    }
 
-    // ============================================
     // UPDATE METHODS
-    // ============================================
 
     /**
      * Update advertisement (owner only)
@@ -208,9 +202,7 @@ public class AdvertisementService {
         return adRepository.save(existingAd);
     }
 
-    // ============================================
     // ADMIN METHODS
-    // ============================================
 
     /**
      * Approve an advertisement (admin only)
@@ -258,15 +250,13 @@ public class AdvertisementService {
         adRepository.delete(ad);
     }
 
-    // ============================================
     // OWNER METHODS
-    // ============================================
 
     /**
      * Soft delete advertisement (owner)
      */
     @Transactional
-    public Advertisement deleteAd(Long adId, Long ownerId) {
+    public Advertisement deleteAdUser(Long adId, Long ownerId) {
         Advertisement ad = findById(adId);
 
         // Check ownership
@@ -307,9 +297,7 @@ public class AdvertisementService {
         return adRepository.save(ad);
     }
 
-    // ============================================
     // RATING METHODS
-    // ============================================
 
     /**
      * Update ad rating (called when a user rates an ad)
@@ -332,9 +320,7 @@ public class AdvertisementService {
         return adRepository.save(ad);
     }
 
-    // ============================================
     // STATISTICS
-    // ============================================
 
     public long getActiveAdCount() {
         return adRepository.countActiveAds();
@@ -344,13 +330,13 @@ public class AdvertisementService {
         return adRepository.countByStatus(AdStatus.PENDING);
     }
 
-    public List<Object[]> getAdsByCategoryStats() {
-        return adRepository.countAdsByCategory();
-    }
-
-    public List<Object[]> getAdsByCityStats() {
-        return adRepository.countAdsByCity();
-    }
+//    public List<Object[]> getAdsByCategoryStats() {
+//        return adRepository.countAdsByCategory();
+//    }
+//
+//    public List<Object[]> getAdsByCityStats() {
+//        return adRepository.countAdsByCity();
+//    }
 
     public List<Advertisement> getRecentAds(int days) {
         LocalDateTime since = LocalDateTime.now().minusDays(days);
@@ -361,9 +347,7 @@ public class AdvertisementService {
         return adRepository.findMostExpensiveAds(AdStatus.ACCEPTED);
     }
 
-    // ============================================
     // VALIDATION HELPERS
-    // ============================================
 
     public boolean adExists(Long id) {
         return adRepository.existsById(id);
