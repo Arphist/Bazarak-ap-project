@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -57,15 +59,122 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // USERNAME EXISTS
-
+    // ============================================
+    // CHECK METHODS
+    // ============================================
     /**
      * Check if the username exists in database
      * @param username entered username
      * @return true if the username exists, false if not.
      */
-    public boolean usernameExists (String username){
+     public boolean usernameExists(String username) {
         return userRepository.existsByUsername(username);
     }
-    // TODO: rest of the methods (findById, updateUser, etc.) with proper exceptions
+
+    public boolean emailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public boolean phoneExists(String phone) {
+        return userRepository.existsByPhoneNumber(phone);
+    }
+
+
+
+    // FIND METHODS
+
+    /**
+     * Find user by ID (returns Optional)
+     */
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    /**
+     * Find user by ID (throws exception if not found)
+     */
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    }
+
+    /**
+     * Find user by username
+     */
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    /**
+     * Find user by email
+     */
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    /**
+     * Get all users
+     */
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    /**
+     * Get all active users
+     */
+    public List<User> findAllActiveUsers() {
+        return userRepository.findAllActiveUsers();
+    }
+
+    // UPDATE
+
+    public User updateUser(Long id, User updatedUser) {
+        User existingUser = getUserById(id);
+
+        if (updatedUser.getFullName() != null) {
+            existingUser.setFullName(updatedUser.getFullName());
+        }
+        if (updatedUser.getEmail() != null) {
+            if (userRepository.existsByEmail(updatedUser.getEmail()) &&
+                    !userRepository.findByEmail(updatedUser.getEmail()).get().getId().equals(id)) {
+                throw new RuntimeException("Email already used by another user");
+            }
+            existingUser.setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getPhoneNumber() != null) {
+            if (userRepository.existsByPhoneNumber(updatedUser.getPhoneNumber()) &&
+                    !userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).get().getId().equals(id)) {
+                throw new RuntimeException("Phone number already used by another user");
+            }
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+
+        return userRepository.save(existingUser);
+    }
+
+    // ADMIN OPERATIONS
+
+    public User blockUser(Long id) {
+        User user = getUserById(id);
+        user.setStatus(User.UserStatus.BANNED);
+        return userRepository.save(user);
+    }
+
+    public User unblockUser(Long id) {
+        User user = getUserById(id);
+        user.setStatus(User.UserStatus.ACTIVE);
+        return userRepository.save(user);
+    }
+
+    public User makeAdmin(Long id) {
+        User user = getUserById(id);
+        user.setRole(User.Role.ADMIN);
+        return userRepository.save(user);
+    }
+
+    // DELETE
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }
