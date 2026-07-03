@@ -4,6 +4,7 @@ import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.Advertisement.AdStatus;
 import com.bazarak.entity.User;
 import com.bazarak.exception.user.*;
+import com.bazarak.exception.advertisement.*;
 import com.bazarak.repository.AdRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,7 @@ public class AdvertisementService {
 
         // 4. Validate price is positive
         if (ad.getPrice() == null || ad.getPrice() <= 0) {
-            throw new InvalidInputException("Price must be positive");
+            throw new InvalidPriceInputException("Price must be positive");
         }
 
         // 5. Save and return
@@ -139,28 +140,28 @@ public class AdvertisementService {
         return adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
     }
 
-    /**
-     * Advanced search with filters
-     */
-    public List<Advertisement> searchAdsWithFilters(String keyword, Long categoryId, Long cityId,
-                                                    Long minPrice, Long maxPrice) {
-        // If no keyword, search with filters only
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return adRepository.searchAdsWithFilters(
-                    AdStatus.ACCEPTED, categoryId, cityId, minPrice, maxPrice);
-        }
-
-        // With keyword: first search by keyword, then filter
-        List<Advertisement> results = adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
-
-        // Apply filters in memory (or you could create a more complex query)
-        return results.stream()
-                .filter(ad -> categoryId == null || ad.getCategory().getId().equals(categoryId))
-                .filter(ad -> cityId == null || ad.getCity().getId().equals(cityId))
-                .filter(ad -> minPrice == null || ad.getPrice() >= minPrice)
-                .filter(ad -> maxPrice == null || ad.getPrice() <= maxPrice)
-                .toList();
-    }
+//    /**
+//     * Advanced search with filters
+//     */
+//    public List<Advertisement> searchAdsWithFilters(String keyword, Long categoryId, Long cityId,
+//                                                    Long minPrice, Long maxPrice) {
+//        // If no keyword, search with filters only
+//        if (keyword == null || keyword.trim().isEmpty()) {
+//            return adRepository.searchAdsWithFilters(
+//                    AdStatus.ACCEPTED, categoryId, cityId, minPrice, maxPrice);
+//        }
+//
+//        // With keyword: first search by keyword, then filter
+//        List<Advertisement> results = adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
+//
+//        // Apply filters in memory (or you could create a more complex query)
+//        return results.stream()
+//                .filter(ad -> categoryId == null || ad.getCategory().getId().equals(categoryId))
+//                .filter(ad -> cityId == null || ad.getCity().getId().equals(cityId))
+//                .filter(ad -> minPrice == null || ad.getPrice() >= minPrice)
+//                .filter(ad -> maxPrice == null || ad.getPrice() <= maxPrice)
+//                .toList();
+//    }
 
     // ============================================
     // UPDATE METHODS
