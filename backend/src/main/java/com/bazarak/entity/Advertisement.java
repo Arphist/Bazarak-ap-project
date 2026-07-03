@@ -230,6 +230,22 @@ public class Advertisement {
         this.images = images;
     }
 
+    public Integer getRatingCount(){
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer count){
+        this.ratingCount=count;
+    }
+
+    public Double getAverageRating(){
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating){
+        this.averageRating=averageRating;
+    }
+
     // HELPER METHODS FOR IMAGES
 
     public void addImage(Image image) {
