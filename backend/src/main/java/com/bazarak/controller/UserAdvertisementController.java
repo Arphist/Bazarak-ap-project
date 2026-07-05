@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -50,6 +51,7 @@ public class UserAdvertisementController {
     }
 
     // 2. GET MY ADS BY STATUS
+
     /**
      * Get the current user's ads filtered by status
      */
@@ -91,6 +93,7 @@ public class UserAdvertisementController {
     }
 
     // 3. GET MY ADS GROUPED BY STATUS (Dashboard)
+
     /**
      * Get the current user's ads grouped by status
      * Useful for dashboard/overview
@@ -138,6 +141,22 @@ public class UserAdvertisementController {
             Map<String, String> error = new HashMap<>();
             error.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 4. GET SPECIFIC AD
+    @GetMapping("/ads/{adId}")
+    public ResponseEntity<?> getMySpecificAd(@PathVariable Long adId, HttpSession session) {
+        User user = userService.getCurrentUserOrThrow(session);
+
+        try {
+            Advertisement ad = advertisementService.findById(adId);
+            userService.checkOwnership(user.getId(), session);
+            return ResponseEntity.ok(ad);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 }
