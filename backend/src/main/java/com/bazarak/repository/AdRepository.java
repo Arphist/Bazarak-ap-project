@@ -106,21 +106,21 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
             "ORDER BY a.createdAt DESC")
     List<Advertisement> searchActiveAds(@Param("keyword") String keyword, @Param("status") AdStatus status);
 
-//    /**
-//     * Search ads with filters (category, city, price range)
-//     */
-//    @Query("SELECT a FROM Advertisement a " +
-//            "WHERE a.status = :status " +
-//            "AND (:categoryId IS NULL OR a.category.id = :categoryId) " +
-//            "AND (:cityId IS NULL OR a.city.id = :cityId) " +
-//            "AND (:minPrice IS NULL OR a.price >= :minPrice) " +
-//            "AND (:maxPrice IS NULL OR a.price <= :maxPrice) " +
-//            "ORDER BY a.createdAt DESC")
-//    List<Advertisement> searchAdsWithFilters(@Param("status") AdStatus status,
-//                                  @Param("categoryId") Long categoryId,
-//                                  @Param("cityId") Long cityId,
-//                                  @Param("minPrice") Long minPrice,
-//                                  @Param("maxPrice") Long maxPrice);
+    /**
+     * Search ads with filters (category, city, price range)
+     */
+    @Query("SELECT a FROM Advertisement a " +
+            "WHERE a.status = :status " +
+            "AND (:categoryId IS NULL OR a.category.id = :categoryId) " +
+            "AND (:cityId IS NULL OR a.city.id = :cityId) " +
+            "AND (:minPrice IS NULL OR a.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR a.price <= :maxPrice) " +
+            "ORDER BY a.createdAt DESC")
+    List<Advertisement> searchAdsWithFilters(@Param("status") AdStatus status,
+                                  @Param("categoryId") Long categoryId,
+                                  @Param("cityId") Long cityId,
+                                  @Param("minPrice") Long minPrice,
+                                  @Param("maxPrice") Long maxPrice);
 
     // UPDATE QUERIES (Modifying)
 
