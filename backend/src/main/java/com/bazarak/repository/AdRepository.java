@@ -182,17 +182,17 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     @Query("SELECT a.status, COUNT(a) FROM Advertisement a GROUP BY a.status")
     List<Object[]> countAdsByStatus();
 
-//    /**
-//     * Get count of ads by category
-//     */
-//    @Query("SELECT c.name, COUNT(a) FROM Advertisement a JOIN a.category c GROUP BY c.name ORDER BY COUNT(a) DESC")
-//    List<Object[]> countAdsByCategory();
-//
-//    /**
-//     * Get count of ads by city
-//     */
-//    @Query("SELECT c.name, COUNT(a) FROM Advertisement a JOIN a.city c GROUP BY c.name ORDER BY COUNT(a) DESC")
-//    List<Object[]> countAdsByCity();
+    /**
+     * Get count of ads by category
+     */
+    @Query("SELECT c.name, COUNT(a) FROM Advertisement a JOIN a.category c GROUP BY c.name ORDER BY COUNT(a) DESC")
+    List<Object[]> countAdsByCategory();
+
+    /**
+     * Get count of ads by city
+     */
+    @Query("SELECT c.name, COUNT(a) FROM Advertisement a JOIN a.city c GROUP BY c.name ORDER BY COUNT(a) DESC")
+    List<Object[]> countAdsByCity();
 
     /**
      * Get ads created in the last N days
