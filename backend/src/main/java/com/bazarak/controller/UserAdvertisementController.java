@@ -89,4 +89,55 @@ public class UserAdvertisementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
+
+    // 3. GET MY ADS GROUPED BY STATUS (Dashboard)
+    /**
+     * Get the current user's ads grouped by status
+     * Useful for dashboard/overview
+     */
+    @GetMapping("/ads/dashboard")
+    public ResponseEntity<?> getMyAdsDashboard(HttpSession session) {
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+
+        try {
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+
+            // Group by status
+            List<Advertisement> pendingAds = myAds.stream()
+                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.PENDING)
+                    .collect(Collectors.toList());
+
+            List<Advertisement> activeAds = myAds.stream()
+                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED)
+                    .collect(Collectors.toList());
+
+            List<Advertisement> rejectedAds = myAds.stream()
+                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.REJECTED)
+                    .collect(Collectors.toList());
+
+            List<Advertisement> soldAds = myAds.stream()
+                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.SOLD)
+                    .collect(Collectors.toList());
+
+            List<Advertisement> deletedAds = myAds.stream()
+                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.DELETED)
+                    .collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("total", myAds.size());
+            response.put("pending", Map.of("count", pendingAds.size(), "ads", pendingAds));
+            response.put("active", Map.of("count", activeAds.size(), "ads", activeAds));
+            response.put("rejected", Map.of("count", rejectedAds.size(), "ads", rejectedAds));
+            response.put("sold", Map.of("count", soldAds.size(), "ads", soldAds));
+            response.put("deleted", Map.of("count", deletedAds.size(), "ads", deletedAds));
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
 }
