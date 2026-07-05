@@ -251,7 +251,6 @@ public class UserAdvertisementController {
     }
 
     // 8. GET MY REJECTED ADS ONLY
-
     /**
      * Get rejected ads posted by the current user (with rejection reason)
      */
@@ -275,6 +274,33 @@ public class UserAdvertisementController {
             Map<String,String> error = new HashMap<>();
             error.put("error",e.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 9. GET MY SOLD ADS ONLY
+    /**
+     * Get sold ads posted by the current user
+     */
+    @GetMapping("/api/sold")
+    public ResponseEntity<?> getMySoldAds (HttpSession session){
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+        try{
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+            List<Advertisement> soldAds = myAds.stream().
+                    filter(ad -> ad.getStatus()== Advertisement.AdStatus.SOLD).
+                    collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count",soldAds.size());
+            response.put("ads",soldAds);
+
+            return ResponseEntity.ok(response);
+        }catch(RuntimeException e){
+            Map<String,String> error = new HashMap<>();
+            error.put("error",e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 }
