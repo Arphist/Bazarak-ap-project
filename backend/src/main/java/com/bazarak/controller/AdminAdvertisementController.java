@@ -134,7 +134,7 @@ public class AdminAdvertisementController {
         userService.checkAdmin(session);
 
         try {
-            advertisementService.deleteAdAdmin(id);
+            advertisementService.deleteAd(id);
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Ad deleted successfully");
