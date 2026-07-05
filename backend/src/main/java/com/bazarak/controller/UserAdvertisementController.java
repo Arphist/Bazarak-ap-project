@@ -24,11 +24,12 @@ public class UserAdvertisementController {
     private UserService userService;
 
     // 1. GET ALL MY ADS
+
     /**
      * Get all advertisements posted by the current user
      */
     @GetMapping("/ads")
-    public ResponseEntity<?> getPendingAds(HttpSession session) {
+    public ResponseEntity<?> getMyAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -38,6 +39,47 @@ public class UserAdvertisementController {
             Map<String, Object> response = new HashMap<>();
             response.put("count", myAds.size());
             response.put("ads", myAds);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 2. GET MY ADS BY STATUS
+    /**
+     * Get the current user's ads filtered by status
+     */
+    @GetMapping("/ads/status/{status}")
+    public ResponseEntity<?> getMyAdsByStatus(@PathVariable String status, HttpSession session) {
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+
+        try {
+            // Validate status
+            Advertisement.AdStatus adStatus;
+            try {
+                adStatus = Advertisement.AdStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Invalid status. Valid values: PENDING, ACTIVE, REJECTED, SOLD, DELETED");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            }
+
+            List<Advertisement> myAds = advertisementService.getAdsByStatus(adStatus);
+
+            // Filter to only current user's ads
+            List<Advertisement> filteredAds = myAds.stream()
+                    .filter(ad -> ad.getOwner().getId().equals(currentUser.getId()))
+                    .collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", adStatus);
+            response.put("count", filteredAds.size());
+            response.put("ads", filteredAds);
 
             return ResponseEntity.ok(response);
 
