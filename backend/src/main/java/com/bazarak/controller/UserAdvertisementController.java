@@ -227,7 +227,7 @@ public class UserAdvertisementController {
     /**
      * Get only pending ads posted by the current user
      */
-    @GetMapping("/api/pending")
+    @GetMapping("/ads/pending")
     public ResponseEntity<?> getMyPendingAds(HttpSession session) {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
@@ -254,7 +254,7 @@ public class UserAdvertisementController {
     /**
      * Get rejected ads posted by the current user (with rejection reason)
      */
-    @GetMapping("/api/rejected")
+    @GetMapping("/ads/rejected")
     public ResponseEntity<?> getMyRejected(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
@@ -281,7 +281,7 @@ public class UserAdvertisementController {
     /**
      * Get sold ads posted by the current user
      */
-    @GetMapping("/api/sold")
+    @GetMapping("/ads/sold")
     public ResponseEntity<?> getMySoldAds (HttpSession session){
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
@@ -297,6 +297,31 @@ public class UserAdvertisementController {
 
             return ResponseEntity.ok(response);
         }catch(RuntimeException e){
+            Map<String,String> error = new HashMap<>();
+            error.put("error",e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 10. GET MY DELETED ADS ONLY
+    @GetMapping("/ads/deleted")
+    public ResponseEntity<?> getMyDeletedAds (HttpSession session){
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+
+        try{
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+            List<Advertisement> deletedAds = myAds.stream().
+                    filter(ad -> ad.getStatus()==Advertisement.AdStatus.DELETED).
+                    collect(Collectors.toList());
+
+            Map<String,Object> response = new HashMap<>();
+            response.put("count",deletedAds.size());
+            response.put("ads",deletedAds);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
             Map<String,String> error = new HashMap<>();
             error.put("error",e.getMessage());
 
