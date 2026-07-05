@@ -1,8 +1,10 @@
 package com.bazarak.controller;
 
 import com.bazarak.entity.User;
-import com.bazarak.service.UserService;
+import com.bazarak.service.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,11 +56,21 @@ public class AuthController {
 
     // LOGIN ENDPOINT
 
-
+    /**
+     * Call 'login' method from 'UserService' and find the user attempting to log in.
+     * Afterward the user's fields but password.
+     * @param request log-in request from frontend
+     * @param session http session
+     * @return the logged-in user into the system
+     */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {
         try {
-            User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+            User user = userService.login(request.getUsername(), request.getPassword());
+
+            // Store user in session
+            userService.setCurrentUser(session, user);
+
             // Remove password before sending response
             // Passwords should NEVER be sent over the network or stored in
             // client-side memory (like JavaScript or JavaFX)
@@ -80,9 +92,26 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
     }
+    // LOGOUT ENDPOINT
+
+    /**
+     * Call 'logout' method from 'UserService' and return a message
+     * @param session http session
+     * @return reponse from the frontend
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        userService.logout(session);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Logged out successfully");
+        return ResponseEntity.ok(response);
+    }
 
     // CHECK USERNAME AVAILABILITY
 
+    /**
+     * Check if the username already exists -> Real-time Availability Check
+     */
     @GetMapping("/check-username/{username}")
     public ResponseEntity<?> checkUsername(@PathVariable String username) {
         boolean exists = userService.usernameExists(username);
@@ -95,7 +124,9 @@ public class AuthController {
     // INNER CLASS FOR LOGIN REQUEST
 
     static class LoginRequest {
+        @NotBlank(message = "Username is required")
         private String username;
+        @NotBlank(message = "Password is required")
         private String password;
 
         public String getUsername() { return username; }
