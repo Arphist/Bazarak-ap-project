@@ -3,6 +3,7 @@ package com.bazarak.service;
 import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.Advertisement.AdStatus;
 import com.bazarak.entity.User;
+import com.bazarak.exception.auth.UnauthorizedAccessException;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.advertisement.*;
 import com.bazarak.repository.AdRepository;

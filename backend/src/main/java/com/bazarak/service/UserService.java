@@ -1,7 +1,7 @@
 package com.bazarak.service;
 
 import com.bazarak.entity.User;
-import com.bazarak.exception.advertisement.LoginToAccessAds;
+import com.bazarak.exception.auth.*;
 import com.bazarak.exception.user.*;
 import com.bazarak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
