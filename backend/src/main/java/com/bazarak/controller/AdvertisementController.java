@@ -84,8 +84,6 @@ public class AdvertisementController {
 
             // Set category and city (we'll need to fetch them from database)
             // For now, we'll just set the IDs
-            //todo
-            // We'll improve this later when we have CategoryService and CityService
 
             Advertisement createdAd = advertisementService.createAd(ad, currentUser.getId());
 
