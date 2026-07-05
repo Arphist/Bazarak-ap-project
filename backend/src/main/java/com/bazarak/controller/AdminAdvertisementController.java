@@ -47,7 +47,7 @@ public class AdminAdvertisementController {
     @GetMapping("/pending")
     public ResponseEntity<?> getPendingAds(HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -81,7 +81,7 @@ public class AdminAdvertisementController {
     @PutMapping("/{id}/approve")
     public ResponseEntity<?> approveAd(@PathVariable Long id, HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -119,7 +119,7 @@ public class AdminAdvertisementController {
                                       @RequestBody(required = false) RejectRequest rejectRequest,
                                       HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -162,7 +162,7 @@ public class AdminAdvertisementController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAd(@PathVariable Long id, HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -195,7 +195,7 @@ public class AdminAdvertisementController {
     @GetMapping("/status/{status}")
     public ResponseEntity<?> getAdsByStatus(@PathVariable String status, HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -239,7 +239,7 @@ public class AdminAdvertisementController {
     @GetMapping("/dashboard")
     public ResponseEntity<?> getDashboardStats(HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }
@@ -290,7 +290,7 @@ public class AdminAdvertisementController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllAds(HttpSession session) {
         // Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             return notLoggedInResponse();
         }

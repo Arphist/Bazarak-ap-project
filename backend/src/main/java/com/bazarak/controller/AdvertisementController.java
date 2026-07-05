@@ -61,7 +61,7 @@ public class AdvertisementController {
     @PostMapping
     public ResponseEntity<?> createAd(@Valid @RequestBody CreateAdRequest request, HttpSession session) {
         // 1. Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Please login to post an ad");
@@ -113,7 +113,7 @@ public class AdvertisementController {
                                       @Valid @RequestBody UpdateAdRequest request,
                                       HttpSession session) {
         // 1. Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Please login to update an ad");
@@ -162,7 +162,7 @@ public class AdvertisementController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAd(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Please login to delete an ad");
@@ -193,7 +193,7 @@ public class AdvertisementController {
     @PutMapping("/{id}/sold")
     public ResponseEntity<?> markAsSold(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
-        User currentUser = userService.getCurrentUser(session);
+        User currentUser = userService.getCurrentUserOrThrow(session);
         if (currentUser == null) {
             Map<String, String> error = new HashMap<>();
             error.put("error", "Please login to mark ad as sold");
