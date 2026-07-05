@@ -47,9 +47,7 @@ public class AdvertisementController {
             Advertisement ad = advertisementService.findById(id);
             return ResponseEntity.ok(ad);
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
@@ -82,6 +80,7 @@ public class AdvertisementController {
             ad.setDescription(request.getDescription());
             ad.setPrice(request.getPrice());
 
+            //todo
             // Set category and city (we'll need to fetch them from database)
             // For now, we'll just set the IDs
 
@@ -97,9 +96,7 @@ public class AdvertisementController {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -148,9 +145,7 @@ public class AdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -179,9 +174,7 @@ public class AdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -212,9 +205,7 @@ public class AdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -240,9 +231,7 @@ public class AdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -268,10 +257,17 @@ public class AdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+            return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
+    }
+
+    // HELPER METHOD
+
+    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
+        Map<String, String> error = new HashMap<>();
+        error.put("error",message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
     }
 
     // REQUEST DTO CLASSES (Inner classes)
