@@ -171,7 +171,7 @@ public class AdvertisementController {
 
         try {
             // 2. Check ownership and delete
-            advertisementService.deleteAdUser(id, currentUser.getId());
+            advertisementService.deleteAd(id, currentUser.getId());
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Ad deleted successfully");
