@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -51,7 +50,6 @@ public class UserAdvertisementController {
     }
 
     // 2. GET MY ADS BY STATUS
-
     /**
      * Get the current user's ads filtered by status
      */
@@ -93,7 +91,6 @@ public class UserAdvertisementController {
     }
 
     // 3. GET MY ADS GROUPED BY STATUS (Dashboard)
-
     /**
      * Get the current user's ads grouped by status
      * Useful for dashboard/overview
@@ -145,6 +142,9 @@ public class UserAdvertisementController {
     }
 
     // 4. GET SPECIFIC AD
+    /**
+     * Get a specific ad (user must own it)
+     */
     @GetMapping("/ads/{adId}")
     public ResponseEntity<?> getMySpecificAd(@PathVariable Long adId, HttpSession session) {
         User user = userService.getCurrentUserOrThrow(session);
@@ -161,7 +161,6 @@ public class UserAdvertisementController {
     }
 
     // 5. GET MY RECENT ADS
-
     /**
      * Get the current user's most recent ads
      */
@@ -186,6 +185,33 @@ public class UserAdvertisementController {
         } catch (RuntimeException e) {
             Map<String, String> error = new HashMap<>();
             error.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 6. GET MY ACTIVE ADS ONLY
+    /**
+     * Get only active ads posted by the current user
+     */
+    @GetMapping("/ads/active")
+    public ResponseEntity<?> getMyActiveAds (HttpSession session){
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+        try{
+            // Get the users active ads
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+            List<Advertisement> activeAds = myAds.stream().
+                    filter(ad -> ad.getStatus()== Advertisement.AdStatus.ACCEPTED).
+                    collect(Collectors.toList());;
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", activeAds.size());
+            response.put("ads", activeAds);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
