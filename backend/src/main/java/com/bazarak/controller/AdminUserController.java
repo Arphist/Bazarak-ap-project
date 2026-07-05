@@ -92,6 +92,29 @@ public class AdminUserController {
         }
     }
 
+    // 4. UNBLOCK USER (Admin Only)
+    /**
+     * Unblock a user (set status to ACTIVE)
+     */
+    @GetMapping("/{userId}/unblock")
+    public ResponseEntity<?> unblockUser (@PathVariable Long userId, HttpSession session){
+        userService.checkAdmin(session);
+
+        try{
+            User unblockedUser = adminService.unblockUser(userId);
+
+            unblockedUser.setPassword(null);
+            Map<String, Object> response = new HashMap<>();
+            response.put("id",unblockedUser.getId());
+            response.put("username",unblockedUser.getUsername());
+            response.put("status", unblockedUser.getStatus());
+            response.put("message","User unblocked successfully");
+
+            return ResponseEntity.ok(response);
+        }catch(RuntimeException e){
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+    }
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
