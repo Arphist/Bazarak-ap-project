@@ -50,6 +50,7 @@ public class UserAdvertisementController {
     }
 
     // 2. GET MY ADS BY STATUS
+
     /**
      * Get the current user's ads filtered by status
      */
@@ -91,6 +92,7 @@ public class UserAdvertisementController {
     }
 
     // 3. GET MY ADS GROUPED BY STATUS (Dashboard)
+
     /**
      * Get the current user's ads grouped by status
      * Useful for dashboard/overview
@@ -142,6 +144,7 @@ public class UserAdvertisementController {
     }
 
     // 4. GET SPECIFIC AD
+
     /**
      * Get a specific ad (user must own it)
      */
@@ -161,6 +164,7 @@ public class UserAdvertisementController {
     }
 
     // 5. GET MY RECENT ADS
+
     /**
      * Get the current user's most recent ads
      */
@@ -168,7 +172,7 @@ public class UserAdvertisementController {
     public ResponseEntity<?> getMyRecentAds(@RequestParam(defaultValue = "5") int limit, HttpSession session) {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
-        try{
+        try {
             List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
             // Sort by createdAt descending (newest first)
             List<Advertisement> recentAds = myAds.stream()
@@ -177,32 +181,34 @@ public class UserAdvertisementController {
                     .collect(Collectors.toList());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("limit",limit);
-            response.put("count",recentAds.size());
-            response.put("ads",recentAds);
+            response.put("limit", limit);
+            response.put("count", recentAds.size());
+            response.put("ads", recentAds);
 
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             Map<String, String> error = new HashMap<>();
-            error.put("error",e.getMessage());
+            error.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
     // 6. GET MY ACTIVE ADS ONLY
+
     /**
      * Get only active ads posted by the current user
      */
     @GetMapping("/ads/active")
-    public ResponseEntity<?> getMyActiveAds (HttpSession session){
+    public ResponseEntity<?> getMyActiveAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        try{
+        try {
             // Get the users active ads
             List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
             List<Advertisement> activeAds = myAds.stream().
-                    filter(ad -> ad.getStatus()== Advertisement.AdStatus.ACCEPTED).
-                    collect(Collectors.toList());;
+                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED).
+                    collect(Collectors.toList());
+            ;
             Map<String, Object> response = new HashMap<>();
             response.put("count", activeAds.size());
             response.put("ads", activeAds);
@@ -217,30 +223,58 @@ public class UserAdvertisementController {
     }
 
     // 7. GET MY PENDING ADS ONLY
+
     /**
      * Get only pending ads posted by the current user
      */
     @GetMapping("/api/pending")
-    public ResponseEntity<?> getMyPendingAds (HttpSession session){
+    public ResponseEntity<?> getMyPendingAds(HttpSession session) {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
 
-        try{
+        try {
             List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
             List<Advertisement> pendingAds = myAds.stream().
-                    filter(ad -> ad.getStatus()==Advertisement.AdStatus.PENDING).
+                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.PENDING).
                     collect(Collectors.toList());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("count",pendingAds.size());
-            response.put("ads",pendingAds);
+            response.put("count", pendingAds.size());
+            response.put("ads", pendingAds);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+
+    // 8. GET MY REJECTED ADS ONLY
+
+    /**
+     * Get rejected ads posted by the current user (with rejection reason)
+     */
+    @GetMapping("/api/rejected")
+    public ResponseEntity<?> getMyRejected(HttpSession session) {
+        // Check if user is logged in
+        User currentUser = userService.getCurrentUserOrThrow(session);
+
+        try {
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+            List<Advertisement> rejectedAds = myAds.stream().
+                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.REJECTED).
+                    collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count",rejectedAds.size());
+            response.put("ads",rejectedAds);
 
             return ResponseEntity.ok(response);
         }catch(RuntimeException e){
             Map<String,String> error = new HashMap<>();
             error.put("error",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
-
     }
 }
