@@ -215,4 +215,32 @@ public class UserAdvertisementController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
+
+    // 7. GET MY PENDING ADS ONLY
+    /**
+     * Get only pending ads posted by the current user
+     */
+    @GetMapping("/api/pending")
+    public ResponseEntity<?> getMyPendingAds (HttpSession session){
+        // Check if user is logged in
+        User user = userService.getCurrentUserOrThrow(session);
+
+        try{
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
+            List<Advertisement> pendingAds = myAds.stream().
+                    filter(ad -> ad.getStatus()==Advertisement.AdStatus.PENDING).
+                    collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count",pendingAds.size());
+            response.put("ads",pendingAds);
+
+            return ResponseEntity.ok(response);
+        }catch(RuntimeException e){
+            Map<String,String> error = new HashMap<>();
+            error.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+
+    }
 }
