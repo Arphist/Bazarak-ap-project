@@ -1,4 +1,4 @@
-package com.bazarak.exception.advertisement;
+package com.bazarak.exception.auth;
 
 public class UnauthorizedAccessException extends RuntimeException{
     public UnauthorizedAccessException (String message){
