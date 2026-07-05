@@ -1,7 +1,7 @@
 package com.bazarak.controller;
 
 import com.bazarak.entity.User;
-import com.bazarak.service.UserService;
+import com.bazarak.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/admin/users")
 public class AdminUserController {
+
+    @Autowired
+    private AdminService adminService;
 
     @Autowired
     private UserService userService;
@@ -63,6 +66,29 @@ public class AdminUserController {
             return ResponseEntity.ok(user);
         }catch(RuntimeException e){
             return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+        }
+    }
+    // 3. BLOCK USER (Admin Only)
+    /**
+     * Block a user (set status to BANNED)
+     */
+    @GetMapping("/{userId}/block")
+    public ResponseEntity<?> blockUser(@PathVariable Long userId, HttpSession session){
+        userService.checkAdmin(session);
+
+        try{
+            User blockedUser = adminService.blockUser(userId);
+            blockedUser.setPassword(null);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", blockedUser.getId());
+            response.put("username", blockedUser.getUsername());
+            response.put("status", blockedUser.getStatus());
+            response.put("message", "User blocked successfully");
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
