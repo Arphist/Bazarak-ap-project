@@ -1,6 +1,7 @@
 package com.bazarak.service;
 
 import com.bazarak.entity.User;
+import com.bazarak.exception.advertisement.LoginToAccessAds;
 import com.bazarak.exception.user.*;
 import com.bazarak.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,8 +193,10 @@ public class UserService {
 
     // GETTER & SETTER
 
-    public User getCurrentUser(HttpSession session) {
-        return (User) session.getAttribute(USER_SESSION_KEY);
+    public User getCurrentUserOrThrow(HttpSession session) {
+        User currentUser = (User) session.getAttribute(USER_SESSION_KEY);
+        if(currentUser==null) throw new LoginToAccessAds("Please login to access your ads");
+        return currentUser;
     }
 
     public void setCurrentUser(HttpSession session, User user) {
@@ -206,7 +209,7 @@ public class UserService {
      * @return true if the user is logged in, false if not
      */
     public boolean isLoggedIn(HttpSession session) {
-        return getCurrentUser(session) != null;
+        return getCurrentUserOrThrow(session) != null;
     }
 
     /**
@@ -215,7 +218,7 @@ public class UserService {
      * @return true if the user is owner, false if not
      */
     public boolean isOwner(Long userId, HttpSession session) {
-        User user = getCurrentUser(session);
+        User user = getCurrentUserOrThrow(session);
         return user != null && user.getId().equals(userId);
     }
 }
