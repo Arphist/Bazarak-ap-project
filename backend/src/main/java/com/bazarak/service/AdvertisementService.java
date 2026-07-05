@@ -236,7 +236,7 @@ public class AdvertisementService {
         ad.setStatus(AdStatus.REJECTED);
         ad.setApprovedAt(LocalDateTime.now());
         ad.setUpdatedAt(LocalDateTime.now());
-        // Optional: store rejection reason (you might want to add a field)
+        ad.setRejectionReason(rejectionReason);
 
         return adRepository.save(ad);
     }
