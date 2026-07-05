@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.List;
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserService {
@@ -16,8 +17,15 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final String USER_SESSION_KEY = "loggedInUser";
+
     // REGISTER
 
+    /**
+     * Register the user by checking their username, password, email, phone-number, and see if they already exist.
+     * @param user user attempting to make an account
+     * @return the saved-registered user
+     */
     public User registerUser(User user) {
         // THROW CUSTOM EXCEPTIONS if the request is invalid:
         if (userRepository.existsByUsername(user.getUsername())) {
@@ -44,6 +52,12 @@ public class UserService {
 
     // LOGIN
 
+    /**
+     * Find user by username and throw exceptions if the user condition has flaw.
+     * @param username the entered username
+     * @param password the entered password
+     * @return the saved-logged in user in the repository
+     */
     public User login(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
@@ -59,9 +73,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ============================================
+    // LOGOUT
+
+    /**
+     * Invalidate the user session so every request that they make is invalid
+     * @param session the http sessions
+     */
+    public void logout(HttpSession session) {
+        session.invalidate();
+    }
+
+
     // CHECK METHODS
-    // ============================================
     /**
      * Check if the username exists in database
      * @param username entered username
@@ -71,14 +94,23 @@ public class UserService {
         return userRepository.existsByUsername(username);
     }
 
+    /**
+     * Check if the email exists in database
+     * @param email entered email
+     * @return true if the email exists, false if not.
+     */
     public boolean emailExists(String email) {
         return userRepository.existsByEmail(email);
     }
 
+    /**
+     * Check if the phone number exists in database
+     * @param phone entered phone number
+     * @return true if the phone number exists, false if not.
+     */
     public boolean phoneExists(String phone) {
         return userRepository.existsByPhoneNumber(phone);
     }
-
 
 
     // FIND METHODS
@@ -128,6 +160,12 @@ public class UserService {
 
     // UPDATE
 
+    /**
+     *  Update user's fields but the ID
+     * @param id the user ID, which is constant
+     * @param updatedUser updated-user with new fields
+     * @return updated-user
+     */
     public User updateUser(Long id, User updatedUser) {
         User existingUser = getUserById(id);
 
@@ -137,14 +175,14 @@ public class UserService {
         if (updatedUser.getEmail() != null) {
             if (userRepository.existsByEmail(updatedUser.getEmail()) &&
                     !userRepository.findByEmail(updatedUser.getEmail()).get().getId().equals(id)) {
-                throw new RuntimeException("Email already used by another user");
+                throw new EmailIsAlreadyUsed("Email already used by another user");
             }
             existingUser.setEmail(updatedUser.getEmail());
         }
         if (updatedUser.getPhoneNumber() != null) {
             if (userRepository.existsByPhoneNumber(updatedUser.getPhoneNumber()) &&
                     !userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).get().getId().equals(id)) {
-                throw new RuntimeException("Phone number already used by another user");
+                throw new PhoneIsAlreadyUsed("Phone number already used by another user");
             }
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
         }
@@ -152,29 +190,42 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-    // ADMIN OPERATIONS
+    // GETTER & SETTER
 
-    public User blockUser(Long id) {
-        User user = getUserById(id);
-        user.setStatus(User.UserStatus.BANNED);
-        return userRepository.save(user);
+    public User getCurrentUser(HttpSession session) {
+        return (User) session.getAttribute(USER_SESSION_KEY);
     }
 
-    public User unblockUser(Long id) {
-        User user = getUserById(id);
-        user.setStatus(User.UserStatus.ACTIVE);
-        return userRepository.save(user);
+    public void setCurrentUser(HttpSession session, User user) {
+        session.setAttribute(USER_SESSION_KEY, user);
     }
 
-    public User makeAdmin(Long id) {
-        User user = getUserById(id);
-        user.setRole(User.Role.ADMIN);
-        return userRepository.save(user);
+    /**
+     * Check if the user is logged in
+     * @param session the http sent as JSON
+     * @return true if the user is logged in, false if not
+     */
+    public boolean isLoggedIn(HttpSession session) {
+        return getCurrentUser(session) != null;
     }
 
-    // DELETE
+    /**
+     * Check if the user is Admin
+     * @param session the http sent as JSON
+     * @return true if the user is Admin, false if not
+     */
+    public boolean isAdmin(HttpSession session) {
+        User user = getCurrentUser(session);
+        return user != null && user.isAdmin();
+    }
 
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    /**
+     * Check if the user is owner of the ad
+     * @param session the http sent as JSON
+     * @return true if the user is owner, false if not
+     */
+    public boolean isOwner(Long userId, HttpSession session) {
+        User user = getCurrentUser(session);
+        return user != null && user.getId().equals(userId);
     }
 }
