@@ -136,28 +136,28 @@ public class AdvertisementService {
         return adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
     }
 
-//    /**
-//     * Advanced search with filters
-//     */
-//    public List<Advertisement> searchAdsWithFilters(String keyword, Long categoryId, Long cityId,
-//                                                    Long minPrice, Long maxPrice) {
-//        // If no keyword, search with filters only
-//        if (keyword == null || keyword.trim().isEmpty()) {
-//            return adRepository.searchAdsWithFilters(
-//                    AdStatus.ACCEPTED, categoryId, cityId, minPrice, maxPrice);
-//        }
-//
-//        // With keyword: first search by keyword, then filter
-//        List<Advertisement> results = adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
-//
-//        // Apply filters in memory (or you could create a more complex query)
-//        return results.stream()
-//                .filter(ad -> categoryId == null || ad.getCategory().getId().equals(categoryId))
-//                .filter(ad -> cityId == null || ad.getCity().getId().equals(cityId))
-//                .filter(ad -> minPrice == null || ad.getPrice() >= minPrice)
-//                .filter(ad -> maxPrice == null || ad.getPrice() <= maxPrice)
-//                .toList();
-//    }
+    /**
+     * Advanced search with filters
+     */
+    public List<Advertisement> searchAdsWithFilters(String keyword, Long categoryId, Long cityId,
+                                                    Long minPrice, Long maxPrice) {
+        // If no keyword, search with filters only
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return adRepository.searchAdsWithFilters(
+                    AdStatus.ACCEPTED, categoryId, cityId, minPrice, maxPrice);
+        }
+
+        // With keyword: first search by keyword, then filter
+        List<Advertisement> results = adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
+
+        // Apply filters in memory
+        return results.stream()
+                .filter(ad -> categoryId == null || ad.getCategory().getId().equals(categoryId))
+                .filter(ad -> cityId == null || ad.getCity().getId().equals(cityId))
+                .filter(ad -> minPrice == null || ad.getPrice() >= minPrice)
+                .filter(ad -> maxPrice == null || ad.getPrice() <= maxPrice)
+                .toList();
+    }
 
     // UPDATE METHODS
 
@@ -330,13 +330,13 @@ public class AdvertisementService {
         return adRepository.countByStatus(AdStatus.PENDING);
     }
 
-//    public List<Object[]> getAdsByCategoryStats() {
-//        return adRepository.countAdsByCategory();
-//    }
-//
-//    public List<Object[]> getAdsByCityStats() {
-//        return adRepository.countAdsByCity();
-//    }
+    public List<Object[]> getAdsByCategoryStats() {
+        return adRepository.countAdsByCategory();
+    }
+
+    public List<Object[]> getAdsByCityStats() {
+        return adRepository.countAdsByCity();
+    }
 
     public List<Advertisement> getRecentAds(int days) {
         LocalDateTime since = LocalDateTime.now().minusDays(days);
