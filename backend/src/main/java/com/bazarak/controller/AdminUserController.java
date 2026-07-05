@@ -24,59 +24,62 @@ public class AdminUserController {
     private UserService userService;
 
     // 1. GET ALL USERS (Admin Only)
+
     /**
      * Get all regular users (excluding admins)
      */
     @GetMapping("/all-users")
-    public ResponseEntity<?> getAllUsers (HttpSession session){
+    public ResponseEntity<?> getAllUsers(HttpSession session) {
         // Check if actor is Admin
         userService.checkAdmin(session);
 
-        try{
+        try {
             List<User> allUsers = userService.findAllUsers();
             List<User> onlyUsers = allUsers.stream().
-                    filter(u -> u.getRole()==User.Role.USER).
+                    filter(u -> u.getRole() == User.Role.USER).
                     collect(Collectors.toList());
 
-            Map<String,Object> response = new HashMap<>();
+            Map<String, Object> response = new HashMap<>();
             response.put("count", onlyUsers.size());
-            response.put("users",onlyUsers);
+            response.put("users", onlyUsers);
 
             return ResponseEntity.ok(response);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     // 2. GET USER DETAILS (Admin Only)
+
     /**
      * Get a specific user's details (by ID)
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserDetails(@PathVariable Long userId, HttpSession session){
+    public ResponseEntity<?> getUserDetails(@PathVariable Long userId, HttpSession session) {
         // Check if actor is Admin
         userService.checkAdmin(session);
 
-        try{
+        try {
             User user = userService.getUserById(userId);
 
             // Remove password before sending response
             user.setPassword(null);
 
             return ResponseEntity.ok(user);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
     // 3. BLOCK USER (Admin Only)
+
     /**
      * Block a user (set status to BANNED)
      */
     @GetMapping("/{userId}/block")
-    public ResponseEntity<?> blockUser(@PathVariable Long userId, HttpSession session){
+    public ResponseEntity<?> blockUser(@PathVariable Long userId, HttpSession session) {
         userService.checkAdmin(session);
 
-        try{
+        try {
             User blockedUser = adminService.blockUser(userId);
             blockedUser.setPassword(null);
 
@@ -87,34 +90,61 @@ public class AdminUserController {
             response.put("message", "User blocked successfully");
 
             return ResponseEntity.ok(response);
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     // 4. UNBLOCK USER (Admin Only)
+
     /**
      * Unblock a user (set status to ACTIVE)
      */
     @GetMapping("/{userId}/unblock")
-    public ResponseEntity<?> unblockUser (@PathVariable Long userId, HttpSession session){
+    public ResponseEntity<?> unblockUser(@PathVariable Long userId, HttpSession session) {
         userService.checkAdmin(session);
 
-        try{
+        try {
             User unblockedUser = adminService.unblockUser(userId);
 
             unblockedUser.setPassword(null);
             Map<String, Object> response = new HashMap<>();
-            response.put("id",unblockedUser.getId());
-            response.put("username",unblockedUser.getUsername());
+            response.put("id", unblockedUser.getId());
+            response.put("username", unblockedUser.getUsername());
             response.put("status", unblockedUser.getStatus());
-            response.put("message","User unblocked successfully");
+            response.put("message", "User unblocked successfully");
 
             return ResponseEntity.ok(response);
-        }catch(RuntimeException e){
-            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    // 5. GET BLOCKED USERS (Admin Only)
+
+    /**
+     * Get all blocked users
+     */
+    @GetMapping("/blocked")
+    public ResponseEntity<?> getBlockedUsers(HttpSession session) {
+        userService.checkAdmin(session);
+
+        try {
+            List<User> allUsers = userService.findAllUsers();
+            List<User> blockedUsers = allUsers.stream().
+                    filter(u -> u.getStatus()==User.UserStatus.BANNED).
+                    collect(Collectors.toList());
+
+            Map<String,Object> response = new HashMap<>();
+            response.put("count",blockedUsers.size());
+            response.put("users",blockedUsers);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        }
+    }
+
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
