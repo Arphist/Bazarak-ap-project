@@ -39,6 +39,9 @@ public class Advertisement {
     @Column(nullable = false)
     private Long price;
 
+    @Column(name = "rejection_reason", nullable = false, length = 100)
+    private String rejectionReason;
+
     // RELATIONSHIPS
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -244,6 +247,14 @@ public class Advertisement {
 
     public void setAverageRating(Double averageRating){
         this.averageRating=averageRating;
+    }
+
+    public String getRejectionReason (){
+        return this.rejectionReason;
+    }
+
+    public void setRejectionReason(String reason){
+        this.rejectionReason=reason;
     }
 
     // HELPER METHODS FOR IMAGES
