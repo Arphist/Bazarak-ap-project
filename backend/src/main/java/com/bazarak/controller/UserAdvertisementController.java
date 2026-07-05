@@ -159,4 +159,34 @@ public class UserAdvertisementController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
+
+    // 5. GET MY RECENT ADS
+
+    /**
+     * Get the current user's most recent ads
+     */
+    @GetMapping("/ads/recent")
+    public ResponseEntity<?> getMyRecentAds(@RequestParam(defaultValue = "5") int limit, HttpSession session) {
+        // Check if user is logged in
+        User user = userService.getCurrentUserOrThrow(session);
+        try{
+            List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
+            // Sort by createdAt descending (newest first)
+            List<Advertisement> recentAds = myAds.stream()
+                    .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                    .limit(limit)
+                    .collect(Collectors.toList());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("limit",limit);
+            response.put("count",recentAds.size());
+            response.put("ads",recentAds);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error",e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
 }
