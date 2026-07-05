@@ -39,7 +39,7 @@ public class Advertisement {
     @Column(nullable = false)
     private Long price;
 
-    @Column(name = "rejection_reason", nullable = false, length = 100)
+    @Column(name = "rejection_reason", length = 100)
     private String rejectionReason;
 
     // RELATIONSHIPS
