@@ -243,12 +243,13 @@ public class AdvertisementService {
     }
 
     /**
-     * Delete advertisement (admin only - hard delete)
+     * Delete advertisement (admin only - soft delete)
      */
     @Transactional
-    public void deleteAdAdmin(Long adId) {
+    public void deleteAd(Long adId) {
         Advertisement ad = findById(adId);
-        adRepository.delete(ad);
+        ad.setStatus(AdStatus.DELETED);
+        ad.setUpdatedAt(LocalDateTime.now());
     }
 
     // OWNER METHODS
@@ -257,7 +258,7 @@ public class AdvertisementService {
      * Soft delete advertisement (owner)
      */
     @Transactional
-    public Advertisement deleteAdUser(Long adId, Long ownerId) {
+    public Advertisement deleteAd(Long adId, Long ownerId) {
         Advertisement ad = findById(adId);
 
         // Check ownership
