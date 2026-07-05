@@ -35,6 +35,9 @@ public class User {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
+    @Column(name = "rejection_reason", nullable = false, length = 100)
+    private String rejectionReason;
+
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     @Column(nullable = false, unique = true, length = 100)
@@ -156,6 +159,13 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
+    public String getRejectionReason (){
+        return this.rejectionReason;
+    }
+
+    public void setRejectionReason(String reason){
+        this.rejectionReason=reason;
+    }
 
     // ENUMS
 
