@@ -26,19 +26,6 @@ public class AdminAdvertisementController {
 
     // HELPER METHOD: Check Admin Access
 
-
-    private ResponseEntity<?> unauthorizedResponse() {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Admin access required");
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-    }
-
-    private ResponseEntity<?> notLoggedInResponse() {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", "Please login as admin");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-    }
-
     // 1. GET ALL PENDING ADS
 
     /**
@@ -48,14 +35,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> getPendingAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             List<Advertisement> pendingAds = advertisementService.getPendingAds();
@@ -82,14 +63,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> approveAd(@PathVariable Long id, HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             Advertisement approvedAd = advertisementService.approveAd(id);
@@ -118,16 +93,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> rejectAd(@PathVariable Long id,
                                       @RequestBody(required = false) RejectRequest rejectRequest,
                                       HttpSession session) {
-        // Check if user is logged in
-        User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             String reason = rejectRequest != null ? rejectRequest.getReason() : "No reason provided";
@@ -163,14 +130,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> deleteAd(@PathVariable Long id, HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             advertisementService.deleteAdAdmin(id);
@@ -194,16 +155,8 @@ public class AdminAdvertisementController {
      */
     @GetMapping("/status/{status}")
     public ResponseEntity<?> getAdsByStatus(@PathVariable String status, HttpSession session) {
-        // Check if user is logged in
-        User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             Advertisement.AdStatus adStatus;
@@ -240,14 +193,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> getDashboardStats(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             Map<String, Object> stats = new HashMap<>();
@@ -291,14 +238,8 @@ public class AdminAdvertisementController {
     public ResponseEntity<?> getAllAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            return notLoggedInResponse();
-        }
 
-        // Check if user is admin
-        if (!currentUser.isAdmin()) {
-            return unauthorizedResponse();
-        }
+        userService.checkAdmin(session);
 
         try {
             List<Advertisement> allAds = advertisementService.findAllAds();
