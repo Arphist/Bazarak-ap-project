@@ -195,8 +195,32 @@ public class UserService {
 
     public User getCurrentUserOrThrow(HttpSession session) {
         User currentUser = (User) session.getAttribute(USER_SESSION_KEY);
-        if(currentUser==null) throw new LoginToAccessAds("Please login to access your ads");
+        if(currentUser==null) throw new UnauthorizedAccessException("Please login to access your ads");
         return currentUser;
+    }
+
+
+    /**
+     * Check if the User owns the Ad
+     * @param resourceOwnerId ID of the user attempting to use service
+     * @param session http session
+     */
+    public void checkOwnership(Long resourceOwnerId, HttpSession session) {
+        User currentUser = getCurrentUserOrThrow(session);
+        if (!currentUser.getId().equals(resourceOwnerId)) {
+            throw new UnauthorizedAccessException("You don't have permission to access this resource");
+        }
+    }
+
+    /**
+     * Check if the user is Admin
+     * @param session http session
+     */
+    public void checkAdmin(HttpSession session) {
+        User currentUser = getCurrentUserOrThrow(session);
+        if (!currentUser.isAdmin()) {
+            throw new UnauthorizedAccessException("Admin access required");
+        }
     }
 
     public void setCurrentUser(HttpSession session, User user) {
