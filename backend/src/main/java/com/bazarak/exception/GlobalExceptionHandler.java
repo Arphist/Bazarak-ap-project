@@ -1,6 +1,7 @@
 package com.bazarak.exception;
 
 import com.bazarak.exception.user.*;
+import com.bazarak.exception.auth.*;
 import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUsernameExists(UsernameAlreadyExistsException ex) {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
+
+    /**
+     * Check if user attempting to observe ads is logged in
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> UNAUTHORIZED
+     */
+    @ExceptionHandler(LoginToAccessAds.class)
+    public ResponseEntity<?> handleLoginToAccessAds(LoginToAccessAds ex) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
     /**
      * This method is used if email already exist or not.
      * @param ex spring class to handle errors
