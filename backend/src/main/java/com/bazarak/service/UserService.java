@@ -228,15 +228,6 @@ public class UserService {
     }
 
     /**
-     * Check if the user is logged in
-     * @param session the http sent as JSON
-     * @return true if the user is logged in, false if not
-     */
-    public boolean isLoggedIn(HttpSession session) {
-        return getCurrentUserOrThrow(session) != null;
-    }
-
-    /**
      * Check if the user is owner of the ad
      * @param session the http sent as JSON
      * @return true if the user is owner, false if not
