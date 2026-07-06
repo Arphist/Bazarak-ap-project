@@ -1,5 +1,6 @@
 package com.bazarak.exception;
 
+import com.bazarak.exception.city.*;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.advertisement.*;
@@ -106,6 +107,47 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleEmailIsUsed(EmailIsAlreadyUsed ex) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
+
+
+    /**
+     * Handles cases where a city is not found in the system.
+     * Thrown when trying to retrieve, update, or delete a non-existent city.
+     *
+     * @param ex the CityNotFoundException
+     * @return HTTP 404 NOT_FOUND with error message
+     */
+    @ExceptionHandler(CityNotFoundException.class)
+    public ResponseEntity<?> handleCityNotFound(CityNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a city name already exists in the system.
+     * Thrown when trying to create or update a city with a duplicate name.
+     *
+     * @param ex the CityNameAlreadyExistsException
+     * @return HTTP 409 CONFLICT with error message
+     */
+    @ExceptionHandler(CityNameAlreadyExistsException.class)
+    public ResponseEntity<?> handleCityNameAlreadyExists(CityNameAlreadyExistsException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a city cannot be deleted because it has associated advertisements.
+     * Thrown when trying to delete a city that is referenced by one or more ads.
+     *
+     * @param ex the CityHasAdvertisementsException
+     * @return HTTP 400 BAD_REQUEST with error message
+     */
+    @ExceptionHandler(CityHasAdvertisementsException.class)
+    public ResponseEntity<?> handleCityHasAdvertisements(CityHasAdvertisementsException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+
+
+
     /**
      *
      * When an unexpected error occurs that we didn't anticipate,
