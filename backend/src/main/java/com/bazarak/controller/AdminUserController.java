@@ -152,11 +152,7 @@ public class AdminUserController {
     public ResponseEntity<?> getActiveUsers(HttpSession session){
         userService.checkAdmin(session);
         try{
-            List<User> allUsers = userService.findAllUsers();
-            List<User> activeUsers = allUsers.stream().
-                    filter(u-> u.isActive()&&
-                            u.getRole()!=User.Role.ADMIN).
-                    collect(Collectors.toList());
+            List<User> activeUsers = userService.findAllActiveUsers();
 
             Map<String,Object> response = new HashMap<>();
             response.put("count",activeUsers.size());
