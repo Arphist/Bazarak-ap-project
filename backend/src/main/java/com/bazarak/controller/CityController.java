@@ -30,8 +30,18 @@ public class CityController {
      * @return list of all cities
      */
     @GetMapping
-    public ResponseEntity<List<City>> getAllCities() {
-        return ResponseEntity.ok(cityService.getAllCities());
+    public ResponseEntity<?> getAllCities() {
+        try {
+            List<City> cities = cityService.getAllCities();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", cities.size());
+            response.put("cities", cities);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     /**
@@ -41,9 +51,15 @@ public class CityController {
      * @return the city with the given ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<City> getCityById(@PathVariable Long id) {
-        return ResponseEntity.ok(cityService.getCityById(id));
+    public ResponseEntity<?> getCityById(@PathVariable Long id) {
+        try {
+            City city = cityService.getCityById(id);
+            return ResponseEntity.ok(city);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
+
 
     /**
      * Searches for cities by keyword in their name.
@@ -52,8 +68,18 @@ public class CityController {
      * @return list of cities matching the search criteria
      */
     @GetMapping("/search")
-    public ResponseEntity<List<City>> searchCities(@RequestParam(required = false) String keyword) {
-        return ResponseEntity.ok(cityService.searchCities(keyword));
+    public ResponseEntity<?> searchCities(@RequestParam String keyword) {
+        try {
+            List<City> cities = cityService.searchCities(keyword);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", cities.size());
+            response.put("cities", cities);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     /**
@@ -63,8 +89,19 @@ public class CityController {
      * @return list of cities belonging to the given province
      */
     @GetMapping("/province/{province}")
-    public ResponseEntity<List<City>> getCitiesByProvince(@PathVariable String province) {
-        return ResponseEntity.ok(cityService.getCitiesByProvince(province));
+    public ResponseEntity<?> getCitiesByProvince(@PathVariable String province) {
+        try {
+            List<City> cities = cityService.getCitiesByProvince(province);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("province", province);
+            response.put("count", cities.size());
+            response.put("cities", cities);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     /**
@@ -131,6 +168,7 @@ public class CityController {
         response.put("message", "City deleted successfully");
         return ResponseEntity.ok(response);
     }
+
 
     /**
      * DTO for city creation and update requests.
