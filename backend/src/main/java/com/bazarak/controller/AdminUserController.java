@@ -121,6 +121,7 @@ public class AdminUserController {
     }
 
     // 5. GET BLOCKED USERS (Admin Only)
+
     /**
      * Get all blocked users
      */
@@ -131,36 +132,37 @@ public class AdminUserController {
         try {
             List<User> allUsers = userService.findAllUsers();
             List<User> blockedUsers = allUsers.stream().
-                    filter(u -> u.getStatus()==User.UserStatus.BANNED).
+                    filter(u -> u.getStatus() == User.UserStatus.BANNED).
                     collect(Collectors.toList());
 
-            Map<String,Object> response = new HashMap<>();
-            response.put("count",blockedUsers.size());
-            response.put("users",blockedUsers);
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", blockedUsers.size());
+            response.put("users", blockedUsers);
 
             return ResponseEntity.ok(response);
-        }catch (RuntimeException e){
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     // 6. GET ACTIVE USERS (Admin Only)
+
     /**
      * Get all active users
      */
     @GetMapping("/active")
-    public ResponseEntity<?> getActiveUsers(HttpSession session){
+    public ResponseEntity<?> getActiveUsers(HttpSession session) {
         userService.checkAdmin(session);
-        try{
+        try {
             List<User> activeUsers = userService.findAllActiveUsers();
 
-            Map<String,Object> response = new HashMap<>();
-            response.put("count",activeUsers.size());
-            response.put("users",activeUsers);
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", activeUsers.size());
+            response.put("users", activeUsers);
 
             return ResponseEntity.ok(response);
-        }catch (RuntimeException e){
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
