@@ -36,27 +36,6 @@ public class AdminService {
     }
 
     /**
-     * Make a user an admin by their ID
-     * @param id the User ID
-     * @return the user whom turned into admin
-     */
-    public User makeAdmin(Long id) {
-        User user = getUserById(id);
-        user.setRole(User.Role.ADMIN);
-        return userRepository.save(user);
-    }
-
-    // DELETE
-
-    /**
-     * Delete a user by their ID
-     * @param id the User ID
-     */
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    /**
      * Find user by ID (throws exception if not found)
      */
     public User getUserById(Long id) {
