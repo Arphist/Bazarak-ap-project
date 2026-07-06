@@ -23,29 +23,33 @@ public class UserAdvertisementController {
     @Autowired
     private UserService userService;
 
-    // 1. GET ALL MY ADS
-
+    // 1. GET ALL MY ADS (with sorting)
     /**
      * Get all advertisements posted by the current user
      */
     @GetMapping("/ads")
-    public ResponseEntity<?> getMyAds(HttpSession session) {
-        // Check if user is logged in
+    public ResponseEntity<?> getMyAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                      @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                      HttpSession session) {
         User currentUser = userService.getCurrentUserOrThrow(session);
 
         try {
+            // 1 Get all my ads
             List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+
+            // 2 Apply sorting
+            myAds = advertisementService.applySorting(myAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", myAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", myAds);
 
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -198,6 +202,8 @@ public class UserAdvertisementController {
      */
     @GetMapping("/ads/active")
     public ResponseEntity<?> getMyActiveAds(HttpSession session) {
+        //todo: add sorting here
+
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
@@ -325,5 +331,13 @@ public class UserAdvertisementController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
+    }
+
+    // HELPER METHOD
+    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
+        Map<String, String> error = new HashMap<>();
+        error.put("error",message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
     }
 }
