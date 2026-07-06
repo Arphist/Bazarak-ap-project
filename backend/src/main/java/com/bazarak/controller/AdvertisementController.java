@@ -30,7 +30,7 @@ public class AdvertisementController {
     /**
      * Get all active advertisements (home page)
      */
-    @GetMapping
+    @GetMapping("/active")
     public ResponseEntity<?> getAllActiveAds() {
         List<Advertisement> ads = advertisementService.getActiveAdsWithDetails();
         return ResponseEntity.ok(ads);

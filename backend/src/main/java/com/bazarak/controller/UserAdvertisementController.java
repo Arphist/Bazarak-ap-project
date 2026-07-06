@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user/ads")
+@RequestMapping("/users/me")
 public class UserAdvertisementController {
     @Autowired
     private AdvertisementService advertisementService;

@@ -75,7 +75,7 @@ public class AdminUserController {
     /**
      * Block a user (set status to BANNED)
      */
-    @GetMapping("/{userId}/block")
+    @PutMapping("/{userId}/block")
     public ResponseEntity<?> blockUser(@PathVariable Long userId, HttpSession session) {
         userService.checkAdmin(session);
 
@@ -100,7 +100,7 @@ public class AdminUserController {
     /**
      * Unblock a user (set status to ACTIVE)
      */
-    @GetMapping("/{userId}/unblock")
+    @PutMapping("/{userId}/unblock")
     public ResponseEntity<?> unblockUser(@PathVariable Long userId, HttpSession session) {
         userService.checkAdmin(session);
 
