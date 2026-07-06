@@ -48,9 +48,7 @@ public class AuthController {
             // Returns a success response with HTTP status 201 CREATED and The registered user (without password)
             return ResponseEntity.status(HttpStatus.CREATED).body(registeredUser);
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
 
@@ -87,9 +85,7 @@ public class AuthController {
 
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+            return buildErrorResponse(HttpStatus.UNAUTHORIZED,e.getMessage());
         }
     }
     // LOGOUT ENDPOINT
@@ -119,6 +115,14 @@ public class AuthController {
         response.put("username", username);
         response.put("available", !exists);
         return ResponseEntity.ok(response);
+    }
+
+    // HELPER METHOD
+    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
+        Map<String, String> error = new HashMap<>();
+        error.put("error",message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
     }
 
     // INNER CLASS FOR LOGIN REQUEST
