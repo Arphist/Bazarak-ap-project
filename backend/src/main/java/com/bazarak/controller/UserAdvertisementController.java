@@ -90,6 +90,8 @@ public class UserAdvertisementController {
             Map<String, Object> response = new HashMap<>();
             response.put("status", adStatus);
             response.put("count", filteredAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", filteredAds);
 
             return ResponseEntity.ok(response);
@@ -224,6 +226,8 @@ public class UserAdvertisementController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", activeAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", activeAds);
 
             return ResponseEntity.ok(response);
@@ -257,6 +261,8 @@ public class UserAdvertisementController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", pendingAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", pendingAds);
 
             return ResponseEntity.ok(response);
@@ -289,6 +295,8 @@ public class UserAdvertisementController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", rejectedAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", rejectedAds);
 
             return ResponseEntity.ok(response);
@@ -320,6 +328,8 @@ public class UserAdvertisementController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", soldAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", soldAds);
 
             return ResponseEntity.ok(response);
@@ -349,6 +359,8 @@ public class UserAdvertisementController {
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", deletedAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", deletedAds);
 
             return ResponseEntity.ok(response);
