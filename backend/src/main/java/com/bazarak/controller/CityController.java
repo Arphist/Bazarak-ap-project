@@ -43,6 +43,62 @@ public class CityController {
         return ResponseEntity.ok(cityService.getCitiesByProvince(province));
     }
 
+    // Create new city (admin only - TODO: add role check after JWT)
+    @PostMapping
+    public ResponseEntity<City> createCity(@Valid @RequestBody CityRequest request) {
+        // TODO: Check if current user has ADMIN role (will be implemented with JWT)
+        City city = cityService.createCity(
+                request.getName(),
+                request.getProvince()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(city);
+    }
+
+    // Update city (admin only - TODO: add role check after JWT)
+    @PutMapping("/{id}")
+    public ResponseEntity<City> updateCity(
+            @PathVariable Long id,
+            @Valid @RequestBody CityRequest request) {
+        // TODO: Check if current user has ADMIN role (will be implemented with JWT)
+        City city = cityService.updateCity(
+                id,
+                request.getName(),
+                request.getProvince()
+        );
+        return ResponseEntity.ok(city);
+    }
+
+    // Delete city (admin only - TODO: add role check after JWT)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteCity(@PathVariable Long id) {
+        // TODO: Check if current user has ADMIN role (will be implemented with JWT)
+        cityService.deleteCity(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "City deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    public static class CityRequest {
+        private String name;
+        private String province;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getProvince() {
+            return province;
+        }
+
+        public void setProvince(String province) {
+            this.province = province;
+        }
+    }
+
 
 
 }
