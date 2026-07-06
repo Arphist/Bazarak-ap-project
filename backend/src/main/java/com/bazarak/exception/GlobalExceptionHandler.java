@@ -44,16 +44,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Check if user attempting to observe ads is logged in
-     * @param ex spring class to handle errors
-     * @return HTTP-status -> UNAUTHORIZED
-     */
-    @ExceptionHandler(LoginToAccessAds.class)
-    public ResponseEntity<?> handleLoginToAccessAds(LoginToAccessAds ex) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
-    }
-
-    /**
      * This method is used if email already exist or not.
      * @param ex spring class to handle errors
      * @return HTTP-status -> CONFLICT
