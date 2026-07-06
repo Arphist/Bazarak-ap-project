@@ -16,4 +16,33 @@ import java.util.Map;
 @RequestMapping("/api/cities")
 public class CityController {
 
+    @Autowired
+    private CityService cityService;
+
+    // Get all cities (public)
+    @GetMapping
+    public ResponseEntity<List<City>> getAllCities() {
+        return ResponseEntity.ok(cityService.getAllCities());
+    }
+
+    // Get city by ID (public)
+    @GetMapping("/{id}")
+    public ResponseEntity<City> getCityById(@PathVariable Long id) {
+        return ResponseEntity.ok(cityService.getCityById(id));
+    }
+
+    // Search cities (public)
+    @GetMapping("/search")
+    public ResponseEntity<List<City>> searchCities(@RequestParam(required = false) String keyword) {
+        return ResponseEntity.ok(cityService.searchCities(keyword));
+    }
+
+    // Get cities by province (public)
+    @GetMapping("/province/{province}")
+    public ResponseEntity<List<City>> getCitiesByProvince(@PathVariable String province) {
+        return ResponseEntity.ok(cityService.getCitiesByProvince(province));
+    }
+
+
+
 }
