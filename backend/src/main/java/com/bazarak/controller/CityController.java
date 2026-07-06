@@ -125,6 +125,15 @@ public class CityController {
         return ResponseEntity.status(HttpStatus.CREATED).body(city);
     }
 
+    // HELPER METHOD
+
+    private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
+    }
+
     /**
      * Updates an existing city. Admin only.
      *
