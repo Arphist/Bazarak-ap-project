@@ -12,8 +12,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController("users/me")
+@RestController
+@RequestMapping("users/me")
 public class UserProfileController {
+
+    @Autowired
+    private UserService userService;
+
+    // 1. GET MY PROFILE
+    @GetMapping("/profile")
+    public ResponseEntity<?> getMyProfile(HttpSession session){
+        User currentUser = userService.getCurrentUserOrThrow(session);
+        currentUser.setPassword(null);
+        return ResponseEntity.ok(currentUser);
+    }
+
+
     //todo: add
     //todo @PutMapping("/change-photo") -> changeProfilePhoto
 }
