@@ -54,13 +54,16 @@ public class UserAdvertisementController {
         }
     }
 
-    // 2. GET MY ADS BY STATUS
+    // 2. GET MY ADS BY STATUS (with sorting)
 
     /**
      * Get the current user's ads filtered by status
      */
     @GetMapping("/ads/status/{status}")
-    public ResponseEntity<?> getMyAdsByStatus(@PathVariable String status, HttpSession session) {
+    public ResponseEntity<?> getMyAdsByStatus(@PathVariable String status,
+                                              @RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                              @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                              HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -81,6 +84,8 @@ public class UserAdvertisementController {
             List<Advertisement> filteredAds = myAds.stream()
                     .filter(ad -> ad.getOwner().getId().equals(currentUser.getId()))
                     .collect(Collectors.toList());
+
+            filteredAds = advertisementService.applySorting(filteredAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", adStatus);
@@ -262,13 +267,15 @@ public class UserAdvertisementController {
         }
     }
 
-    // 8. GET MY REJECTED ADS ONLY
+    // 8. GET MY REJECTED ADS ONLY (with sorting)
 
     /**
      * Get rejected ads posted by the current user (with rejection reason)
      */
     @GetMapping("/ads/rejected")
-    public ResponseEntity<?> getMyRejected(HttpSession session) {
+    public ResponseEntity<?> getMyRejectedAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                              @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                              HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -277,6 +284,8 @@ public class UserAdvertisementController {
             List<Advertisement> rejectedAds = myAds.stream().
                     filter(ad -> ad.getStatus() == Advertisement.AdStatus.REJECTED).
                     collect(Collectors.toList());
+
+            rejectedAds = advertisementService.applySorting(rejectedAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", rejectedAds.size());
@@ -290,13 +299,15 @@ public class UserAdvertisementController {
         }
     }
 
-    // 9. GET MY SOLD ADS ONLY
+    // 9. GET MY SOLD ADS ONLY (with sorting)
 
     /**
      * Get sold ads posted by the current user
      */
     @GetMapping("/ads/sold")
-    public ResponseEntity<?> getMySoldAds(HttpSession session) {
+    public ResponseEntity<?> getMySoldAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                          @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                          HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
@@ -304,6 +315,8 @@ public class UserAdvertisementController {
             List<Advertisement> soldAds = myAds.stream().
                     filter(ad -> ad.getStatus() == Advertisement.AdStatus.SOLD).
                     collect(Collectors.toList());
+
+            soldAds = advertisementService.applySorting(soldAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", soldAds.size());
@@ -318,9 +331,11 @@ public class UserAdvertisementController {
         }
     }
 
-    // 10. GET MY DELETED ADS ONLY
+    // 10. GET MY DELETED ADS ONLY (with sorting)
     @GetMapping("/ads/deleted")
-    public ResponseEntity<?> getMyDeletedAds(HttpSession session) {
+    public ResponseEntity<?> getMyDeletedAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                             @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                             HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -329,6 +344,8 @@ public class UserAdvertisementController {
             List<Advertisement> deletedAds = myAds.stream().
                     filter(ad -> ad.getStatus() == Advertisement.AdStatus.DELETED).
                     collect(Collectors.toList());
+
+            deletedAds = advertisementService.applySorting(deletedAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", deletedAds.size());
