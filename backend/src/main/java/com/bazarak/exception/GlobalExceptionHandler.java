@@ -200,6 +200,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<?> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
-        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 }
