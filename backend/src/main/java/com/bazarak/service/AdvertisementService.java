@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AdvertisementService {
@@ -142,22 +144,40 @@ public class AdvertisementService {
      */
     public List<Advertisement> searchAdsWithFilters(String keyword, Long categoryId, Long cityId,
                                                     Long minPrice, Long maxPrice) {
-        // If no keyword, search with filters only
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return adRepository.searchAdsWithFilters(
-                    AdStatus.ACCEPTED, categoryId, cityId, minPrice, maxPrice);
+        // Get results from database using JPQL
+        List<Advertisement> results = adRepository.searchAdsWithFilters(
+                AdStatus.ACCEPTED,
+                keyword,
+                categoryId,
+                cityId,
+                minPrice,
+                maxPrice
+        );
+
+        return results;
+    }
+
+    public List<Advertisement> applySorting(List<Advertisement> ads, String sortBy, String sortOrder) {
+        Comparator<Advertisement> comparator;
+
+        switch (sortBy.toLowerCase()) {
+            case "price":
+                comparator = Comparator.comparing(Advertisement::getPrice);
+                break;
+            case "title":
+                comparator = Comparator.comparing(Advertisement::getTitle, String.CASE_INSENSITIVE_ORDER);
+                break;
+            case "created_at":
+            default:
+                comparator = Comparator.comparing(Advertisement::getCreatedAt);
+                break;
         }
 
-        // With keyword: first search by keyword, then filter
-        List<Advertisement> results = adRepository.searchActiveAds(keyword.trim(), AdStatus.ACCEPTED);
-
-        // Apply filters in memory
-        return results.stream()
-                .filter(ad -> categoryId == null || ad.getCategory().getId().equals(categoryId))
-                .filter(ad -> cityId == null || ad.getCity().getId().equals(cityId))
-                .filter(ad -> minPrice == null || ad.getPrice() >= minPrice)
-                .filter(ad -> maxPrice == null || ad.getPrice() <= maxPrice)
-                .toList();
+        if ("asc".equalsIgnoreCase(sortOrder)) {
+            return ads.stream().sorted(comparator).collect(Collectors.toList());
+        } else {
+            return ads.stream().sorted(comparator.reversed()).collect(Collectors.toList());
+        }
     }
 
     // UPDATE METHODS
