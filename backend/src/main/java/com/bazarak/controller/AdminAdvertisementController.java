@@ -33,6 +33,8 @@ public class AdminAdvertisementController {
      */
     @GetMapping("/pending")
     public ResponseEntity<?> getPendingAds(HttpSession session) {
+        //todo: add soring
+
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -48,9 +50,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -78,9 +78,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -115,9 +113,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -142,9 +138,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -163,9 +157,7 @@ public class AdminAdvertisementController {
             try {
                 adStatus = Advertisement.AdStatus.valueOf(status.toUpperCase());
             } catch (IllegalArgumentException e) {
-                Map<String, String> error = new HashMap<>();
-                error.put("error", "Invalid status. Valid values: PENDING, ACTIVE, REJECTED, SOLD, DELETED");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+                return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid status. Valid values: PENDING, ACTIVE, REJECTED, SOLD, DELETED");
             }
 
             List<Advertisement> ads = advertisementService.getAdsByStatus(adStatus);
@@ -178,9 +170,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -223,9 +213,7 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(stats);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -236,6 +224,8 @@ public class AdminAdvertisementController {
      */
     @GetMapping("/all")
     public ResponseEntity<?> getAllAds(HttpSession session) {
+        //todo: add sorting here
+
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -251,10 +241,16 @@ public class AdminAdvertisementController {
             return ResponseEntity.ok(response);
 
         } catch (RuntimeException e) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
+    }
+
+    // HELPER METHOD
+    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
     }
 
     // INNER CLASSES (DTOs)
