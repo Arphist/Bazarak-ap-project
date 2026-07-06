@@ -26,15 +26,15 @@ public class AdminAdvertisementController {
 
     // HELPER METHOD: Check Admin Access
 
-    // 1. GET ALL PENDING ADS
+    // 1. GET ALL PENDING ADS (with sorting)
 
     /**
      * Get all advertisements waiting for admin approval
      */
     @GetMapping("/pending")
-    public ResponseEntity<?> getPendingAds(HttpSession session) {
-        //todo: add soring
-
+    public ResponseEntity<?> getPendingAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                           @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+                                           HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -42,9 +42,12 @@ public class AdminAdvertisementController {
 
         try {
             List<Advertisement> pendingAds = advertisementService.getPendingAds();
-
+            // sorting
+            pendingAds = advertisementService.applySorting(pendingAds, sortBy, sortOrder);
             Map<String, Object> response = new HashMap<>();
             response.put("count", pendingAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", pendingAds);
 
             return ResponseEntity.ok(response);
@@ -142,13 +145,16 @@ public class AdminAdvertisementController {
         }
     }
 
-    // 5. GET ADS BY STATUS (Admin Only)
+    // 5. GET ADS BY STATUS (Admin Only) (with sorting)
 
     /**
      * Get all ads by status (for admin dashboard)
      */
     @GetMapping("/status/{status}")
-    public ResponseEntity<?> getAdsByStatus(@PathVariable String status, HttpSession session) {
+    public ResponseEntity<?> getAdsByStatus(@PathVariable String status,
+                                            @RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                            @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                            HttpSession session) {
 
         userService.checkAdmin(session);
 
@@ -161,10 +167,13 @@ public class AdminAdvertisementController {
             }
 
             List<Advertisement> ads = advertisementService.getAdsByStatus(adStatus);
+            ads=advertisementService.applySorting(ads,sortBy,sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", adStatus);
             response.put("count", ads.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", ads);
 
             return ResponseEntity.ok(response);
@@ -217,14 +226,15 @@ public class AdminAdvertisementController {
         }
     }
 
-    // 7. GET ALL ADS (Admin Only)
+    // 7. GET ALL ADS (Admin Only) (with sorting)
 
     /**
      * Get all advertisements (including non-active ones)
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getAllAds(HttpSession session) {
-        //todo: add sorting here
+    public ResponseEntity<?> getAllAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                       @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                       HttpSession session) {
 
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
@@ -233,9 +243,12 @@ public class AdminAdvertisementController {
 
         try {
             List<Advertisement> allAds = advertisementService.findAllAds();
+            allAds = advertisementService.applySorting(allAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", allAds.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("ads", allAds);
 
             return ResponseEntity.ok(response);
