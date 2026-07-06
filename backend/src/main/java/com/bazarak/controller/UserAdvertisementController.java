@@ -169,7 +169,7 @@ public class UserAdvertisementController {
      * Get the current user's most recent ads
      */
     @GetMapping("/ads/recent")
-    public ResponseEntity<?> getMyRecentAds(@RequestParam(defaultValue = "5") int limit, HttpSession session) {
+    public ResponseEntity<?> getMyRecentAds(HttpSession session) {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
         try {
@@ -177,11 +177,9 @@ public class UserAdvertisementController {
             // Sort by createdAt descending (newest first)
             List<Advertisement> recentAds = myAds.stream()
                     .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
-                    .limit(limit)
                     .collect(Collectors.toList());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("limit", limit);
             response.put("count", recentAds.size());
             response.put("ads", recentAds);
 
