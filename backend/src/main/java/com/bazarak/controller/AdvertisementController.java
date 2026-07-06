@@ -62,11 +62,6 @@ public class AdvertisementController {
     public ResponseEntity<?> createAd(@Valid @RequestBody CreateAdRequest request, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Please login to post an ad");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-        }
 
         // 2. Check if user is blocked
         if (!currentUser.isActive()) {
@@ -113,11 +108,6 @@ public class AdvertisementController {
                                       HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Please login to update an ad");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-        }
 
         try {
             // 2. Get existing ad
@@ -161,11 +151,6 @@ public class AdvertisementController {
     public ResponseEntity<?> deleteAd(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Please login to delete an ad");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-        }
 
         try {
             // 2. Check ownership and delete
@@ -190,11 +175,6 @@ public class AdvertisementController {
     public ResponseEntity<?> markAsSold(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        if (currentUser == null) {
-            Map<String, String> error = new HashMap<>();
-            error.put("error", "Please login to mark ad as sold");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-        }
 
         try {
             Advertisement ad = advertisementService.markAsSold(id, currentUser.getId());
