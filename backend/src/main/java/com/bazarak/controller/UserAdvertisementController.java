@@ -230,13 +230,15 @@ public class UserAdvertisementController {
         }
     }
 
-    // 7. GET MY PENDING ADS ONLY
+    // 7. GET MY PENDING ADS ONLY (with sorting)
 
     /**
      * Get only pending ads posted by the current user
      */
     @GetMapping("/ads/pending")
-    public ResponseEntity<?> getMyPendingAds(HttpSession session) {
+    public ResponseEntity<?> getMyPendingAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                             @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                             HttpSession session) {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
 
@@ -245,6 +247,8 @@ public class UserAdvertisementController {
             List<Advertisement> pendingAds = myAds.stream().
                     filter(ad -> ad.getStatus() == Advertisement.AdStatus.PENDING).
                     collect(Collectors.toList());
+
+            pendingAds = advertisementService.applySorting(pendingAds, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", pendingAds.size());
