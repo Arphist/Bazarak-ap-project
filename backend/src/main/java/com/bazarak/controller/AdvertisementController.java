@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ads")
@@ -210,23 +212,33 @@ public class AdvertisementController {
         }
     }
 
-    // SEARCH ADS (Public)
-
+    // SEARCH ADS WITH SORTING (Public)
     /**
-     * Search advertisements by keyword and filters
+     * Search advertisements by keyword and filters with sorting options
+     *
+     * Sort Options:
+     * - sortBy: createdAt (default), price, title
+     * - sortOrder: desc (default), asc
      */
     @GetMapping("/search")
     public ResponseEntity<?> searchAds(@RequestParam(required = false) String keyword,
                                        @RequestParam(required = false) Long categoryId,
                                        @RequestParam(required = false) Long cityId,
                                        @RequestParam(required = false) Long minPrice,
-                                       @RequestParam(required = false) Long maxPrice) {
+                                       @RequestParam(required = false) Long maxPrice,
+                                       @RequestParam(required = false, defaultValue = "created-at") String sortBy,
+                                       @RequestParam(required = false, defaultValue = "desc") String sortOrder) {
         try {
             List<Advertisement> results = advertisementService.searchAdsWithFilters(
                     keyword, categoryId, cityId, minPrice, maxPrice);
 
+            // Apply sorting
+            results = applySorting(results, sortBy, sortOrder);
+
             Map<String, Object> response = new HashMap<>();
             response.put("count", results.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
             response.put("results", results);
 
             return ResponseEntity.ok(response);
@@ -263,6 +275,33 @@ public class AdvertisementController {
     }
 
     // HELPER METHOD
+
+    private List<Advertisement> applySorting(List<Advertisement> ads, String sortBy, String sortOrder) {
+        Comparator<Advertisement> comparator;
+
+        // Determine which field to sort by
+        switch (sortBy.toLowerCase()) {
+            case "price":
+                comparator = Comparator.comparing(Advertisement::getPrice);
+                break;
+            case "created-at":
+                comparator = Comparator.comparing(Advertisement::getCreatedAt);
+                break;
+            case "title":
+                comparator = Comparator.comparing(Advertisement::getTitle, String.CASE_INSENSITIVE_ORDER);
+                break;
+            default:
+                comparator = Comparator.comparing(Advertisement::getCreatedAt);
+                break;
+        }
+
+        // Apply sort order (ascending or descending)
+        if ("asc".equalsIgnoreCase(sortOrder)) {
+            return ads.stream().sorted(comparator).collect(Collectors.toList());
+        } else {
+            return ads.stream().sorted(comparator.reversed()).collect(Collectors.toList());
+        }
+    }
 
     public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
         Map<String, String> error = new HashMap<>();
