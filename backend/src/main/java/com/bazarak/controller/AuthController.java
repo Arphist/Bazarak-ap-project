@@ -108,7 +108,7 @@ public class AuthController {
     }
 
     // CHECK USERNAME AVAILABILITY
-
+    // todo: I might delete this method
     /**
      * Check if the username already exists -> Real-time Availability Check
      */

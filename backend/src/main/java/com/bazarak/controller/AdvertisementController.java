@@ -133,6 +133,7 @@ public class AdvertisementController {
             updatedAd.setTitle(request.getTitle());
             updatedAd.setDescription(request.getDescription());
             updatedAd.setPrice(request.getPrice());
+            //todo: add city, category and other fields
 
             Advertisement savedAd = advertisementService.updateAd(id, updatedAd, currentUser.getId());
 
