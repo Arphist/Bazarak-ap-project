@@ -226,14 +226,4 @@ public class UserService {
     public void setCurrentUser(HttpSession session, User user) {
         session.setAttribute(USER_SESSION_KEY, user);
     }
-
-    /**
-     * Check if the user is owner of the ad
-     * @param session the http sent as JSON
-     * @return true if the user is owner, false if not
-     */
-    public boolean isOwner(Long userId, HttpSession session) {
-        User user = getCurrentUserOrThrow(session);
-        return user != null && user.getId().equals(userId);
-    }
 }
