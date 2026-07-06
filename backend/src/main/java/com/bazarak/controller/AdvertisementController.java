@@ -226,14 +226,15 @@ public class AdvertisementController {
                                        @RequestParam(required = false) Long cityId,
                                        @RequestParam(required = false) Long minPrice,
                                        @RequestParam(required = false) Long maxPrice,
-                                       @RequestParam(required = false, defaultValue = "created-at") String sortBy,
+                                       @RequestParam(required = false, defaultValue = "created_at") String sortBy,
                                        @RequestParam(required = false, defaultValue = "desc") String sortOrder) {
         try {
+            // 1 Get results from database
             List<Advertisement> results = advertisementService.searchAdsWithFilters(
                     keyword, categoryId, cityId, minPrice, maxPrice);
 
-            // Apply sorting
-            results = applySorting(results, sortBy, sortOrder);
+            // 2 Apply sorting (using the reusable method!)
+            results = advertisementService.applySorting(results, sortBy, sortOrder);
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", results.size());
@@ -275,33 +276,6 @@ public class AdvertisementController {
     }
 
     // HELPER METHOD
-
-    private List<Advertisement> applySorting(List<Advertisement> ads, String sortBy, String sortOrder) {
-        Comparator<Advertisement> comparator;
-
-        // Determine which field to sort by
-        switch (sortBy.toLowerCase()) {
-            case "price":
-                comparator = Comparator.comparing(Advertisement::getPrice);
-                break;
-            case "created-at":
-                comparator = Comparator.comparing(Advertisement::getCreatedAt);
-                break;
-            case "title":
-                comparator = Comparator.comparing(Advertisement::getTitle, String.CASE_INSENSITIVE_ORDER);
-                break;
-            default:
-                comparator = Comparator.comparing(Advertisement::getCreatedAt);
-                break;
-        }
-
-        // Apply sort order (ascending or descending)
-        if ("asc".equalsIgnoreCase(sortOrder)) {
-            return ads.stream().sorted(comparator).collect(Collectors.toList());
-        } else {
-            return ads.stream().sorted(comparator.reversed()).collect(Collectors.toList());
-        }
-    }
 
     public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
         Map<String, String> error = new HashMap<>();
