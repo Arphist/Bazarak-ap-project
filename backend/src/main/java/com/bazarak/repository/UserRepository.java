@@ -53,9 +53,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // CUSTOM QUERIES WITH JPQL
 
     /**
-     * Find all active users
+     * Find all active users but admins
      */
-    @Query("SELECT u FROM User u WHERE u.status = 'ACTIVE'")
+    @Query("SELECT u FROM User u WHERE u.status = 'ACTIVE' AND u.role != 'ADMIN'")
     List<User> findAllActiveUsers();
 
     /**
