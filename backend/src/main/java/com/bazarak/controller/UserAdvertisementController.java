@@ -24,6 +24,7 @@ public class UserAdvertisementController {
     private UserService userService;
 
     // 1. GET ALL MY ADS (with sorting)
+
     /**
      * Get all advertisements posted by the current user
      */
@@ -195,15 +196,15 @@ public class UserAdvertisementController {
         }
     }
 
-    // 6. GET MY ACTIVE ADS ONLY
+    // 6. GET MY ACTIVE ADS (with sorting)
 
     /**
      * Get only active ads posted by the current user
      */
     @GetMapping("/ads/active")
-    public ResponseEntity<?> getMyActiveAds(HttpSession session) {
-        //todo: add sorting here
-
+    public ResponseEntity<?> getMyActiveAds(@RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                            @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                            HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
@@ -212,7 +213,10 @@ public class UserAdvertisementController {
             List<Advertisement> activeAds = myAds.stream().
                     filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED).
                     collect(Collectors.toList());
-            ;
+
+            // Apply sorting
+            activeAds = advertisementService.applySorting(activeAds, sortBy, sortOrder);
+
             Map<String, Object> response = new HashMap<>();
             response.put("count", activeAds.size());
             response.put("ads", activeAds);
@@ -255,6 +259,7 @@ public class UserAdvertisementController {
     }
 
     // 8. GET MY REJECTED ADS ONLY
+
     /**
      * Get rejected ads posted by the current user (with rejection reason)
      */
@@ -270,39 +275,40 @@ public class UserAdvertisementController {
                     collect(Collectors.toList());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("count",rejectedAds.size());
-            response.put("ads",rejectedAds);
+            response.put("count", rejectedAds.size());
+            response.put("ads", rejectedAds);
 
             return ResponseEntity.ok(response);
-        }catch(RuntimeException e){
-            Map<String,String> error = new HashMap<>();
-            error.put("error",e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
     // 9. GET MY SOLD ADS ONLY
+
     /**
      * Get sold ads posted by the current user
      */
     @GetMapping("/ads/sold")
-    public ResponseEntity<?> getMySoldAds (HttpSession session){
+    public ResponseEntity<?> getMySoldAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-        try{
+        try {
             List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
             List<Advertisement> soldAds = myAds.stream().
-                    filter(ad -> ad.getStatus()== Advertisement.AdStatus.SOLD).
+                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.SOLD).
                     collect(Collectors.toList());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("count",soldAds.size());
-            response.put("ads",soldAds);
+            response.put("count", soldAds.size());
+            response.put("ads", soldAds);
 
             return ResponseEntity.ok(response);
-        }catch(RuntimeException e){
-            Map<String,String> error = new HashMap<>();
-            error.put("error",e.getMessage());
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
@@ -310,33 +316,33 @@ public class UserAdvertisementController {
 
     // 10. GET MY DELETED ADS ONLY
     @GetMapping("/ads/deleted")
-    public ResponseEntity<?> getMyDeletedAds (HttpSession session){
+    public ResponseEntity<?> getMyDeletedAds(HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
-        try{
+        try {
             List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
             List<Advertisement> deletedAds = myAds.stream().
-                    filter(ad -> ad.getStatus()==Advertisement.AdStatus.DELETED).
+                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.DELETED).
                     collect(Collectors.toList());
 
-            Map<String,Object> response = new HashMap<>();
-            response.put("count",deletedAds.size());
-            response.put("ads",deletedAds);
+            Map<String, Object> response = new HashMap<>();
+            response.put("count", deletedAds.size());
+            response.put("ads", deletedAds);
 
             return ResponseEntity.ok(response);
-        }catch (RuntimeException e){
-            Map<String,String> error = new HashMap<>();
-            error.put("error",e.getMessage());
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
     // HELPER METHOD
-    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
+    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
-        error.put("error",message);
+        error.put("error", message);
         error.put("status", String.valueOf(status.value()));
         return ResponseEntity.status(status).body(error);
     }
