@@ -46,6 +46,26 @@ public class Category {
         this.name = name;
         this.parentCategory = parentCategory;
     }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Category getParentCategory() { return parentCategory; }
+    public void setParentCategory(Category parentCategory) { this.parentCategory = parentCategory; }
+
+    public List<Category> getSubCategories() { return subCategories; }
+    public void setSubCategories(List<Category> subCategories) { this.subCategories = subCategories; }
+
+    public List<Advertisement> getAdvertisements() { return advertisements; }
+    public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
+
+
 
     // Helper methods
     public boolean isRoot() {
