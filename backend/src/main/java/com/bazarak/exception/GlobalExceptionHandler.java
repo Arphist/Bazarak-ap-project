@@ -4,6 +4,7 @@ import com.bazarak.exception.city.*;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.category.*;
+import com.bazarak.exception.rating.*;
 import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -189,6 +190,49 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CategoryHasAdvertisementsException.class)
     public ResponseEntity<?> handleCategoryHasAdvertisements(CategoryHasAdvertisementsException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // ============================================
+    // RATING EXCEPTIONS
+    // ============================================
+
+    /**
+     * Handles cases where a rating is not found in the system.
+     * This exception is thrown when trying to retrieve, update, or delete
+     * a rating that does not exist in the database.
+     *
+     * @param ex the RatingNotFoundException containing the error message
+     * @return HTTP 404 NOT_FOUND with error details
+     */
+    @ExceptionHandler(RatingNotFoundException.class)
+    public ResponseEntity<?> handleRatingNotFound(RatingNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a user attempts to rate the same seller for the same advertisement more than once.
+     * This exception is thrown when a buyer tries to submit a duplicate rating,
+     * which violates the unique constraint on (buyer_id, seller_id, advertisement_id).
+     *
+     * @param ex the DuplicateRatingException containing the error message
+     * @return HTTP 409 CONFLICT with error details
+     */
+    @ExceptionHandler(DuplicateRatingException.class)
+    public ResponseEntity<?> handleDuplicateRating(DuplicateRatingException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where an invalid rating value is provided.
+     * This exception is thrown when the rating score is not between 1 and 5,
+     * or when the user tries to rate themselves.
+     *
+     * @param ex the InvalidRatingValueException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
+    @ExceptionHandler(InvalidRatingValueException.class)
+    public ResponseEntity<?> handleInvalidRatingValue(InvalidRatingValueException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
