@@ -27,7 +27,9 @@ public class UserProfileController {
         return ResponseEntity.ok(currentUser);
     }
 
-
+    // 2. UPDATE MY PROFILE
+    @PutMapping("/profile")
+    public ResponseEntity<?> updateMyProfile()
     //todo: add
     //todo @PutMapping("/change-photo") -> changeProfilePhoto
 }
