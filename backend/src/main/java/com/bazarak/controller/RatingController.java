@@ -77,7 +77,50 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.getRatingsByAdvertisement(advertisementId));
     }
 
+    /**
+     * Create a new rating.
+     *
+     * @param request the rating creation request
+     * @param session the HTTP session
+     * @return the created rating
+     */
+    @PostMapping
+    public ResponseEntity<Rating> createRating(
+            @Valid @RequestBody RatingRequest request,
+            HttpSession session) {
 
+        Long buyerId = userService.getCurrentUserOrThrow(session).getId();
+
+        Rating rating = ratingService.createRating(
+                request.getScore(),
+                request.getComment(),
+                buyerId,
+                request.getSellerId(),
+                request.getAdvertisementId()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(rating);
+    }
+
+    /**
+     * Delete a rating (admin only).
+     *
+     * @param id      the rating ID
+     * @param session the HTTP session
+     * @return success message
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteRating(
+            @PathVariable Long id,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        ratingService.deleteRating(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Rating deleted successfully");
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * DTO for rating creation requests.
