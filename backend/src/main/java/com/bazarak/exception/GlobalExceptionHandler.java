@@ -137,29 +137,60 @@ public class GlobalExceptionHandler {
     }
 
     // ============================================
-// CATEGORY EXCEPTIONS
-// ============================================
+    // CATEGORY EXCEPTIONS
+    // ============================================
 
+    /**
+     * Handles cases where a category is not found in the system.
+     * This exception is thrown when trying to retrieve, update, or delete
+     * a category that does not exist in the database.
+     *
+     * @param ex the CategoryNotFoundException containing the error message
+     * @return HTTP 404 NOT_FOUND with error details
+     */
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<?> handleCategoryNotFound(CategoryNotFoundException ex) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    /**
+     * Handles cases where a category name already exists in the system.
+     * This exception is thrown when trying to create or update a category
+     * with a name that is already taken by another category.
+     *
+     * @param ex the CategoryNameAlreadyExistsException containing the error message
+     * @return HTTP 409 CONFLICT with error details
+     */
     @ExceptionHandler(CategoryNameAlreadyExistsException.class)
     public ResponseEntity<?> handleCategoryNameAlreadyExists(CategoryNameAlreadyExistsException ex) {
         return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    /**
+     * Handles cases where a category cannot be deleted because it has sub-categories.
+     * This exception is thrown when trying to delete a parent category that still
+     * contains child categories. The user must delete or re-assign sub-categories first.
+     *
+     * @param ex the CategoryHasSubCategoriesException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
     @ExceptionHandler(CategoryHasSubCategoriesException.class)
     public ResponseEntity<?> handleCategoryHasSubCategories(CategoryHasSubCategoriesException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    /**
+     * Handles cases where a category cannot be deleted because it has associated advertisements.
+     * This exception is thrown when trying to delete a category that is currently being used
+     * by one or more advertisements. The user must re-assign those ads to another category first.
+     *
+     * @param ex the CategoryHasAdvertisementsException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
     @ExceptionHandler(CategoryHasAdvertisementsException.class)
     public ResponseEntity<?> handleCategoryHasAdvertisements(CategoryHasAdvertisementsException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
-
 
 
 
