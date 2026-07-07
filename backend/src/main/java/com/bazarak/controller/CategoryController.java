@@ -76,6 +76,105 @@ public class CategoryController {
     public ResponseEntity<List<Category>> searchCategories(@RequestParam(required = false) String keyword) {
         return ResponseEntity.ok(categoryService.searchCategories(keyword));
     }
+    /**
+     * Creates a new category. Admin only.
+     *
+     * @param request the category creation request DTO
+     * @param session the HTTP session for admin validation
+     * @return the created category
+     */
+    @PostMapping
+    public ResponseEntity<Category> createCategory(
+            @Valid @RequestBody CategoryRequest request,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        Category category = categoryService.createCategory(
+                request.getName(),
+                request.getDescription(),
+                request.getParentId()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(category);
+    }
+
+    /**
+     * Updates an existing category. Admin only.
+     *
+     * @param id      the ID of the category to update
+     * @param request the category update request DTO
+     * @param session the HTTP session for admin validation
+     * @return the updated category
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryRequest request,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        Category category = categoryService.updateCategory(
+                id,
+                request.getName(),
+                request.getDescription(),
+                request.getParentId()
+        );
+        return ResponseEntity.ok(category);
+    }
+
+    /**
+     * Deletes a category by its ID. Admin only.
+     *
+     * @param id      the ID of the category to delete
+     * @param session the HTTP session for admin validation
+     * @return a success message
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteCategory(
+            @PathVariable Long id,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        categoryService.deleteCategory(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Category deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * DTO for category creation and update requests.
+     */
+    public static class CategoryRequest {
+        private String name;
+        private String description;
+        private Long parentId;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public Long getParentId() {
+            return parentId;
+        }
+
+        public void setParentId(Long parentId) {
+            this.parentId = parentId;
+        }
+    }
 
 
 }
