@@ -3,6 +3,8 @@ package com.bazarak.exception;
 import com.bazarak.exception.city.*;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.auth.*;
+import com.bazarak.exception.category.*;
+import com.bazarak.exception.rating.*;
 import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -135,6 +137,104 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    // ============================================
+    // CATEGORY EXCEPTIONS
+    // ============================================
+
+    /**
+     * Handles cases where a category is not found in the system.
+     * This exception is thrown when trying to retrieve, update, or delete
+     * a category that does not exist in the database.
+     *
+     * @param ex the CategoryNotFoundException containing the error message
+     * @return HTTP 404 NOT_FOUND with error details
+     */
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<?> handleCategoryNotFound(CategoryNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a category name already exists in the system.
+     * This exception is thrown when trying to create or update a category
+     * with a name that is already taken by another category.
+     *
+     * @param ex the CategoryNameAlreadyExistsException containing the error message
+     * @return HTTP 409 CONFLICT with error details
+     */
+    @ExceptionHandler(CategoryNameAlreadyExistsException.class)
+    public ResponseEntity<?> handleCategoryNameAlreadyExists(CategoryNameAlreadyExistsException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a category cannot be deleted because it has sub-categories.
+     * This exception is thrown when trying to delete a parent category that still
+     * contains child categories. The user must delete or re-assign sub-categories first.
+     *
+     * @param ex the CategoryHasSubCategoriesException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
+    @ExceptionHandler(CategoryHasSubCategoriesException.class)
+    public ResponseEntity<?> handleCategoryHasSubCategories(CategoryHasSubCategoriesException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a category cannot be deleted because it has associated advertisements.
+     * This exception is thrown when trying to delete a category that is currently being used
+     * by one or more advertisements. The user must re-assign those ads to another category first.
+     *
+     * @param ex the CategoryHasAdvertisementsException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
+    @ExceptionHandler(CategoryHasAdvertisementsException.class)
+    public ResponseEntity<?> handleCategoryHasAdvertisements(CategoryHasAdvertisementsException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // ============================================
+    // RATING EXCEPTIONS
+    // ============================================
+
+    /**
+     * Handles cases where a rating is not found in the system.
+     * This exception is thrown when trying to retrieve, update, or delete
+     * a rating that does not exist in the database.
+     *
+     * @param ex the RatingNotFoundException containing the error message
+     * @return HTTP 404 NOT_FOUND with error details
+     */
+    @ExceptionHandler(RatingNotFoundException.class)
+    public ResponseEntity<?> handleRatingNotFound(RatingNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a user attempts to rate the same seller for the same advertisement more than once.
+     * This exception is thrown when a buyer tries to submit a duplicate rating,
+     * which violates the unique constraint on (buyer_id, seller_id, advertisement_id).
+     *
+     * @param ex the DuplicateRatingException containing the error message
+     * @return HTTP 409 CONFLICT with error details
+     */
+    @ExceptionHandler(DuplicateRatingException.class)
+    public ResponseEntity<?> handleDuplicateRating(DuplicateRatingException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where an invalid rating value is provided.
+     * This exception is thrown when the rating score is not between 1 and 5,
+     * or when the user tries to rate themselves.
+     *
+     * @param ex the InvalidRatingValueException containing the error message
+     * @return HTTP 400 BAD_REQUEST with error details
+     */
+    @ExceptionHandler(InvalidRatingValueException.class)
+    public ResponseEntity<?> handleInvalidRatingValue(InvalidRatingValueException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 
 
 
