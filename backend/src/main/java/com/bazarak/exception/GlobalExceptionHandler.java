@@ -3,6 +3,7 @@ package com.bazarak.exception;
 import com.bazarak.exception.city.*;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.auth.*;
+import com.bazarak.exception.category.*;
 import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,6 +133,30 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CityHasAdvertisementsException.class)
     public ResponseEntity<?> handleCityHasAdvertisements(CityHasAdvertisementsException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // ============================================
+// CATEGORY EXCEPTIONS
+// ============================================
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<?> handleCategoryNotFound(CategoryNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoryNameAlreadyExistsException.class)
+    public ResponseEntity<?> handleCategoryNameAlreadyExists(CategoryNameAlreadyExistsException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoryHasSubCategoriesException.class)
+    public ResponseEntity<?> handleCategoryHasSubCategories(CategoryHasSubCategoriesException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(CategoryHasAdvertisementsException.class)
+    public ResponseEntity<?> handleCategoryHasAdvertisements(CategoryHasAdvertisementsException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
