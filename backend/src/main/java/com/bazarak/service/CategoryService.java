@@ -68,6 +68,75 @@ public class CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException("Category not found with name: " + name));
     }
 
+    // Update category
+    public Category updateCategory(Long id, String name, String description, Long parentId) {
+        Category category = getCategoryById(id);
+
+        // Check if name is being changed and is unique
+        if (name != null && !name.equals(category.getName())) {
+            if (categoryRepository.existsByName(name)) {
+                throw new CategoryNameAlreadyExistsException("Category with name '" + name + "' already exists");
+            }
+            category.setName(name);
+        }
+
+        if (description != null) {
+            category.setDescription(description);
+        }
+
+        // Update parent relationship
+        if (parentId != null) {
+            // Check if parent exists
+            Category parent = categoryRepository.findById(parentId)
+                    .orElseThrow(() -> new CategoryNotFoundException("Parent category not found with id: " + parentId));
+
+            // Prevent circular reference (category cannot be its own parent)
+            if (parentId.equals(id)) {
+                throw new CategoryNameAlreadyExistsException("A category cannot be its own parent");
+            }
+
+            // Prevent circular reference (cannot set parent to a sub-category)
+            if (isAncestor(id, parentId)) {
+                throw new CategoryNameAlreadyExistsException("Cannot set parent to a sub-category (would create circular reference)");
+            }
+
+            category.setParentCategory(parent);
+        } else {
+            category.setParentCategory(null);
+        }
+
+        return categoryRepository.save(category);
+    }
+
+    // Helper method to check if a category is ancestor of another
+    private boolean isAncestor(Long ancestorId, Long categoryId) {
+        Category current = getCategoryById(categoryId);
+        while (current.getParentCategory() != null) {
+            if (current.getParentCategory().getId().equals(ancestorId)) {
+                return true;
+            }
+            current = current.getParentCategory();
+        }
+        return false;
+    }
+
+    // Delete category
+    public void deleteCategory(Long id) {
+        Category category = getCategoryById(id);
+
+        // Check if category has sub-categories
+        if (category.hasSubCategories()) {
+            throw new CategoryHasSubCategoriesException("Cannot delete category with sub-categories. Delete sub-categories first.");
+        }
+
+        // Check if category has advertisements
+        if (!category.getAdvertisements().isEmpty()) {
+            throw new CategoryHasAdvertisementsException("Cannot delete category with advertisements. Re-assign them first.");
+        }
+
+        categoryRepository.delete(category);
+    }
+
 
 
     // Search categories
