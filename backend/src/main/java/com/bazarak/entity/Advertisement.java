@@ -123,10 +123,6 @@ public class Advertisement {
         return this.status == AdStatus.DELETED;
     }
 
-    public boolean isEditable() {
-        return this.status == AdStatus.PENDING || this.status == AdStatus.ACCEPTED;
-    }
-
     // GETTERS & SETTERS
 
     public Long getId() {
