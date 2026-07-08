@@ -1,8 +1,9 @@
 package com.bazarak.controller;
 
-import com.bazarak.entity.Advertisement;
-import com.bazarak.entity.User;
+import com.bazarak.entity.*;
 import com.bazarak.service.AdvertisementService;
+import com.bazarak.service.CategoryService;
+import com.bazarak.service.CityService;
 import com.bazarak.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -11,11 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ads")
@@ -26,6 +25,10 @@ public class AdvertisementController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CityService cityService;
+    @Autowired
+    private CategoryService categoryService;
 
     // GET ALL ACTIVE ADS (Public)
 
@@ -77,11 +80,8 @@ public class AdvertisementController {
             ad.setDescription(request.getDescription());
             ad.setPrice(request.getPrice());
 
-            //todo
-            // Set category and city (we'll need to fetch them from database)
-            // For now, we'll just set the IDs
 
-            Advertisement createdAd = advertisementService.createAd(ad, currentUser.getId());
+            Advertisement createdAd = advertisementService.createAd(ad, currentUser.getId(), request.getCityId(),request.getCategoryId());
 
             // 4. Return response
             Map<String, Object> response = new HashMap<>();
@@ -121,10 +121,15 @@ public class AdvertisementController {
 
             // 4. Update fields
             Advertisement updatedAd = new Advertisement();
+            City city = cityService.getCityById(request.getCityId());
+            Category category = categoryService.getCategoryById(request.getCategoryId());
+
+            //UPDATING FIELDS
             updatedAd.setTitle(request.getTitle());
             updatedAd.setDescription(request.getDescription());
             updatedAd.setPrice(request.getPrice());
-            //todo: add city, category and other fields
+            updatedAd.setCity(city);
+            updatedAd.setCategory(category);
 
             Advertisement savedAd = advertisementService.updateAd(id, updatedAd, currentUser.getId());
 
