@@ -342,6 +342,14 @@ public class AdvertisementService {
         return adRepository.save(ad);
     }
 
+    // CHECK METHOD
+
+    public boolean isAdApproved (Long adId){
+        Advertisement ad = adRepository.findById(adId)
+                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with ID: " + adId));
+        return ad.isActive();
+    }
+
     // STATISTICS
 
     public long getActiveAdCount() {
