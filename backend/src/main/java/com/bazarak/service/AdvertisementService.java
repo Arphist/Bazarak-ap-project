@@ -344,11 +344,7 @@ public class AdvertisementService {
 
     // CHECK METHOD
 
-    public boolean isAdApproved (Long adId){
-        Advertisement ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with ID: " + adId));
-        return ad.isActive();
-    }
+
 
     // STATISTICS
 
