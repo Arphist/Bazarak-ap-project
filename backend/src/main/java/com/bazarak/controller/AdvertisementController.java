@@ -59,7 +59,7 @@ public class AdvertisementController {
      * Create a new advertisement
      */
     @PostMapping
-    public ResponseEntity<?> createAd(@Valid @RequestBody CreateAdRequest request, HttpSession session) {
+    public ResponseEntity<?> createAd(@Valid @RequestBody AdRequest request, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
 
@@ -104,7 +104,7 @@ public class AdvertisementController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAd(@PathVariable Long id,
-                                      @Valid @RequestBody UpdateAdRequest request,
+                                      @Valid @RequestBody AdRequest request,
                                       HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
@@ -272,7 +272,7 @@ public class AdvertisementController {
     /**
      * Create Ad Request DTO (Data Transfer Object)
      */
-    public static class CreateAdRequest {
+    public static class AdRequest {
         private String title;
         private String description;
         private Long price;
@@ -292,26 +292,4 @@ public class AdvertisementController {
         public void setCityId(Long cityId) { this.cityId = cityId; }
     }
 
-    /**
-     * Update Ad Request DTO
-     */
-    public static class UpdateAdRequest {
-        private String title;
-        private String description;
-        private Long price;
-        private Long categoryId;
-        private Long cityId;
-
-        // Getters and Setters
-        public String getTitle() { return title; }
-        public void setTitle(String title) { this.title = title; }
-        public String getDescription() { return description; }
-        public void setDescription(String description) { this.description = description; }
-        public Long getPrice() { return price; }
-        public void setPrice(Long price) { this.price = price; }
-        public Long getCategoryId() { return categoryId; }
-        public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
-        public Long getCityId() { return cityId; }
-        public void setCityId(Long cityId) { this.cityId = cityId; }
-    }
 }
