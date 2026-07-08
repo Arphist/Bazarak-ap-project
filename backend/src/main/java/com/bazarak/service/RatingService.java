@@ -34,10 +34,10 @@ public class RatingService {
      * @param comment        optional comment
      * @param buyerId        ID of the buyer giving the rating
      * @param sellerId       ID of the seller receiving the rating
-     * @param advertisementId ID of the advertisement
+     * @param advertisement  the advertisement
      * @return the created rating
      */
-    public Rating createRating(Integer score, String comment, Long buyerId, Long sellerId, Long advertisementId) {
+    public Rating createRating(Integer score, String comment, Long buyerId, Long sellerId,Advertisement advertisement) {
         // 1. Validate score
         if (score == null || score < 1 || score > 5) {
             throw new InvalidRatingValueException("Rating must be between 1 and 5");
@@ -46,7 +46,6 @@ public class RatingService {
         // 2. Get buyer, seller, and advertisement
         User buyer = userService.getUserById(buyerId);
         User seller = userService.getUserById(sellerId);
-        Advertisement advertisement = advertisementService.findById(advertisementId);
 
         // 3. Check if buyer is trying to rate themselves
         if (buyerId.equals(sellerId)) {
@@ -68,7 +67,7 @@ public class RatingService {
         }
 
         // 6. Check if buyer already rated this seller for this advertisement
-        if (ratingRepository.existsByBuyerIdAndSellerIdAndAdvertisementId(buyerId, sellerId, advertisementId)) {
+        if (ratingRepository.existsByBuyerIdAndSellerIdAndAdvertisementId(buyerId, sellerId, advertisement.getId())) {
             throw new DuplicateRatingException("You have already rated this seller for this advertisement");
         }
 
@@ -77,7 +76,7 @@ public class RatingService {
         Rating savedRating = ratingRepository.save(rating);
 
         // 8. Update advertisement's average rating
-        advertisementService.updateRating(advertisementId, score);
+        advertisementService.updateRating(advertisement, score);
 
         return savedRating;
     }
