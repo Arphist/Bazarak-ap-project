@@ -60,4 +60,28 @@ public class Conversation {
         this.advertisement = advertisement;
     }
 
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public User getBuyer() { return buyer; }
+    public void setBuyer(User buyer) { this.buyer = buyer; }
+
+    public User getSeller() { return seller; }
+    public void setSeller(User seller) { this.seller = seller; }
+
+    public Advertisement getAdvertisement() { return advertisement; }
+    public void setAdvertisement(Advertisement advertisement) { this.advertisement = advertisement; }
+
+    public List<Message> getMessages() { return messages; }
+    public void setMessages(List<Message> messages) { this.messages = messages; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+
+
 }
