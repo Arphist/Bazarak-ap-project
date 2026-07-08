@@ -1,5 +1,6 @@
 package com.bazarak.service;
 
+import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.User;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.user.*;
@@ -115,6 +116,11 @@ public class UserService {
 
 
     // FIND METHODS
+
+    /**
+     * Find All Banned users
+     */
+    public List<User> findAllBlockedUsers (){return userRepository.findAllBannedUsers();}
 
     /**
      * Find user by ID (returns Optional)
