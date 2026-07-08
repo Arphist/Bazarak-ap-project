@@ -81,6 +81,36 @@ public class Conversation {
 
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    // Helper Methods
+    public boolean isParticipant(Long userId) {
+        return buyer.getId().equals(userId) || seller.getId().equals(userId);
+    }
+
+    public User getOtherParticipant(Long userId) {
+        if (buyer.getId().equals(userId)) {
+            return seller;
+        } else if (seller.getId().equals(userId)) {
+            return buyer;
+        }
+        return null;
+    }
+
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setConversation(this);
+    }
+
+    public void removeMessage(Message message) {
+        messages.remove(message);
+        message.setConversation(null);
+    }
+
+    public Message getLatestMessage() {
+        if (messages == null || messages.isEmpty()) {
+            return null;
+        }
+        return messages.get(messages.size() - 1);
+    }
 
 
 
