@@ -1,8 +1,7 @@
 package com.bazarak.service;
 
-import com.bazarak.entity.Advertisement;
+import com.bazarak.entity.*;
 import com.bazarak.entity.Advertisement.AdStatus;
-import com.bazarak.entity.User;
 import com.bazarak.exception.auth.UnauthorizedAccessException;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.advertisement.*;
@@ -25,6 +24,10 @@ public class AdvertisementService {
 
     @Autowired
     private UserService userService;
+ @Autowired
+    private CategoryService categoryService;
+ @Autowired
+    private CityService cityService;
 
     // CREATE ADVERTISEMENT
 
@@ -33,7 +36,7 @@ public class AdvertisementService {
      * Status is set to PENDING (waiting for admin approval)
      */
     @Transactional
-    public Advertisement createAd(Advertisement ad, Long ownerId) {
+    public Advertisement createAd(Advertisement ad, Long ownerId,Long cityId, Long categoryId) {
         // 1. Get the owner
         User owner = userService.findById(ownerId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + ownerId));
@@ -43,7 +46,13 @@ public class AdvertisementService {
             throw new UserBlockedException("Your account is blocked. You cannot post ads.");
         }
 
+
         // 3. Set owner and default values
+        Category category = categoryService.getCategoryById(categoryId);
+        City city = cityService.getCityById(cityId);
+
+        ad.setCategory(category);
+        ad.setCity(city);
         ad.setOwner(owner);
         ad.setStatus(AdStatus.PENDING);
         ad.setCreatedAt(LocalDateTime.now());
