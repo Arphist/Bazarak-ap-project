@@ -123,6 +123,11 @@ public class UserService {
     public List<User> findAllBlockedUsers (){return userRepository.findAllBannedUsers();}
 
     /**
+     * Find All users who are not admin
+     */
+    public List<User> findAllUsersButAdmins (){return userRepository.findAllUsersButAdmins();}
+
+    /**
      * Find user by ID (returns Optional)
      */
     public Optional<User> findById(Long id) {
