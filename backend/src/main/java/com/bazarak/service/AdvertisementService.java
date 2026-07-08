@@ -300,9 +300,7 @@ public class AdvertisementService {
      * Mark advertisement as sold (owner only)
      */
     @Transactional
-    public Advertisement markAsSold(Long adId, Long ownerId) {
-        Advertisement ad = findById(adId);
-
+    public Advertisement markAsSold(Advertisement ad, Long ownerId) {
         // Check ownership
         if (!ad.getOwner().getId().equals(ownerId)) {
             throw new UnauthorizedAccessException("You don't own this advertisement");
