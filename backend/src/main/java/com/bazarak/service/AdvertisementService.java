@@ -282,9 +282,7 @@ public class AdvertisementService {
      * Soft delete advertisement (owner)
      */
     @Transactional
-    public Advertisement deleteAd(Long adId, Long ownerId) {
-        Advertisement ad = findById(adId);
-
+    public Advertisement deleteAd(Advertisement ad, Long ownerId) {
         // Check ownership
         if (!ad.getOwner().getId().equals(ownerId)) {
             throw new UnauthorizedAccessException("You don't own this advertisement");
@@ -327,8 +325,7 @@ public class AdvertisementService {
      * Update ad rating (called when a user rates an ad)
      */
     @Transactional
-    public Advertisement updateRating(Long adId, int newRating) {
-        Advertisement ad = findById(adId);
+    public Advertisement updateRating(Advertisement ad, int newRating) {
 
         // Calculate new average
         int currentCount = ad.getRatingCount();
