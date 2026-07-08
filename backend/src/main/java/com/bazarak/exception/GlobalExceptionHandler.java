@@ -2,6 +2,7 @@ package com.bazarak.exception;
 
 import com.bazarak.exception.city.*;
 import com.bazarak.exception.user.*;
+import com.bazarak.exception.favorite.*;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.category.*;
 import com.bazarak.exception.rating.*;
@@ -356,6 +357,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInvalidOperation(InvalidOperationException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
+
+    /**
+     * Check if user can operate the favorite-task.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> FORBIDDEN
+     */
+    @ExceptionHandler(InvalidFavoriteOperationException.class)
+    public ResponseEntity<?> handleInvalidFavoriteOperation(InvalidFavoriteOperationException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
 
     /**
      * Check if the entered price is positive.
