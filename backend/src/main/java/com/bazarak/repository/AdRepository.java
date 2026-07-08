@@ -25,6 +25,11 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     List<Advertisement> findByStatus(AdStatus status);
 
     /**
+     * Find ad by ID
+     */
+    Optional<Advertisement> findById(Long id);
+
+    /**
      * Find all active ads (visible to everyone)
      */
     List<Advertisement> findByStatusOrderByCreatedAtDesc(AdStatus status);
