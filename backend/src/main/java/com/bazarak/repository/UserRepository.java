@@ -59,6 +59,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllActiveUsers();
 
     /**
+     * Find all users but admins
+     */
+    @Query("SELECT u FROM User u WHERE u.role != 'ADMIN'")
+    List<User> findAllUsersButAdmins();
+
+    /**
      * Find all banned users
      */
     @Query("SELECT u FROM User u WHERE u.status = 'BANNED'")
