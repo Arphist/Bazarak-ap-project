@@ -1,6 +1,8 @@
 package com.bazarak.controller;
 
+import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.Rating;
+import com.bazarak.service.AdvertisementService;
 import com.bazarak.service.RatingService;
 import com.bazarak.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -23,6 +25,9 @@ public class RatingController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AdvertisementService advertisementService;
 
     /**
      * Get all ratings for a seller.
@@ -88,6 +93,10 @@ public class RatingController {
     public ResponseEntity<Rating> createRating(
             @Valid @RequestBody RatingRequest request,
             HttpSession session) {
+        Advertisement ad = advertisementService.findById(request.getAdvertisementId());
+        advertisementService.checkAdDeleted(ad);
+        advertisementService.checkAdRejected(ad);
+        advertisementService.checkAdPending(ad);
 
         Long buyerId = userService.getCurrentUserOrThrow(session).getId();
 
@@ -96,7 +105,7 @@ public class RatingController {
                 request.getComment(),
                 buyerId,
                 request.getSellerId(),
-                request.getAdvertisementId()
+                ad
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(rating);
