@@ -111,6 +111,9 @@ public class AdvertisementController {
         try {
             // 2. Get existing ad
             Advertisement existingAd = advertisementService.findById(id);
+            advertisementService.checkAdDeleted(existingAd);
+            advertisementService.checkAdRejected(existingAd);
+            advertisementService.checkAdSold(existingAd);
 
             // 3. Check ownership
             if (!existingAd.getOwner().getId().equals(currentUser.getId())) {
@@ -157,8 +160,11 @@ public class AdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
 
         try {
+            Advertisement ad = advertisementService.findById(id);
+            advertisementService.checkAdDeleted(ad);
+
             // 2. Check ownership and delete
-            advertisementService.deleteAd(id, currentUser.getId());
+            advertisementService.deleteAd(ad, currentUser.getId());
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Ad deleted successfully");
