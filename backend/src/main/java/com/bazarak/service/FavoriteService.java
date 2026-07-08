@@ -13,4 +13,35 @@ import java.util.List;
 
 @Service
 public class FavoriteService {
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AdvertisementService advertisementService;
+
+    /**
+     * Add an ad to user's favorites
+     */
+    @Transactional
+    public Favorite addToFavorite(User user, Advertisement ad) {
+        if (!favoriteRepository.existsByUserAndAdvertisement(user, ad)) {
+            throw new InvalidOperationException("This ad is already in your favorites");
+        }
+        // Create and save favorite
+        Favorite favorite = new Favorite(user, ad);
+        return favoriteRepository.save(favorite);
+    }
+
+    /**
+     * Remove an ad from user's favorites
+     */
+    @Transactional
+    public void removeFromFavorite(User user,Advertisement ad){
+        if (!favoriteRepository.existsByUserAndAdvertisement(user,ad)){
+            throw new InvalidOperationException("This ad isn't available in your favorites");
+        }
+
+        favoriteRepository.deleteByUserAndAd(user,ad);
+    }
 }
