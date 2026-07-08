@@ -344,19 +344,13 @@ public class AdvertisementService {
 
     // CHECK METHOD
 
-    public void checkAdDeleted (Long adId){
-        Advertisement ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with ID: " + adId));
+    public void checkAdDeleted (Advertisement ad){
         if(ad.isDeleted()) throw new InvalidOperationException("The operation failed: The advertisement is deleted");
     }
-    public void checkAdPending (Long adId){
-        Advertisement ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with ID: " + adId));
+    public void checkAdPending (Advertisement ad){
         if(ad.isPending()) throw new InvalidOperationException("The operation failed: The advertisement hasn't been approved yet");
     }
-    public void checkAdRejected (Long adId){
-        Advertisement ad = adRepository.findById(adId)
-                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with ID: " + adId));
+    public void checkAdRejected (Advertisement ad){
         if(ad.isRejected()) throw new InvalidOperationException("The operation failed: The advertisement is rejected");
     }
 
