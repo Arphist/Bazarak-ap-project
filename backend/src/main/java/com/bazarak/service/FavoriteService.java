@@ -44,4 +44,21 @@ public class FavoriteService {
 
         favoriteRepository.deleteByUserAndAd(user,ad);
     }
+
+    /**
+     * Get all favorites for a user with ad details
+     */
+    public List<Favorite> getUserFavorites(User user){
+        return favoriteRepository.findByUserWithAdDetails(user);
+    }
+
+    /**
+     * Get all favorite ads for a user (as Ad objects)
+     */
+    public List<Advertisement> getUserFavoriteAds(Long userId) {
+        User user = userService.getUserById(userId);
+        return favoriteRepository.findByUserWithAdDetails(user).stream()
+                .map(Favorite::getAdvertisement)
+                .toList();
+    }
 }
