@@ -34,10 +34,7 @@ public class AdminUserController {
         userService.checkAdmin(session);
 
         try {
-            List<User> allUsers = userService.findAllUsers();
-            List<User> onlyUsers = allUsers.stream().
-                    filter(u -> u.getRole() == User.Role.USER).
-                    collect(Collectors.toList());
+            List<User> onlyUsers = userService.findAllUsersButAdmins();
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", onlyUsers.size());
@@ -130,10 +127,8 @@ public class AdminUserController {
         userService.checkAdmin(session);
 
         try {
-            List<User> allUsers = userService.findAllUsers();
-            List<User> blockedUsers = allUsers.stream().
-                    filter(u -> u.getStatus() == User.UserStatus.BANNED).
-                    collect(Collectors.toList());
+
+            List<User> blockedUsers = userService.findAllBlockedUsers();
 
             Map<String, Object> response = new HashMap<>();
             response.put("count", blockedUsers.size());
