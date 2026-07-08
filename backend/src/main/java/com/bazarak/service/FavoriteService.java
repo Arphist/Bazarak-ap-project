@@ -45,6 +45,8 @@ public class FavoriteService {
         favoriteRepository.deleteByUserAndAd(user,ad);
     }
 
+    // GETTER METHOD
+
     /**
      * Get all favorites for a user with ad details
      */
@@ -61,4 +63,29 @@ public class FavoriteService {
                 .map(Favorite::getAdvertisement)
                 .toList();
     }
+
+    /**
+     * Get count of favorites for an ad
+     */
+    public long getFavoriteCount(Advertisement ad) {
+        return favoriteRepository.countByAdvertisement(ad);
+    }
+
+    /**
+     * Get count of favorites for a user
+     */
+    public long getUserFavoriteCount(User user) {
+        return favoriteRepository.countByUser(user);
+    }
+
+    // CHECK METHOD
+
+    /**
+     * Check if a user has favorited an ad
+     */
+    public boolean isFavorited(User user, Advertisement ad) {
+        return favoriteRepository.existsByUserAndAdvertisement(user, ad);
+    }
+
+
 }
