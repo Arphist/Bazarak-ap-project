@@ -108,7 +108,6 @@ public class AdvertisementController {
                                       HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
-
         try {
             // 2. Get existing ad
             Advertisement existingAd = advertisementService.findById(id);
@@ -177,12 +176,16 @@ public class AdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
 
         try {
-            Advertisement ad = advertisementService.markAsSold(id, currentUser.getId());
+            Advertisement advertisement = advertisementService.findById(id);
+            advertisementService.checkAdRejected(advertisement);
+            advertisementService.checkAdDeleted(advertisement);
+            advertisementService.checkAdPending(advertisement);
+            Advertisement result = advertisementService.markAsSold(advertisement, currentUser.getId());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("id", ad.getId());
-            response.put("title", ad.getTitle());
-            response.put("status", ad.getStatus());
+            response.put("id", result.getId());
+            response.put("title", result.getTitle());
+            response.put("status", result.getStatus());
             response.put("message", "Ad marked as sold successfully");
 
             return ResponseEntity.ok(response);
