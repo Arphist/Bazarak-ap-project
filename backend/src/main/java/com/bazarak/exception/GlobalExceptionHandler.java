@@ -5,6 +5,7 @@ import com.bazarak.exception.user.*;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.category.*;
 import com.bazarak.exception.rating.*;
+import com.bazarak.exception.conversation.*;
 import com.bazarak.exception.advertisement.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -234,6 +235,49 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidRatingValueException.class)
     public ResponseEntity<?> handleInvalidRatingValue(InvalidRatingValueException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // ============================================
+    // CONVERSATION EXCEPTIONS
+    // ============================================
+
+    /**
+     * Handles cases where a conversation is not found in the system.
+     * This exception is thrown when trying to retrieve, update, or delete
+     * a conversation that does not exist in the database.
+     *
+     * @param ex the ConversationNotFoundException containing the error message
+     * @return HTTP 404 NOT_FOUND with error details
+     */
+    @ExceptionHandler(ConversationNotFoundException.class)
+    public ResponseEntity<?> handleConversationNotFound(ConversationNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a user attempts to create a duplicate conversation.
+     * This exception is thrown when a buyer tries to start a conversation with the same seller
+     * for the same advertisement, which violates the unique constraint.
+     *
+     * @param ex the DuplicateConversationException containing the error message
+     * @return HTTP 409 CONFLICT with error details
+     */
+    @ExceptionHandler(DuplicateConversationException.class)
+    public ResponseEntity<?> handleDuplicateConversation(DuplicateConversationException ex) {
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    /**
+     * Handles cases where a user is not a participant in a conversation.
+     * This exception is thrown when a user tries to access, send messages to, or
+     * perform any operation on a conversation they are not part of.
+     *
+     * @param ex the NotParticipantException containing the error message
+     * @return HTTP 403 FORBIDDEN with error details
+     */
+    @ExceptionHandler(NotParticipantException.class)
+    public ResponseEntity<?> handleNotParticipant(NotParticipantException ex) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
 
