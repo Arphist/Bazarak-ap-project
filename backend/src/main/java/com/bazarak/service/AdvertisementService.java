@@ -205,11 +205,6 @@ public class AdvertisementService {
             throw new UnauthorizedAccessException("You don't own this advertisement");
         }
 
-        // 3. Check if ad is editable
-        if (!existingAd.isEditable()) {
-            throw new InvalidOperationException("This advertisement cannot be edited (status: " + existingAd.getStatus() + ")");
-        }
-
         // 4. Update fields
         if (updatedAd.getTitle() != null) {
             existingAd.setTitle(updatedAd.getTitle());
@@ -359,6 +354,9 @@ public class AdvertisementService {
     }
     public void checkAdRejected (Advertisement ad){
         if(ad.isRejected()) throw new InvalidOperationException("The operation failed: The advertisement is rejected");
+    }
+    public void checkAdSold (Advertisement ad){
+        if(ad.isSold()) throw new InvalidOperationException("The operation failed: The advertisement is sold");
     }
 
     // STATISTICS
