@@ -24,6 +24,9 @@ public class FavoriteController {
     private AdvertisementService advertisementService;
 
     // 1. ADD TO FAVORITE
+    /**
+     * Add an ad to user's favorites
+     */
     @PostMapping("/{adId")
     public ResponseEntity<?> addFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
@@ -44,6 +47,9 @@ public class FavoriteController {
     }
 
     // 2. REMOVE FROM FAVORITES
+    /**
+     * Remove an ad from user's favorites
+     */
     @DeleteMapping("/{adId}")
     public ResponseEntity<?> removeFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
@@ -62,6 +68,9 @@ public class FavoriteController {
     }
 
     // 3. GET MY FAVORITES
+    /**
+     * Get all favorites for the current user
+     */
     @GetMapping
     public ResponseEntity<?> getMyFavorite(HttpSession session){
         User user = userService.getCurrentUserOrThrow(session);
@@ -75,6 +84,26 @@ public class FavoriteController {
             return ResponseEntity.ok(response);
         }catch (RuntimeException e){
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        }
+    }
+
+    // 4. CHECK IF FAVORITED
+    /**
+     * Check if the current user has favorited a specific ad
+     */
+    @GetMapping("/check/{adId}")
+    public ResponseEntity<?> isFavorited(@PathVariable Long adId, HttpSession session){
+        User user = userService.getCurrentUserOrThrow(session);
+        Advertisement ad = advertisementService.findById(adId);
+        try{
+            boolean isFavorited = favoriteService.isFavorited(user,ad);
+            Map<String,Object> response = new HashMap<>();
+            response.put("ad_title",ad.getTitle());
+            response.put("favorited",isFavorited);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
 
