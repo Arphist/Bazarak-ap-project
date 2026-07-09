@@ -107,6 +107,26 @@ public class FavoriteController {
         }
     }
 
+    // 5. GET FAVORITE COUNT FOR AD
+    /**
+     * Get the number of favorites for a specific ad
+     */
+    @GetMapping("/count/{adId}")
+    public ResponseEntity<?> getFavoriteCount (@PathVariable Long adId){
+        try{
+            Advertisement ad = advertisementService.findById(adId);
+            long count = favoriteService.getFavoriteCount(ad);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ad_title",ad.getTitle());
+            response.put("favoriteCount", count);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return buildErrorResponse(HttpStatus.NOT_FOUND,e.getMessage());
+        }
+    }
+
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status,String message){
         Map<String,String> error = new HashMap<>();
