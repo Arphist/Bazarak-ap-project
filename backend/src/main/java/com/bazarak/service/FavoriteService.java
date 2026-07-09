@@ -30,6 +30,7 @@ public class FavoriteService {
         }
         // Create and save favorite
         Favorite favorite = new Favorite(user, ad);
+        ad.setFavoriteCount(ad.getFavoriteCount()+1);
         return favoriteRepository.save(favorite);
     }
 
@@ -41,7 +42,7 @@ public class FavoriteService {
         if (!favoriteRepository.existsByUserAndAdvertisement(user,ad)){
             throw new InvalidFavoriteOperationException("This ad isn't available in your favorites");
         }
-
+        ad.setFavoriteCount(ad.getFavoriteCount()-1);
         favoriteRepository.deleteByUserAndAd(user,ad);
     }
 
