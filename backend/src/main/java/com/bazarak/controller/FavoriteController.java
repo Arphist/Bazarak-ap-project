@@ -1,9 +1,7 @@
 package com.bazarak.controller;
 
-import com.bazarak.entity.Favorite;
-import com.bazarak.entity.User;
-import com.bazarak.service.FavoriteService;
-import com.bazarak.service.UserService;
+import com.bazarak.entity.*;
+import com.bazarak.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,4 +15,31 @@ import java.util.Map;
 @RestController
 @RequestMapping("/favorites")
 public class FavoriteController {
+    @Autowired
+    private FavoriteService favoriteService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private AdvertisementService advertisementService;
+
+    // 1. ADD TO FAVORITE
+
+    @PostMapping("/{adId")
+    public ResponseEntity<?> addFavorite(@PathVariable Long adId, HttpSession session){
+        Advertisement ad = advertisementService.findById(adId);
+        User user = userService.getCurrentUserOrThrow(session);
+
+        try {
+            Favorite favorite = favoriteService.addToFavorite(user,ad);
+
+            Map<String,Object> response = new HashMap<>();
+            response.put("id",favorite.getId());
+            response.put("ad_title",ad.getTitle());
+            response.put("message","Ad added to favorites successfully");
+
+            return ResponseEntity.ok(response);
+        }catch(RuntimeException e){
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+    }
 }
