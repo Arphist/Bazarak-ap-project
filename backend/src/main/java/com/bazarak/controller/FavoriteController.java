@@ -42,4 +42,12 @@ public class FavoriteController {
             return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
         }
     }
+
+    // HELPER METHOD
+    private ResponseEntity<?> buildErrorResponse(HttpStatus status,String message){
+        Map<String,String> error = new HashMap<>();
+        error.put("error",message);
+        error.put("status",String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
+    }
 }
