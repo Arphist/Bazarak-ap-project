@@ -28,7 +28,7 @@ public class Image {
     private String contentType;
 
     @Column(name="display_order")
-    private Integer displayOrder = 0;   // For ordering images
+    private Long displayOrder = 0L;   // For ordering images
 
     @Column(name = "is_primary")
     private boolean isPrimary = false;  // Main image for ad
@@ -93,11 +93,11 @@ public class Image {
         this.contentType = contentType;
     }
 
-    public Integer getDisplayOrder() {
+    public Long getDisplayOrder() {
         return displayOrder;
     }
 
-    public void setDisplayOrder(Integer displayOrder) {
+    public void setDisplayOrder(Long displayOrder) {
         this.displayOrder = displayOrder;
     }
 
