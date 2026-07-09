@@ -59,6 +59,33 @@ public class UserProfileController {
         }
     }
 
+    // 3. CHANGE PASSWORD
+    /**
+     * Change the current user's password
+     */
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
+                                            HttpSession session) {
+        User currentUser = userService.getCurrentUserOrThrow(session);
+
+        try {
+            // Verify old password
+            if (!currentUser.getPassword().equals(request.getOldPassword())) {
+                return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+            }
+
+            // Update password
+            currentUser.setPassword(request.getNewPassword());
+            userService.updateUser(currentUser, currentUser);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Password changed successfully");
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
     // INNER CLASSES (DTOs)
 
@@ -76,6 +103,16 @@ public class UserProfileController {
         public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     }
 
+    public static class ChangePasswordRequest {
+        private String oldPassword;
+        private String newPassword;
+
+        // Getters and Setters
+        public String getOldPassword() { return oldPassword; }
+        public void setOldPassword(String oldPassword) { this.oldPassword = oldPassword; }
+        public String getNewPassword() { return newPassword; }
+        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
 
     // HELPER METHOD
 
