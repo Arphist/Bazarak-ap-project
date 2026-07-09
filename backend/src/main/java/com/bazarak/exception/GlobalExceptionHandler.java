@@ -380,12 +380,23 @@ public class GlobalExceptionHandler {
     /**
      * Check if user can operate the image-task.
      * @param ex spring class to handle errors
-     * @return HTTP-status -> FORBIDDEN
+     * @return HTTP-status -> BAD_REQUEST
      */
     @ExceptionHandler(InvalidImageOperationException.class)
     public ResponseEntity<?> handleInvalidImageOperation(InvalidImageOperationException ex) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
+
+    /**
+     * Check if file exists or it is empty.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> NOT_FOUND
+     */
+    @ExceptionHandler(FileIsEmptyException.class)
+    public ResponseEntity<?> handleFileIsEmptyException(FileIsEmptyException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
 
     // HELPER METHOD
     /**
