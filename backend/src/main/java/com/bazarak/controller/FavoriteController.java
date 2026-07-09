@@ -3,6 +3,7 @@ package com.bazarak.controller;
 import com.bazarak.entity.*;
 import com.bazarak.service.*;
 import jakarta.servlet.http.HttpSession;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ public class FavoriteController {
     private AdvertisementService advertisementService;
 
     // 1. ADD TO FAVORITE
-
     @PostMapping("/{adId")
     public ResponseEntity<?> addFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
@@ -43,6 +43,7 @@ public class FavoriteController {
         }
     }
 
+    // 2. REMOVE FROM FAVORITES
     @DeleteMapping("/{adId}")
     public ResponseEntity<?> removeFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
@@ -60,6 +61,22 @@ public class FavoriteController {
         }
     }
 
+    // 3. GET MY FAVORITES
+    @GetMapping
+    public ResponseEntity<?> getMyFavorite(HttpSession session){
+        User user = userService.getCurrentUserOrThrow(session);
+        try{
+            List<Favorite> myFavorites = favoriteService.getUserFavorites(user);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("count",myFavorites.size());
+            response.put("favorites",myFavorites);
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        }
+    }
 
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status,String message){
