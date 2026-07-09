@@ -34,10 +34,6 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
      */
     List<Advertisement> findByOwner(User owner);
 
-    /**
-     * Find ads by owner and status
-     */
-    List<Advertisement> findByOwnerAndStatus(User owner, AdStatus status);
 
     /**
      * Find ads by category
@@ -167,7 +163,7 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     /**
      * Get total number of active ads
      */
-    @Query(value = "SELECT COUNT(*) FROM ads WHERE status = 'ACTIVE'", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) FROM ads WHERE status = 'ACCEPTED'", nativeQuery = true)
     long countActiveAds();
 
     /**
@@ -211,6 +207,70 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     /**
      * Get ads that have been active for the longest time
      */
-    @Query("SELECT a FROM Advertisement a WHERE a.status = 'ACTIVE' ORDER BY a.approvedAt ASC")
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'ACCEPTED' ORDER BY a.approvedAt ASC")
     List<Advertisement> findOldestActiveAds();
+
+    /**
+     * Find active ads for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'ACCEPTED' AND a.owner.id = :userId")
+    List<Advertisement> findActiveAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find pending ads for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'PENDING' AND a.owner.id = :userId")
+    List<Advertisement> findPendingAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find rejected ads for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'REJECTED' AND a.owner.id = :userId")
+    List<Advertisement> findRejectedAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find sold ads for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'SOLD' AND a.owner.id = :userId")
+    List<Advertisement> findSoldAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find deleted ads for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = 'DELETED' AND a.owner.id = :userId")
+    List<Advertisement> findDeletedAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find recent ads for a specific user (ordered by createdAt descending)
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.owner.id = :userId ORDER BY a.createdAt DESC")
+    List<Advertisement> findRecentAdsByOwnerId(@Param("userId") Long userId);
+
+    /**
+     * Find ads by status for a specific user
+     */
+    @Query("SELECT a FROM Advertisement a WHERE a.status = :status AND a.owner.id = :userId")
+    List<Advertisement> findAdsByStatusAndOwnerId(@Param("status") AdStatus status,
+                                                  @Param("userId") Long userId);
+    /**
+     * Find all ads for a user with owner details loaded
+     */
+    @Query("SELECT a FROM Advertisement a " +
+            "LEFT JOIN FETCH a.owner " +
+            "LEFT JOIN FETCH a.category " +
+            "LEFT JOIN FETCH a.city " +
+            "WHERE a.owner.id = :userId " +
+            "ORDER BY a.createdAt DESC")
+    List<Advertisement> findAdsByOwnerIdWithDetails(@Param("userId") Long userId);
+
+    /**
+     * Find active ads for a user with details loaded
+     */
+    @Query("SELECT a FROM Advertisement a " +
+            "LEFT JOIN FETCH a.owner " +
+            "LEFT JOIN FETCH a.category " +
+            "LEFT JOIN FETCH a.city " +
+            "WHERE a.status = 'ACCEPTED' AND a.owner.id = :userId " +
+            "ORDER BY a.createdAt DESC")
+    List<Advertisement> findActiveAdsByOwnerIdWithDetails(@Param("userId") Long userId);
 }
