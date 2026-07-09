@@ -39,6 +39,10 @@ public class Advertisement {
     @Column(nullable = false)
     private Long price;
 
+    @Column(name = "favorite_count")
+    private Integer favoriteCount = 0;
+
+
     @Column(name = "rejection_reason", length = 100)
     private String rejectionReason;
 
@@ -124,6 +128,13 @@ public class Advertisement {
     }
 
     // GETTERS & SETTERS
+    public Integer getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(Integer favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
 
     public Long getId() {
         return id;
