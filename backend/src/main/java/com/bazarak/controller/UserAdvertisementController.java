@@ -36,7 +36,7 @@ public class UserAdvertisementController {
 
         try {
             // 1 Get all my ads
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
+            List<Advertisement> myAds = advertisementService.getAdsByOwnerWithDetails(currentUser.getId());
 
             // 2 Apply sorting
             myAds = advertisementService.applySorting(myAds, sortBy, sortOrder);
@@ -191,7 +191,7 @@ public class UserAdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
             // Get the users active ads
-            List<Advertisement> activeAds = advertisementService.getActiveAdsByOwner(currentUser.getId());
+            List<Advertisement> activeAds = advertisementService.getActiveAdsByOwnerWithDetails(currentUser.getId());
             // Apply sorting
             activeAds = advertisementService.applySorting(activeAds, sortBy, sortOrder);
 
