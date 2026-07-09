@@ -43,6 +43,24 @@ public class FavoriteController {
         }
     }
 
+    @DeleteMapping("/{adId}")
+    public ResponseEntity<?> removeFavorite(@PathVariable Long adId, HttpSession session){
+        Advertisement ad = advertisementService.findById(adId);
+        User user = userService.getCurrentUserOrThrow(session);
+        try{
+            favoriteService.removeFromFavorite(user,ad);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ad_title", ad.getTitle());
+            response.put("message", "Ad removed from your favorites successfully");
+
+            return ResponseEntity.ok(response);
+        }catch(RuntimeException e){
+            return buildErrorResponse(HttpStatus.BAD_REQUEST,e.getMessage());
+        }
+    }
+
+
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status,String message){
         Map<String,String> error = new HashMap<>();
