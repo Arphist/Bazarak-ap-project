@@ -269,12 +269,19 @@ public class Advertisement {
     public void addImage(Image image) {
         images.add(image);
         // 'setAd' is a method in 'Image' which represents the ad that image relates to
-        image.setAd(this);
+        image.setAdvertisement(this);
     }
 
     public void removeImage(Image image) {
         images.remove(image);
-        image.setAd(null);
+        image.setAdvertisement(null);
+    }
+
+    public Image getPrimaryImage() {
+        return images.stream()
+                .filter(Image::isPrimary)
+                .findFirst()
+                .orElse(images.isEmpty() ? null : images.get(0));
     }
 
     @Override
