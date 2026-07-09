@@ -37,6 +37,7 @@ public class FavoriteController {
 
             Map<String,Object> response = new HashMap<>();
             response.put("id",favorite.getId());
+            response.put("adId",ad.getId());
             response.put("ad_title",ad.getTitle());
             response.put("message","Ad added to favorites successfully");
 
@@ -58,6 +59,7 @@ public class FavoriteController {
             favoriteService.removeFromFavorite(user,ad);
 
             Map<String, Object> response = new HashMap<>();
+            response.put("adId", ad.getId());
             response.put("ad_title", ad.getTitle());
             response.put("message", "Ad removed from your favorites successfully");
 
@@ -98,6 +100,7 @@ public class FavoriteController {
         try{
             boolean isFavorited = favoriteService.isFavorited(user,ad);
             Map<String,Object> response = new HashMap<>();
+            response.put("adId",ad.getId());
             response.put("ad_title",ad.getTitle());
             response.put("favorited",isFavorited);
 
@@ -118,6 +121,7 @@ public class FavoriteController {
             long count = favoriteService.getFavoriteCount(ad);
 
             Map<String, Object> response = new HashMap<>();
+            response.put("adId",ad.getId());
             response.put("ad_title",ad.getTitle());
             response.put("favoriteCount", count);
 
