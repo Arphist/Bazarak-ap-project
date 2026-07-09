@@ -43,9 +43,9 @@ public class ImageService {
         validateFile(file);
 
         // 2. Create upload directory if it doesn't exist
-        Path uplaodPath = Paths.get(uploadDir);
-        if (!Files.exists(uplaodPath)) {
-            Files.createDirectories(uplaodPath);
+        Path uploadPath = Paths.get(uploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
         }
 
         // 3. Generate unique file name
@@ -55,7 +55,7 @@ public class ImageService {
         String filePath = uploadDir + File.separator + uniqueFileName;
 
         // 4. Save file to disk
-        Path filePathObj = uplaodPath.resolve(uniqueFileName);
+        Path filePathObj = uploadPath.resolve(uniqueFileName);
         Files.copy(file.getInputStream(), filePathObj, StandardCopyOption.REPLACE_EXISTING);
 
         // 5. Create Image entity
