@@ -1,10 +1,7 @@
 package com.bazarak.controller;
 
 import com.bazarak.entity.*;
-import com.bazarak.service.AdvertisementService;
-import com.bazarak.service.CategoryService;
-import com.bazarak.service.CityService;
-import com.bazarak.service.UserService;
+import com.bazarak.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,8 @@ public class AdvertisementController {
 
     @Autowired
     private AdvertisementService advertisementService;
-
+    @Autowired
+    private FavoriteService favoriteService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -47,10 +45,25 @@ public class AdvertisementController {
      * Get advertisement details by ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAdById(@PathVariable Long id) {
+    public ResponseEntity<?> getAdById(@PathVariable Long id, HttpSession session) {
         try {
             Advertisement ad = advertisementService.findById(id);
-            return ResponseEntity.ok(ad);
+
+            // Check if current user has favorited this ad
+            boolean isFavorited = false;
+            User currentUser = userService.getCurrentUserOrThrow(session);
+            if (currentUser != null) {
+                isFavorited = favoriteService.isFavorited(currentUser, ad);
+            }
+
+            // Add favorite status to response
+            Map<String, Object> response = new HashMap<>();
+            response.put("ad", ad);
+            response.put("isFavorited", isFavorited);
+            response.put("favoriteCount", ad.getFavoriteCount() != null ? ad.getFavoriteCount() : 0);
+
+            return ResponseEntity.ok(response);
+
         } catch (RuntimeException e) {
             return buildErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
         }
