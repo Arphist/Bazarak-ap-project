@@ -5,6 +5,7 @@ import com.bazarak.exception.user.*;
 import com.bazarak.exception.favorite.*;
 import com.bazarak.exception.auth.*;
 import com.bazarak.exception.category.*;
+import com.bazarak.exception.image.*;
 import com.bazarak.exception.rating.*;
 import com.bazarak.exception.conversation.*;
 import com.bazarak.exception.message.*;
@@ -326,19 +327,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * This method builds error response
-     * @param status status
-     * @param message error message
-     * @return ResponseEntity
-     */
-    private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
-        Map<String, String> error = new HashMap<>();
-        error.put("error", message);
-        error.put("status", String.valueOf(status.value()));
-        return ResponseEntity.status(status).body(error);
-    }
-
-    /**
      * Check if the advertisement exist.
      * @param ex spring class to handle errors
      * @return HTTP-status -> NOT_FOUND
@@ -387,5 +375,29 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<?> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    /**
+     * Check if user can operate the image-task.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> FORBIDDEN
+     */
+    @ExceptionHandler(InvalidImageOperationException.class)
+    public ResponseEntity<?> handleInvalidImageOperation(InvalidImageOperationException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    // HELPER METHOD
+    /**
+     * This method builds error response
+     * @param status status
+     * @param message error message
+     * @return ResponseEntity
+     */
+    private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", message);
+        error.put("status", String.valueOf(status.value()));
+        return ResponseEntity.status(status).body(error);
     }
 }
