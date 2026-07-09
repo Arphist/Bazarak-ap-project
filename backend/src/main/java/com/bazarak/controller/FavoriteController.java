@@ -32,6 +32,10 @@ public class FavoriteController {
         Advertisement ad = advertisementService.findById(adId);
         User user = userService.getCurrentUserOrThrow(session);
 
+        // CHECK METHODS
+        advertisementService.checkAdPending(ad);
+        advertisementService.checkAdRejected(ad);
+        advertisementService.checkAdDeleted(ad);
         try {
             Favorite favorite = favoriteService.addToFavorite(user,ad);
 
