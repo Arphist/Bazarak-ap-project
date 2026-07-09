@@ -174,26 +174,24 @@ public class UserService {
 
     /**
      *  Update user's fields but the ID
-     * @param id the user ID, which is constant
+     * @param existingUser the user
      * @param updatedUser updated-user with new fields
      * @return updated-user
      */
-    public User updateUser(Long id, User updatedUser) {
-        User existingUser = getUserById(id);
-
+    public User updateUser( User existingUser, User updatedUser) {
         if (updatedUser.getFullName() != null) {
             existingUser.setFullName(updatedUser.getFullName());
         }
         if (updatedUser.getEmail() != null) {
             if (userRepository.existsByEmail(updatedUser.getEmail()) &&
-                    !userRepository.findByEmail(updatedUser.getEmail()).get().getId().equals(id)) {
+                    !userRepository.findByEmail(updatedUser.getEmail()).get().getId().equals(existingUser.getId())) {
                 throw new EmailIsAlreadyUsed("Email already used by another user");
             }
             existingUser.setEmail(updatedUser.getEmail());
         }
         if (updatedUser.getPhoneNumber() != null) {
             if (userRepository.existsByPhoneNumber(updatedUser.getPhoneNumber()) &&
-                    !userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).get().getId().equals(id)) {
+                    !userRepository.findByPhoneNumber(updatedUser.getPhoneNumber()).get().getId().equals(existingUser.getId())) {
                 throw new PhoneIsAlreadyUsed("Phone number already used by another user");
             }
             existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
