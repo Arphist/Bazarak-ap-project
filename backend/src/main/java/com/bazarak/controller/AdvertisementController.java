@@ -264,12 +264,7 @@ public class AdvertisementController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getAdsByUser(@PathVariable Long userId) {
         try {
-            List<Advertisement> ads = advertisementService.getAdsByOwner(userId);
-            // Only return active ads
-            List<Advertisement> activeAds = ads.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED)
-                    .toList();
-
+            List<Advertisement> activeAds = advertisementService.getActiveAdsByOwner(userId);
             Map<String, Object> response = new HashMap<>();
             response.put("userId", userId);
             response.put("count", activeAds.size());

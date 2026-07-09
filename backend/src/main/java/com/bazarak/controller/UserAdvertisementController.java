@@ -78,12 +78,8 @@ public class UserAdvertisementController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
             }
 
-            List<Advertisement> myAds = advertisementService.getAdsByStatus(adStatus);
-
             // Filter to only current user's ads
-            List<Advertisement> filteredAds = myAds.stream()
-                    .filter(ad -> ad.getOwner().getId().equals(currentUser.getId()))
-                    .collect(Collectors.toList());
+            List<Advertisement> filteredAds = advertisementService.getAdsByStatusAndOwner(currentUser.getId(), adStatus);
 
             filteredAds = advertisementService.applySorting(filteredAds, sortBy, sortOrder);
 
@@ -116,25 +112,15 @@ public class UserAdvertisementController {
             List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
 
             // Group by status
-            List<Advertisement> pendingAds = myAds.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.PENDING)
-                    .collect(Collectors.toList());
+            List<Advertisement> pendingAds = advertisementService.getPendingAdsByOwner(currentUser.getId());
 
-            List<Advertisement> activeAds = myAds.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED)
-                    .collect(Collectors.toList());
+            List<Advertisement> activeAds = advertisementService.getActiveAdsByOwner(currentUser.getId());
 
-            List<Advertisement> rejectedAds = myAds.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.REJECTED)
-                    .collect(Collectors.toList());
+            List<Advertisement> rejectedAds = advertisementService.getRejectedAdsByOwner(currentUser.getId());
 
-            List<Advertisement> soldAds = myAds.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.SOLD)
-                    .collect(Collectors.toList());
+            List<Advertisement> soldAds = advertisementService.getSoldAdsByOwner(currentUser.getId());
 
-            List<Advertisement> deletedAds = myAds.stream()
-                    .filter(ad -> ad.getStatus() == Advertisement.AdStatus.DELETED)
-                    .collect(Collectors.toList());
+            List<Advertisement> deletedAds = advertisementService.getDeletedAdsByOwner(currentUser.getId());
 
             Map<String, Object> response = new HashMap<>();
             response.put("total", myAds.size());
@@ -181,12 +167,7 @@ public class UserAdvertisementController {
         // Check if user is logged in
         User user = userService.getCurrentUserOrThrow(session);
         try {
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
-            // Sort by createdAt descending (newest first)
-            List<Advertisement> recentAds = myAds.stream()
-                    .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
-                    .collect(Collectors.toList());
-
+            List<Advertisement> recentAds = advertisementService.getRecentAdsByOwner(user.getId());
             Map<String, Object> response = new HashMap<>();
             response.put("count", recentAds.size());
             response.put("ads", recentAds);
@@ -210,11 +191,7 @@ public class UserAdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
             // Get the users active ads
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
-            List<Advertisement> activeAds = myAds.stream().
-                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.ACCEPTED).
-                    collect(Collectors.toList());
-
+            List<Advertisement> activeAds = advertisementService.getActiveAdsByOwner(currentUser.getId());
             // Apply sorting
             activeAds = advertisementService.applySorting(activeAds, sortBy, sortOrder);
 
@@ -244,10 +221,7 @@ public class UserAdvertisementController {
         User user = userService.getCurrentUserOrThrow(session);
 
         try {
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(user.getId());
-            List<Advertisement> pendingAds = myAds.stream().
-                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.PENDING).
-                    collect(Collectors.toList());
+            List<Advertisement> pendingAds = advertisementService.getPendingAdsByOwner(user.getId());
 
             pendingAds = advertisementService.applySorting(pendingAds, sortBy, sortOrder);
 
@@ -276,10 +250,7 @@ public class UserAdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
 
         try {
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
-            List<Advertisement> rejectedAds = myAds.stream().
-                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.REJECTED).
-                    collect(Collectors.toList());
+            List<Advertisement> rejectedAds = advertisementService.getRejectedAdsByOwner(currentUser.getId());
 
             rejectedAds = advertisementService.applySorting(rejectedAds, sortBy, sortOrder);
 
@@ -307,10 +278,7 @@ public class UserAdvertisementController {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
         try {
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
-            List<Advertisement> soldAds = myAds.stream().
-                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.SOLD).
-                    collect(Collectors.toList());
+            List<Advertisement> soldAds = advertisementService.getSoldAdsByOwner(currentUser.getId());
 
             soldAds = advertisementService.applySorting(soldAds, sortBy, sortOrder);
 
@@ -335,10 +303,7 @@ public class UserAdvertisementController {
         User currentUser = userService.getCurrentUserOrThrow(session);
 
         try {
-            List<Advertisement> myAds = advertisementService.getAdsByOwner(currentUser.getId());
-            List<Advertisement> deletedAds = myAds.stream().
-                    filter(ad -> ad.getStatus() == Advertisement.AdStatus.DELETED).
-                    collect(Collectors.toList());
+            List<Advertisement> deletedAds = advertisementService.getDeletedAdsByOwner(currentUser.getId());
 
             deletedAds = advertisementService.applySorting(deletedAds, sortBy, sortOrder);
 
