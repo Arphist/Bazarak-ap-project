@@ -211,12 +211,9 @@ public class UserService {
 
     /**
      * Check if the User owns the Ad
-     * @param resourceOwnerId ID of the user attempting to use service
-     * @param session http session
      */
-    public void checkOwnership(Long resourceOwnerId, HttpSession session) {
-        User currentUser = getCurrentUserOrThrow(session);
-        if (!currentUser.getId().equals(resourceOwnerId)) {
+    public void checkOwnership(User user, Advertisement ad {
+        if (!user.getId().equals(ad.getOwner().getId())) {
             throw new UnauthorizedAccessException("You don't have permission to access this resource");
         }
     }
