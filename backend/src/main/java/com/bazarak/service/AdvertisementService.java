@@ -85,12 +85,6 @@ public class AdvertisementService {
         return adRepository.findAll();
     }
 
-    /**
-     * Get all active ads (visible to everyone)
-     */
-    public List<Advertisement> getActiveAds() {
-        return adRepository.findByStatusOrderByCreatedAtDesc(AdStatus.ACCEPTED);
-    }
 
     /**
      * Get all active ads with details (owner, category, city loaded)
@@ -136,8 +130,43 @@ public class AdvertisementService {
         return adRepository.findByCityId(cityId);
     }
 
-    // SEARCH METHODS
+    public List<Advertisement> getActiveAdsByOwner(Long ownerId) {
+        return adRepository.findActiveAdsByOwnerId(ownerId);
+    }
 
+    public List<Advertisement> getPendingAdsByOwner(Long ownerId) {
+        return adRepository.findPendingAdsByOwnerId(ownerId);
+    }
+
+    public List<Advertisement> getRejectedAdsByOwner(Long ownerId) {
+        return adRepository.findRejectedAdsByOwnerId(ownerId);
+    }
+
+    public List<Advertisement> getSoldAdsByOwner(Long ownerId) {
+        return adRepository.findSoldAdsByOwnerId(ownerId);
+    }
+
+    public List<Advertisement> getDeletedAdsByOwner(Long ownerId) {
+        return adRepository.findDeletedAdsByOwnerId(ownerId);
+    }
+
+    public List<Advertisement> getRecentAdsByOwner(Long ownerId) {
+        return adRepository.findRecentAdsByOwnerId(ownerId);
+    }
+
+    public List<Advertisement> getAdsByStatusAndOwner(Long ownerId, AdStatus status) {
+        return adRepository.findAdsByStatusAndOwnerId(status, ownerId);
+    }
+
+    public List<Advertisement> getAdsByOwnerWithDetails(Long ownerId) {
+        return adRepository.findAdsByOwnerIdWithDetails(ownerId);
+    }
+
+    public List<Advertisement> getActiveAdsByOwnerWithDetails(Long ownerId) {
+        return adRepository.findActiveAdsByOwnerIdWithDetails(ownerId);
+    }
+
+    // SEARCH METHODS
     /**
      * Search ads by keyword (title or description)
      */
