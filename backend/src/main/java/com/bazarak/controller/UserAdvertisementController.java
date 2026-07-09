@@ -148,7 +148,7 @@ public class UserAdvertisementController {
 
         try {
             Advertisement ad = advertisementService.findById(adId);
-            userService.checkOwnership(user.getId(), session);
+            userService.checkOwnership(user, ad);
             return ResponseEntity.ok(ad);
         } catch (Exception e) {
             Map<String, String> error = new HashMap<>();
