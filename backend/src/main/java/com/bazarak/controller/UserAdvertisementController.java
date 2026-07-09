@@ -355,7 +355,7 @@ public class UserAdvertisementController {
     }
 
     // HELPER METHOD
-    public ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
+    private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
         error.put("error", message);
         error.put("status", String.valueOf(status.value()));
