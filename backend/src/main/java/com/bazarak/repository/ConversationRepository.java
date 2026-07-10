@@ -43,6 +43,9 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
      * @return list of conversations
      */
     @Query("SELECT c FROM Conversation c " +
+            "LEFT JOIN FETCH c.buyer " +
+            "LEFT JOIN FETCH c.seller " +
+            "LEFT JOIN FETCH c.advertisement " +
             "WHERE c.buyer.id = :userId OR c.seller.id = :userId " +
             "ORDER BY c.updatedAt DESC")
     List<Conversation> findAllByParticipantId(@Param("userId") Long userId);

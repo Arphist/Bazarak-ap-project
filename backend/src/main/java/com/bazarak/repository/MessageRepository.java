@@ -19,6 +19,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @return list of messages in chronological order
      */
     @Query("SELECT m FROM Message m " +
+            "LEFT JOIN FETCH m.sender " +
             "WHERE m.conversation.id = :conversationId " +
             "ORDER BY m.sentAt ASC")
     List<Message> findByConversationIdOrderBySentAtAsc(@Param("conversationId") Long conversationId);
@@ -57,17 +58,4 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @param conversationId the ID of the conversation
      */
     void deleteByConversationId(Long conversationId);
-
-    /**
-     * Get messages with sender details loaded eagerly.
-     * Used to avoid N+1 queries when displaying messages.
-     *
-     * @param conversationId the ID of the conversation
-     * @return list of messages with sender loaded
-     */
-    @Query("SELECT m FROM Message m " +
-            "JOIN FETCH m.sender " +
-            "WHERE m.conversation.id = :conversationId " +
-            "ORDER BY m.sentAt ASC")
-    List<Message> findByConversationIdWithSender(@Param("conversationId") Long conversationId);
 }
