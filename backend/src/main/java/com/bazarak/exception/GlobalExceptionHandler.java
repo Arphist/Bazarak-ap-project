@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
      * @param ex spring class to handle errors
      * @return HTTP-status -> FORBIDDEN
      */
-    @ExceptionHandler(UserBlockedException.class)
+    @ExceptionHandler(EmailIsAlreadyUsed.class)
     public ResponseEntity<?> handleEmailIsUsed(EmailIsAlreadyUsed ex) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }

@@ -27,7 +27,7 @@ public class FavoriteController {
     /**
      * Add an ad to user's favorites
      */
-    @PostMapping("/{adId")
+    @PostMapping("/{adId}")
     public ResponseEntity<?> addFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
         User user = userService.getCurrentUserOrThrow(session);

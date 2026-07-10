@@ -212,7 +212,7 @@ public class UserService {
     /**
      * Check if the User owns the Ad
      */
-    public void checkOwnership(User user, Advertisement ad {
+    public void checkOwnership(User user, Advertisement ad) {
         if (!user.getId().equals(ad.getOwner().getId())) {
             throw new UnauthorizedAccessException("You don't have permission to access this resource");
         }
