@@ -62,6 +62,21 @@ public class AuthService {
             throw new Exception(error.getOrDefault("error", "Login failed"));
         }
     }
+    /**
+     * Logout user
+     */
+    public static void logout() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/auth/logout"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        SessionManager.clearSession();
+    }
+
+
 
 
 
