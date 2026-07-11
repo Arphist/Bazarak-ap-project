@@ -38,6 +38,31 @@ public class AuthService {
             throw new Exception(error.getOrDefault("error", "Registration failed"));
         }
     }
+    /**
+     * Login user
+     */
+    public static User login(String username, String password) throws Exception {
+        Map<String, String> credentials = Map.of("username", username, "password", password);
+        String json = objectMapper.writeValueAsString(credentials);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/auth/login"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            User user = objectMapper.readValue(response.body(), User.class);
+            SessionManager.setCurrentUser(user);
+            return user;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Login failed"));
+        }
+    }
+
 
 
 }
