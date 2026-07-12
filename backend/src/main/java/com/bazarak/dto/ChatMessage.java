@@ -66,4 +66,12 @@ public class ChatMessage {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }
