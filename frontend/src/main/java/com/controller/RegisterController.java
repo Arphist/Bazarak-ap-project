@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.BazarakFrontendApplication;
 import com.model.User;
 import com.service.AuthService;
 import javafx.fxml.FXML;
@@ -35,13 +36,6 @@ public class RegisterController {
     @FXML
     private Label errorLabel;
 
-    // ======== STAGE ========
-
-    private Stage primaryStage;
-
-    public void setPrimaryStage(Stage stage) {
-        this.primaryStage = stage;
-    }
 
     // ======== HANDLE REGISTER ========
 
@@ -86,6 +80,7 @@ public class RegisterController {
             // Call AuthService to register
             User registeredUser = AuthService.register(user);
 
+
             // Clear error and go to login page
             errorLabel.setText("");
             goToLogin();
@@ -99,17 +94,6 @@ public class RegisterController {
 
     @FXML
     private void goToLogin() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
-            Scene scene = new Scene(loader.load(), 400, 450);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Login - Bazarak");
-
-            LoginController controller = loader.getController();
-            controller.setPrimaryStage(primaryStage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        BazarakFrontendApplication.showLoginPage();
     }
 }
