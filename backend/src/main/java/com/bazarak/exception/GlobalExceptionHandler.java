@@ -141,6 +141,17 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    /**
+     * Handles cases where a user is trying to message themselves
+     *
+     * @param ex the CityHasAdvertisementsException
+     * @return HTTP 400 BAD_REQUEST with error message
+     */
+    @ExceptionHandler(SelfMessagingException.class)
+    public ResponseEntity<?> handleSelfMessagingException(SelfMessagingException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     // ============================================
     // CATEGORY EXCEPTIONS
     // ============================================
