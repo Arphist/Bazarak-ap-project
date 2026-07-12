@@ -30,11 +30,4 @@ public class MainController {
     @FXML
     private Label errorLabel;
 
-    // ======== STAGE ========
-
-    private Stage primaryStage;
-
-    public void setPrimaryStage(Stage stage) {
-        this.primaryStage = stage;
     }
-}
