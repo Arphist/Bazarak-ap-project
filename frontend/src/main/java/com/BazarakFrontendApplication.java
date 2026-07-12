@@ -19,12 +19,12 @@ public class BazarakFrontendApplication extends Application {
         stage.setMinHeight(768);
         stage.setResizable(true);
 
-        currentScene = new Scene(new Parent() {}, 1024, 768);
+        FXMLLoader loader = new FXMLLoader(
+                BazarakFrontendApplication.class.getResource("/view/login.fxml")
+        );
+        Parent root = loader.load();
+        currentScene = new Scene(root, 1024, 768);
         stage.setScene(currentScene);
-
-        // Start with Login Page
-        showLoginPage();
-
         stage.show();
 
         System.out.println("========================================");
