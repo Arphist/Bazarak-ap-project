@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class BazarakFrontendApplication extends Application {
 
     private static Stage primaryStage;
+    private static Scene currentScene;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -17,6 +18,9 @@ public class BazarakFrontendApplication extends Application {
         stage.setMinWidth(1024);
         stage.setMinHeight(768);
         stage.setResizable(true);
+
+        currentScene = new Scene(new Parent() {}, 1024, 768);
+        stage.setScene(currentScene);
 
         // Start with Login Page
         showLoginPage();
@@ -80,8 +84,9 @@ public class BazarakFrontendApplication extends Application {
                     BazarakFrontendApplication.class.getResource(fxmlPath)
             );
             Parent root = loader.load();
+            currentScene.setRoot(root);
             primaryStage.setTitle(title);
-            primaryStage.setScene(new Scene(root));
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Error loading page: " + fxmlPath);
