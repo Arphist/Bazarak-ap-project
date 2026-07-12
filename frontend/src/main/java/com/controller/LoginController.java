@@ -1,5 +1,6 @@
 package com.controller;
 
+import com.BazarakFrontendApplication;
 import com.model.User;
 import com.service.AuthService;
 import com.util.SessionManager;
@@ -24,13 +25,6 @@ public class LoginController {
     @FXML
     private Label errorLabel;
 
-    // ======== STAGE ========
-
-    private Stage primaryStage;
-
-    public void setPrimaryStage(Stage stage) {
-        this.primaryStage = stage;
-    }
     // ======== HANDLE LOGIN ========
 
     @FXML
@@ -50,7 +44,7 @@ public class LoginController {
 
             // Clear error and go to main page
             errorLabel.setText("");
-            goToMainPage();
+            BazarakFrontendApplication.showHomePage();
 
         } catch (Exception e) {
             errorLabel.setText("Login failed: " + e.getMessage());
@@ -61,34 +55,10 @@ public class LoginController {
 
     @FXML
     private void goToRegister() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/register.fxml"));
-            Scene scene = new Scene(loader.load(), 400, 500);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Register - Bazarak");
-
-            RegisterController controller = loader.getController();
-            controller.setPrimaryStage(primaryStage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        BazarakFrontendApplication.showRegisterPage();
     }
 
-    private void goToMainPage() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-            Scene scene = new Scene(loader.load(), 800, 600);
-            primaryStage.setScene(scene);
-            primaryStage.setTitle("Bazarak - Secondhand Marketplace");
 
-            MainController controller = loader.getController();
-            controller.setPrimaryStage(primaryStage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 
