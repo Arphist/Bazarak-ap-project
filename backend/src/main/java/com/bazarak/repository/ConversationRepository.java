@@ -85,4 +85,12 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
             "LEFT JOIN FETCH c.messages " +
             "WHERE c.id = :conversationId")
     Optional<Conversation> findByIdWithMessages(@Param("conversationId") Long conversationId);
+
+    @Query("SELECT c FROM Conversation c " +
+            "LEFT JOIN FETCH c.messages " +
+            "LEFT JOIN FETCH c.buyer " +
+            "LEFT JOIN FETCH c.seller " +
+            "LEFT JOIN FETCH c.advertisement " +
+            "WHERE c.id = :conversationId")
+    Optional<Conversation> findConversationWithDetails(@Param("conId") Long conId);
 }
