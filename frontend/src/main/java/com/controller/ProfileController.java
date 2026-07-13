@@ -40,6 +40,27 @@ public class ProfileController {
 
     @FXML
     private PasswordField confirmPasswordField;
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        loadUserProfile();
+    }
+
+    private void loadUserProfile() {
+        User currentUser = SessionManager.getCurrentUser();
+
+        if (currentUser != null) {
+            usernameLabel.setText("Username: " + currentUser.getUsername());
+            fullNameField.setText(currentUser.getFullName());
+            emailField.setText(currentUser.getEmail());
+            phoneField.setText(currentUser.getPhoneNumber());
+        } else {
+            errorLabel.setText("No user logged in");
+        }
+    }
 
 
 }
