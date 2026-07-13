@@ -110,7 +110,8 @@ public class CreateAdController {
         // Validate price
         long price;
         try {
-            price = Long.parseLong(priceText);
+            String cleanPrice = priceText.replace(",", "");
+            price = Long.parseLong(cleanPrice);
             if (price <= 0) {
                 throw new NumberFormatException();
             }
