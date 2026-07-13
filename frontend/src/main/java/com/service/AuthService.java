@@ -75,27 +75,4 @@ public class AuthService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         SessionManager.clearSession();
     }
-    /**
-     * Check if username is available
-     */
-    // todo: We might delete this method
-    public static boolean isUsernameAvailable(String username) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL + "/auth/check-username/" + username))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
-            return (boolean) result.getOrDefault("available", false);
-        }
-        return false;
-    }
-
-
-
-
-
 }
