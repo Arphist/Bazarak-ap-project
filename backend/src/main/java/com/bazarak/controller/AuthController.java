@@ -102,21 +102,6 @@ public class AuthController {
         response.put("message", "Logged out successfully");
         return ResponseEntity.ok(response);
     }
-
-    // CHECK USERNAME AVAILABILITY
-    // todo: I might delete this method
-    /**
-     * Check if the username already exists -> Real-time Availability Check
-     */
-    @GetMapping("/check-username/{username}")
-    public ResponseEntity<?> checkUsername(@PathVariable String username) {
-        boolean exists = userService.usernameExists(username);
-        Map<String, Object> response = new HashMap<>();
-        response.put("username", username);
-        response.put("available", !exists);
-        return ResponseEntity.ok(response);
-    }
-
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message){
         Map<String, String> error = new HashMap<>();
