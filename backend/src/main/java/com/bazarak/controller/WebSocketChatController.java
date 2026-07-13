@@ -1,6 +1,7 @@
 package com.bazarak.controller;
 
 import com.bazarak.dto.ChatMessage;
+import com.bazarak.entity.Message;
 import com.bazarak.exception.user.UserNotFoundException;
 import com.bazarak.service.ConversationService;
 import com.bazarak.service.UserService;
@@ -36,13 +37,17 @@ public class WebSocketChatController {
         // 2. Save to database
         try {
             Long conversationId = Long.parseLong(String.valueOf(message.getConversationId()));
-            User sender = userService.findById(message.getSenderId()).
-                    orElseThrow(()->new UserNotFoundException("User not found"));
-            conversationService.sendMessage(
+            User sender = userService.getUserById(message.getSenderId());
+            Message savedMessage = conversationService.sendMessageAndBroadcast(
                     conversationId,
                     sender,
                     message.getContent()
             );
+
+            // Update message with saved data
+            message.setId(savedMessage.getId());
+            message.setSenderUsername(savedMessage.getSender().getUsername());
+            message.setTimestamp(savedMessage.getSentAt());
         } catch (Exception e) {
             System.err.println("Error saving message: " + e.getMessage());
         }
