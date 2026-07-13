@@ -100,6 +100,10 @@ public class MainController {
                 results = AdService.searchAds(keyword);
             }
 
+            if (results.isEmpty()) {
+                adListView.getItems().add("No ads found");
+            }
+
             // Update list view with search results
             adListView.getItems().clear();
             for (Advertisement ad : results) {
