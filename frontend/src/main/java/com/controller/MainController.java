@@ -136,6 +136,20 @@ public class MainController {
         BazarakFrontendApplication.showAdminDashboard();
     }
 
+    // ============================================
+    // LOGOUT
+    // ============================================
+
+    @FXML
+    private void handleLogout() {
+        try {
+            com.service.AuthService.logout();
+            BazarakFrontendApplication.showLoginPage();
+        } catch (Exception e) {
+            errorLabel.setText("Logout failed: " + e.getMessage());
+        }
+    }
+
 
 
 }
