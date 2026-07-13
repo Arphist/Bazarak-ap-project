@@ -82,5 +82,36 @@ public class MainController {
             errorLabel.setText("Failed to load ads: " + e.getMessage());
         }
     }
-    
+    // ============================================
+    // SEARCH
+    // ============================================
+
+    @FXML
+    private void handleSearch() {
+        String keyword = searchField.getText().trim();
+
+        try {
+            List<Advertisement> results;
+
+            // If no keyword, show all active ads
+            if (keyword.isEmpty()) {
+                results = AdService.getActiveAds();
+            } else {
+                results = AdService.searchAds(keyword);
+            }
+
+            // Update list view with search results
+            adListView.getItems().clear();
+            for (Advertisement ad : results) {
+                adListView.getItems().add(ad.getTitle() + " - " + ad.getPrice() + " T");
+            }
+
+            errorLabel.setText("");
+
+        } catch (Exception e) {
+            errorLabel.setText("Search failed: " + e.getMessage());
+        }
+    }
+
+
 }
