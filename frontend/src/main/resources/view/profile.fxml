@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox spacing="15" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #f5f5f5;"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.controller.ProfileController">
+
+    <Label text="My Profile" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <Label fx:id="usernameLabel" style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+
+    <Separator maxWidth="400"/>
+
+    <!-- Profile Info -->
+    <Label text="Personal Information" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="400"
+               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <TextField fx:id="emailField" promptText="Email" maxWidth="400"
+               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="400"
+               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <Button text="Update Profile" onAction="#handleUpdateProfile" maxWidth="400"
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
+
+    <Separator maxWidth="400"/>
+
+    <!-- Change Password -->
+    <Label text="Change Password" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+
+    <PasswordField fx:id="oldPasswordField" promptText="Old Password" maxWidth="400"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <PasswordField fx:id="newPasswordField" promptText="New Password (min 6 chars)" maxWidth="400"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <PasswordField fx:id="confirmPasswordField" promptText="Confirm New Password" maxWidth="400"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+    <Button text="Change Password" onAction="#handleChangePassword" maxWidth="400"
+            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
+
+    <!-- Navigation Buttons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Back to Home" onAction="#goToHome"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 5;"/>
+
+        <Button text="Logout" onAction="#handleLogout"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 5;"/>
+    </HBox>
+
+</VBox>
