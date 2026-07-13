@@ -51,6 +51,24 @@ public class LoginController {
         }
     }
 
+    //todo delete this later
+    @FXML
+    private void handleSkipLogin() {
+        // Create a fake user for testing
+        User fakeUser = new User();
+        fakeUser.setId(1L);
+        fakeUser.setUsername("test");
+        fakeUser.setFullName("Test User");
+        fakeUser.setRole("USER");
+        fakeUser.setStatus("ACTIVE");
+
+        // Save to session
+        SessionManager.setCurrentUser(fakeUser);
+
+        // Go to main page
+        BazarakFrontendApplication.showHomePage();
+    }
+
     // ======== NAVIGATION ========
 
     @FXML

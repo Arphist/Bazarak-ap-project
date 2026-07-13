@@ -1,0 +1,167 @@
+package com.controller;
+
+import com.BazarakFrontendApplication;
+import com.model.Advertisement;
+import com.model.Category;
+import com.model.City;
+import com.model.User;
+import com.service.AdService;
+import com.service.CategoryService;
+import com.service.CityService;
+import com.util.SessionManager;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
+import java.util.List;
+
+public class CreateAdController {
+
+    // ============================================
+    // FXML FIELDS
+    // ============================================
+
+    @FXML
+    private TextField titleField;
+
+    @FXML
+    private TextArea descriptionArea;
+
+    @FXML
+    private TextField priceField;
+
+    @FXML
+    private ComboBox<Category> categoryCombo;
+
+    @FXML
+    private ComboBox<City> cityCombo;
+
+    @FXML
+    private Label errorLabel;
+
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        loadCategories();
+        loadCities();
+    }
+
+    // ============================================
+    // LOAD DATA FROM BACKEND
+    // ============================================
+
+    private void loadCategories() {
+        try {
+            List<Category> categories = CategoryService.getAllCategories();
+            categoryCombo.setItems(FXCollections.observableArrayList(categories));
+            categoryCombo.setPromptText("Select Category");
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load categories: " + e.getMessage());
+        }
+    }
+
+    private void loadCities() {
+        try {
+            List<City> cities = CityService.getAllCities();
+            cityCombo.setItems(FXCollections.observableArrayList(cities));
+            cityCombo.setPromptText("Select City");
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load cities: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // HANDLE CREATE AD
+    // ============================================
+
+    @FXML
+    private void handleCreateAd() {
+        // Get input values
+        String title = titleField.getText().trim();
+        String description = descriptionArea.getText().trim();
+        String priceText = priceField.getText().trim();
+        Category selectedCategory = categoryCombo.getValue();
+        City selectedCity = cityCombo.getValue();
+
+        // Validate fields
+        if (title.isEmpty() || description.isEmpty() || priceText.isEmpty()) {
+            errorLabel.setText("Please fill in all required fields");
+            return;
+        }
+
+        if (selectedCategory == null) {
+            errorLabel.setText("Please select a category");
+            return;
+        }
+
+        if (selectedCity == null) {
+            errorLabel.setText("Please select a city");
+            return;
+        }
+
+        // Validate price
+        long price;
+        try {
+            price = Long.parseLong(priceText);
+            if (price <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            errorLabel.setText("Price must be a positive number");
+            return;
+        }
+
+        try {
+            // Get current user
+            User currentUser = SessionManager.getCurrentUser();
+            if (currentUser == null) {
+                errorLabel.setText("You must be logged in to create an ad");
+                return;
+            }
+
+            // Build ad object
+            Advertisement ad = new Advertisement();
+            ad.setTitle(title);
+            ad.setDescription(description);
+            ad.setPrice(price);
+            ad.setCategory(selectedCategory);
+            ad.setCity(selectedCity);
+
+            // Send to backend
+            AdService.createAd(ad);
+
+            // Show success message
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Your ad has been created successfully!");
+            alert.showAndWait();
+
+            // Go back to home page
+            BazarakFrontendApplication.showHomePage();
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to create ad: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void cancel() {
+        BazarakFrontendApplication.showHomePage();
+    }
+
+
+
+}
