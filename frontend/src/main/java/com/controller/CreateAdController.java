@@ -44,5 +44,40 @@ public class CreateAdController {
     @FXML
     private Label errorLabel;
 
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        loadCategories();
+        loadCities();
+    }
+
+    // ============================================
+    // LOAD DATA FROM BACKEND
+    // ============================================
+
+    private void loadCategories() {
+        try {
+            List<Category> categories = CategoryService.getAllCategories();
+            categoryCombo.setItems(FXCollections.observableArrayList(categories));
+            categoryCombo.setPromptText("Select Category");
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load categories: " + e.getMessage());
+        }
+    }
+
+    private void loadCities() {
+        try {
+            List<City> cities = CityService.getAllCities();
+            cityCombo.setItems(FXCollections.observableArrayList(cities));
+            cityCombo.setPromptText("Select City");
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load cities: " + e.getMessage());
+        }
+    }
+
+
 
 }
