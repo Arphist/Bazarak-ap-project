@@ -111,34 +111,6 @@ public class ConversationController {
         }
     }
 
-    // 5. SEND MESSAGE (REST + WebSocket Broadcast)
-    @PostMapping("/{conversationId}/messages")
-    public ResponseEntity<?> sendMessage(@Valid @RequestBody SendMessageRequest request, @PathVariable Long conversationId,
-                                         HttpSession session){
-        User currentUser = userService.getCurrentUserOrThrow(session);
-        try{
-            conversationService.validateParticipant(conversationId,currentUser);
-
-            Message message = conversationService.sendMessageAndBroadcast(
-                    conversationId,
-                    currentUser,
-                    request.getContent()
-            );
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("id",message.getId());
-            response.put("content",message.getContent());
-            response.put("sendAt",message.getSentAt());
-            response.put("senderId",message.getSender().getId());
-            response.put("username",message.getSender().getUsername());
-            response.put("message","Message sent successfully");
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch (RuntimeException e){
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
-        }
-    }
-
     // HELPER METHOD
     private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
         Map<String, String> error = new HashMap<>();
