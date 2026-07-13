@@ -119,25 +119,10 @@ public class ConversationController {
         try{
             conversationService.validateParticipant(conversationId,currentUser);
 
-            // 1. Save to database
-            Message message = conversationService.sendMessage(
+            Message message = conversationService.sendMessageAndBroadcast(
                     conversationId,
                     currentUser,
                     request.getContent()
-            );
-
-            // 2. Broadcast via WebSocket
-            ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setId(message.getId());
-            chatMessage.setConversationId(conversationId);
-            chatMessage.setSenderId(message.getSender().getId());
-            chatMessage.setSenderUsername(message.getSender().getUsername());
-            chatMessage.setContent(message.getContent());
-            chatMessage.setTimestamp(message.getSentAt());
-
-            messagingTemplate.convertAndSend(
-                    "/topic/conversation/" + conversationId,
-                    chatMessage
             );
 
             Map<String, Object> response = new HashMap<>();
