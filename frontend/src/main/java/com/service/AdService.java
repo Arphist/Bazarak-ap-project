@@ -72,6 +72,29 @@ public class AdService {
             throw new Exception("Search failed");
         }
     }
+    // Create new ad
+    public static Advertisement createAd(Advertisement ad) throws Exception {
+        String json = objectMapper.writeValueAsString(ad);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/ads"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 201) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Long id = ((Number) result.get("id")).longValue();
+
+            // Get the full ad details
+            return getAdById(id);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to create ad"));
+        }
+    }
 
 
 }
