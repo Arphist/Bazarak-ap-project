@@ -112,6 +112,30 @@ public class MainController {
             errorLabel.setText("Search failed: " + e.getMessage());
         }
     }
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void goToCreateAd() {
+        BazarakFrontendApplication.showPostAdPage();
+    }
+
+    @FXML
+    private void goToFavorites() {
+        BazarakFrontendApplication.showFavoritesPage();
+    }
+
+    @FXML
+    private void goToProfile() {
+        BazarakFrontendApplication.showProfilePage();
+    }
+
+    @FXML
+    private void goToAdmin() {
+        BazarakFrontendApplication.showAdminDashboard();
+    }
+
 
 
 }
