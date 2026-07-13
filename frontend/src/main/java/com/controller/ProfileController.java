@@ -150,9 +150,23 @@ public class ProfileController {
             errorLabel.setText("Password change failed: " + e.getMessage());
         }
     }
+    // ============================================
+    // NAVIGATION
+    // ============================================
 
+    @FXML
+    private void goToHome() {
+        BazarakFrontendApplication.showHomePage();
+    }
 
-
-
+    @FXML
+    private void handleLogout() {
+        try {
+            AuthService.logout();
+            BazarakFrontendApplication.showLoginPage();
+        } catch (Exception e) {
+            errorLabel.setText("Logout failed: " + e.getMessage());
+        }
+    }
 
 }
