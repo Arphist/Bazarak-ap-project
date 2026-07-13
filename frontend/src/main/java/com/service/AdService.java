@@ -51,4 +51,27 @@ public class AdService {
         }
     }
 
+    // Search ads
+    public static List<Advertisement> searchAds(String keyword) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/ads/search?keyword=" + keyword))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object adsObj = result.get("results");
+            if (adsObj != null) {
+                String json = objectMapper.writeValueAsString(adsObj);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Search failed");
+        }
+    }
+
+
 }
