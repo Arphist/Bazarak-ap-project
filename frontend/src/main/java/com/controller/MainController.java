@@ -8,10 +8,7 @@ import com.util.SessionManager;
 import com.view.AdCell;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.List;
 
@@ -42,6 +39,19 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        // Setup custom cell rendering for ads
+        adListView.setCellFactory(lv -> new ListCell<Advertisement>() {
+            @Override
+            protected void updateItem(Advertisement ad, boolean empty) {
+                super.updateItem(ad, empty);
+                if (empty || ad == null) {
+                    setText("No ads found");
+                } else {
+                    // Display ad title and price
+                    setText(ad.getTitle() + " - " + ad.getPrice() + " T");
+                }
+            }
+        });
         // Get current user from session
         User currentUser = SessionManager.getCurrentUser();
 
