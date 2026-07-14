@@ -8,6 +8,7 @@ import com.model.User;
 import com.service.AdService;
 import com.service.CategoryService;
 import com.service.CityService;
+import com.util.NavigationUtil;
 import com.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -160,9 +161,7 @@ public class CreateAdController {
 
     @FXML
     private void cancel() {
-        BazarakFrontendApplication.showHomePage();
+        NavigationUtil.cancel();
     }
-
-
 
 }
