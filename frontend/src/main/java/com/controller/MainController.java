@@ -4,6 +4,7 @@ import com.BazarakFrontendApplication;
 import com.model.Advertisement;
 import com.model.User;
 import com.service.AdService;
+import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.AdCell;
 import javafx.collections.FXCollections;
@@ -136,37 +137,37 @@ public class MainController {
 
     @FXML
     private void goToCreateAd() {
-        BazarakFrontendApplication.showPostAdPage();
+        NavigationUtil.goToCreateAd();
     }
 
     @FXML
     private void goToFavorites() {
-        BazarakFrontendApplication.showFavoritesPage();
+        NavigationUtil.goToFavorites();
     }
 
     @FXML
     private void goToProfile() {
-        BazarakFrontendApplication.showProfilePage();
+        NavigationUtil.goToProfile();
     }
 
     @FXML
     private void goToAdmin() {
-        BazarakFrontendApplication.showAdminDashboard();
+        NavigationUtil.goToAdminDashboard();
     }
-
-    // ============================================
-    // LOGOUT
-    // ============================================
 
     @FXML
-    private void handleLogout() {
-        try {
-            com.service.AuthService.logout();
-            BazarakFrontendApplication.showLoginPage();
-        } catch (Exception e) {
-            errorLabel.setText("Logout failed: " + e.getMessage());
-        }
+    private void goToMyAds() {
+        NavigationUtil.goToMyAds();
     }
 
+    @FXML
+    private void goToChat() {
+        NavigationUtil.goToChat();
+    }
 
+    // LOGOUT
+    @FXML
+    private void handleLogout() {
+        NavigationUtil.logout();  // Handles logout + navigation
+    }
 }
