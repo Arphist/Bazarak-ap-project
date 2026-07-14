@@ -10,7 +10,7 @@ public class AdCell extends ListCell<Advertisement> {
         if (empty || ad == null) {
             setText(null);
         } else {
-            setText(ad.getTitle() + "\n💰 " + ad.getPrice() + " T");
+            setText(ad.getTitle() + "\n" + ad.getPrice() + " T");
         }
     }
 }
