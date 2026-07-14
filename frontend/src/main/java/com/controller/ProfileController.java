@@ -1,8 +1,10 @@
 package com.controller;
 
 import com.BazarakFrontendApplication;
+import com.fasterxml.jackson.databind.util.NativeImageUtil;
 import com.model.User;
 import com.service.AuthService;
+import com.util.NavigationUtil;
 import com.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -156,17 +158,12 @@ public class ProfileController {
 
     @FXML
     private void goToHome() {
-        BazarakFrontendApplication.showHomePage();
+        NavigationUtil.goToHome();
     }
 
     @FXML
     private void handleLogout() {
-        try {
-            AuthService.logout();
-            BazarakFrontendApplication.showLoginPage();
-        } catch (Exception e) {
-            errorLabel.setText("Logout failed: " + e.getMessage());
-        }
+        NavigationUtil.logout();
     }
 
 }
