@@ -102,11 +102,4 @@ public class NavigationUtil {
             goToLogin(); // Always go to login even if logout fails
         }
     }
-
-    /**
-     * Navigate to Homepage by pressing cancel-button
-     */
-    public static void cancel(){
-        BazarakFrontendApplication.showHomePage();
-    }
 }
