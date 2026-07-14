@@ -5,6 +5,8 @@ import com.model.Advertisement;
 import com.model.User;
 import com.service.AdService;
 import com.util.SessionManager;
+import com.view.AdCell;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,7 +25,7 @@ public class MainController {
     private TextField searchField;
 
     @FXML
-    private ListView<String> adListView;
+    private ListView<Advertisement> adListView;
 
     @FXML
     private Label welcomeLabel;
@@ -64,24 +66,14 @@ public class MainController {
 
     private void loadAds() {
         try {
-            // Fetch active ads from server
             List<Advertisement> ads = AdService.getActiveAds();
-
-            // Clear existing list
-            adListView.getItems().clear();
-
-            // Add each ad to the list view
-            for (Advertisement ad : ads) {
-                String displayText = ad.getTitle() + " - " + ad.getPrice() + " T";
-                adListView.getItems().add(displayText);
-            }
-
-            errorLabel.setText("");
-
+            adListView.setItems(FXCollections.observableArrayList(ads));
+            adListView.setCellFactory(lv -> new AdCell());
         } catch (Exception e) {
             errorLabel.setText("Failed to load ads: " + e.getMessage());
         }
     }
+
     // ============================================
     // SEARCH
     // ============================================
@@ -101,14 +93,13 @@ public class MainController {
             }
 
             if (results.isEmpty()) {
-                adListView.getItems().add("No ads found");
+                adListView.setPlaceholder(new Label("No ads found"));
             }
 
             // Update list view with search results
             adListView.getItems().clear();
-            for (Advertisement ad : results) {
-                adListView.getItems().add(ad.getTitle() + " - " + ad.getPrice() + " T");
-            }
+            adListView.getItems().addAll(results);
+
 
             errorLabel.setText("");
 
@@ -153,7 +144,6 @@ public class MainController {
             errorLabel.setText("Logout failed: " + e.getMessage());
         }
     }
-
 
 
 }
