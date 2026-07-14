@@ -161,7 +161,7 @@ public class CreateAdController {
 
     @FXML
     private void cancel() {
-        NavigationUtil.cancel();
+        NavigationUtil.goToHome();
     }
 
 }
