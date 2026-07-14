@@ -52,6 +52,19 @@ public class MainController {
                 }
             }
         });
+        // Handle double-click on ad to show details
+        adListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Advertisement selected = adListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    BazarakFrontendApplication.showAdDetailsPage(selected.getId());
+                }
+            }
+        });
+
+        // Search on Enter key
+        searchField.setOnAction(e -> handleSearch());
+
         // Get current user from session
         User currentUser = SessionManager.getCurrentUser();
 
