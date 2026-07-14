@@ -85,7 +85,7 @@ public class NavigationUtil {
      * This requires a history stack implementation
      */
     public static void goBack() {
-        // You can implement a history stack here
+        // Todo: You can implement a history stack here
         // For now, just go to home
         goToHome();
     }
@@ -101,5 +101,12 @@ public class NavigationUtil {
             System.err.println("Logout failed: " + e.getMessage());
             goToLogin(); // Always go to login even if logout fails
         }
+    }
+
+    /**
+     * Navigate to Homepage by pressing cancel-button
+     */
+    public static void cancel(){
+        BazarakFrontendApplication.showHomePage();
     }
 }
