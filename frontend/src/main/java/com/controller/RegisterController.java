@@ -3,6 +3,7 @@ package com.controller;
 import com.BazarakFrontendApplication;
 import com.model.User;
 import com.service.AuthService;
+import com.util.NavigationUtil;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -93,7 +94,7 @@ public class RegisterController {
     // ======== NAVIGATION ========
 
     @FXML
-    private void goToLogin() {
-        BazarakFrontendApplication.showLoginPage();
+    private void goToLogin(){
+        NavigationUtil.goToLogin();
     }
 }
