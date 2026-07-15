@@ -47,8 +47,13 @@ public class BazarakFrontendApplication extends Application {
         loadPage("/view/home.fxml", "Bazarak - Home");
     }
 
+    public static void showAdDetailsPage() {
+        //TODO: Is this working?
+        loadPage("/view/ad-details.fxml", "Bazarak - Ad Details");
+    }
+
     public static void showAdDetailsPage(Long adId) {
-        // We'll pass adId via controller later
+        //TODO: We'll pass adId via controller later
         loadPage("/view/ad-details.fxml", "Bazarak - Ad Details");
     }
 
