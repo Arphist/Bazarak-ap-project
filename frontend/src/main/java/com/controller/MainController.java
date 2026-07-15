@@ -4,6 +4,7 @@ import com.BazarakFrontendApplication;
 import com.model.Advertisement;
 import com.model.User;
 import com.service.AdService;
+import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.AdCell;
@@ -58,7 +59,8 @@ public class MainController {
             if (event.getClickCount() == 2) {
                 Advertisement selected = adListView.getSelectionModel().getSelectedItem();
                 if (selected != null) {
-                    BazarakFrontendApplication.showAdDetailsPage(selected.getId());
+                    DataHolder.setSelectedAdId(selected.getId());
+                    BazarakFrontendApplication.showAdDetailsPage();
                 }
             }
         });
