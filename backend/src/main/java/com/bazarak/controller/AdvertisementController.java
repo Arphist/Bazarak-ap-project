@@ -93,7 +93,7 @@ public class AdvertisementController {
             ad.setDescription(request.getDescription());
             ad.setPrice(request.getPrice());
 
-
+            //TODO: add addImage method
             Advertisement createdAd = advertisementService.createAd(ad, currentUser.getId(), request.getCityId(),request.getCategoryId());
 
             // 4. Return response
@@ -147,6 +147,7 @@ public class AdvertisementController {
             updatedAd.setCity(city);
             updatedAd.setCategory(category);
 
+            //TODO: add addImage method
             Advertisement savedAd = advertisementService.updateAd(id, updatedAd, currentUser.getId());
 
             Map<String, Object> response = new HashMap<>();
