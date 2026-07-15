@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.controller.AdDetailsController"
+      spacing="10" alignment="TOP_CENTER">
+
+    <!-- Title -->
+    <Label fx:id="titleLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <!-- Navigation Buttons -->
+    <HBox spacing="10">
+        <Button text="Back" onAction="#goBack" />      <!-- Links to goBack() -->
+        <Button text="Home" onAction="#goToHome" />   <!-- Links to goToHome() -->
+    </HBox>
+
+    <!-- Ad Details -->
+    <Label fx:id="priceLabel" />
+    <Label fx:id="categoryLabel" />
+    <Label fx:id="cityLabel" />
+    <Label fx:id="ownerLabel" />
+    <Label fx:id="statusLabel" />
+    <TextArea fx:id="descriptionArea" editable="false" wrapText="true" />
+
+    <!-- Action Buttons -->
+    <HBox spacing="10">
+        <Button text="Contact Seller" onAction="#goToChat" />
+<!--        <Button text="Add to Favorites" onAction="#addToFavorites" />-->
+    </HBox>
+
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
+
+</VBox>
