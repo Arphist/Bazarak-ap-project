@@ -148,7 +148,7 @@ public class NavigationUtil {
                 BazarakFrontendApplication.showAdminDashboard();
                 break;
             case PAGE_AD_DETAILS:
-                BazarakFrontendApplication.showAdDetailsPage(DataHolder.getSelectedAdId());
+                BazarakFrontendApplication.showAdDetailsPage();
                 break;
             case PAGE_CHAT:
                 BazarakFrontendApplication.showChatPage();
