@@ -204,7 +204,7 @@ public class UserService {
 
     public User getCurrentUserOrThrow(HttpSession session) {
         User currentUser = (User) session.getAttribute(USER_SESSION_KEY);
-        if(currentUser==null) throw new UnauthorizedAccessException("Please login to access your ads");
+        if(currentUser==null) throw new UnauthorizedAccessException("Please log in to the application");
         return currentUser;
     }
 
