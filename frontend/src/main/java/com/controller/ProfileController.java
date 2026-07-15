@@ -4,6 +4,7 @@ import com.BazarakFrontendApplication;
 import com.fasterxml.jackson.databind.util.NativeImageUtil;
 import com.model.User;
 import com.service.AuthService;
+import com.service.UserService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import javafx.fxml.FXML;
@@ -15,9 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class ProfileController {
 
-    // ============================================
     // FXML FIELDS
-    // ============================================
 
     @FXML
     private Label usernameLabel;
@@ -42,9 +41,8 @@ public class ProfileController {
 
     @FXML
     private PasswordField confirmPasswordField;
-    // ============================================
+
     // INITIALIZE
-    // ============================================
 
     @FXML
     private void initialize() {
@@ -64,9 +62,7 @@ public class ProfileController {
         }
     }
 
-    // ============================================
     // UPDATE PROFILE
-    // ============================================
 
     @FXML
     private void handleUpdateProfile() {
@@ -91,8 +87,7 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhoneNumber(phone);
 
-            // TODO: Call backend update API when available
-            // UserService.updateUser(currentUser);
+            UserService.updateProfile(currentUser);
 
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
@@ -107,9 +102,7 @@ public class ProfileController {
         }
     }
 
-    // ============================================
     // CHANGE PASSWORD
-    // ============================================
 
     @FXML
     private void handleChangePassword() {
@@ -133,8 +126,7 @@ public class ProfileController {
         }
 
         try {
-            // TODO: Call backend change password API when available
-            // AuthService.changePassword(oldPassword, newPassword);
+            UserService.changePassword(oldPassword, newPassword);
 
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
