@@ -1,4 +1,55 @@
 package com.service;
 
+import com.model.User;
+import com.util.Config;
+import com.util.HttpClientUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Map;
+
 public class UserService {
+    private final static HttpClient httpClient = HttpClientUtil.getHttpClient();
+    private final static ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
+
+    public static User updateProfile(User user) throws Exception {
+        String json = objectMapper.writeValueAsString(user);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/users/me/profile"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), User.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Update failed"));
+        }
+    }
+
+    public static void changePassword (String oldPassword, String newPassword) throws Exception{
+        Map<String, String> passwords = Map.of("oldPassword", oldPassword, "newPassword", newPassword);
+        String json = objectMapper.writeValueAsString(passwords);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/users/me/change-password"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200){
+            Map<String, String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Password change failed"));
+        }
+    }
+
+    //TODO: handle "change-photo" too.
 }
