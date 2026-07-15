@@ -1,5 +1,6 @@
 package com;
 
+import com.util.DataHolder;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -48,12 +49,6 @@ public class BazarakFrontendApplication extends Application {
     }
 
     public static void showAdDetailsPage() {
-        //TODO: Is this working?
-        loadPage("/view/ad-details.fxml", "Bazarak - Ad Details");
-    }
-
-    public static void showAdDetailsPage(Long adId) {
-        //TODO: We'll pass adId via controller later
         loadPage("/view/ad-details.fxml", "Bazarak - Ad Details");
     }
 
