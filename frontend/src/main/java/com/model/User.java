@@ -15,7 +15,6 @@ public class User {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime lastLogin;
 
     // Constructors
     public User() {}
@@ -48,8 +47,6 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
     public LocalDateTime getUpdatedAt() {return updatedAt;}
     public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;}
-    public LocalDateTime getLastLogin() {return lastLogin;}
-    public void setLastLogin(LocalDateTime lastLogin) {this.lastLogin = lastLogin;}
 
     public boolean isAdmin() {
         return "ADMIN".equalsIgnoreCase(role);
