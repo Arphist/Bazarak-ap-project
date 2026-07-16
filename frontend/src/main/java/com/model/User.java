@@ -1,5 +1,7 @@
 package com.model;
 
+import java.time.LocalDateTime;
+
 public class User {
     private Long id;
     private String username;
@@ -10,6 +12,10 @@ public class User {
     private String role;
     private String status;
     private String profilePhoto;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime lastLogin;
 
     // Constructors
     public User() {}
@@ -38,6 +44,12 @@ public class User {
     public void setStatus(String status) { this.status = status; }
     public String getProfilePhoto() { return profilePhoto; }
     public void setProfilePhoto(String profilePhoto) { this.profilePhoto = profilePhoto; }
+    public LocalDateTime getCreatedAt() {return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
+    public LocalDateTime getUpdatedAt() {return updatedAt;}
+    public void setUpdatedAt(LocalDateTime updatedAt) {this.updatedAt = updatedAt;}
+    public LocalDateTime getLastLogin() {return lastLogin;}
+    public void setLastLogin(LocalDateTime lastLogin) {this.lastLogin = lastLogin;}
 
     public boolean isAdmin() {
         return "ADMIN".equalsIgnoreCase(role);
