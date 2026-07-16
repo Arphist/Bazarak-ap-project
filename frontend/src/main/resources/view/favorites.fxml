@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="CONTROLLER_NAME"
-            prefHeight="400.0" prefWidth="600.0">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.controller.FavoriteController"
+      spacing="10" alignment="TOP_CENTER"
+      style="-fx-background-color: #f5f5f5;">
 
-</AnchorPane>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Header -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="← Back" onAction="#goToHome" />
+        <Label text="My Favorites" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    </HBox>
+
+    <!-- Count Label -->
+    <Label fx:id="countLabel" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+
+    <!-- Error Label -->
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
+
+    <!-- Favorites List -->
+    <ListView fx:id="favoritesListView" VBox.vgrow="ALWAYS" />
+
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Remove Selected" onAction="#removeSelectedFavorite" />
+        <Button text="Refresh" onAction="#loadFavorites" />
+        <Button text="View Ad" onAction="#goToAdDetails" />
+    </HBox>
+
+</VBox>
