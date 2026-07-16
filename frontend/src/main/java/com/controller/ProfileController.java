@@ -14,6 +14,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+import java.time.format.DateTimeFormatter;
+
 public class ProfileController {
 
     // FXML FIELDS
@@ -63,6 +65,21 @@ public class ProfileController {
             fullNameField.setText(currentUser.getFullName());
             emailField.setText(currentUser.getEmail());
             phoneField.setText(currentUser.getPhoneNumber());
+
+            // Display time information
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            if (currentUser.getCreatedAt() != null) {
+                createdAtLabel.setText("Account created: " + currentUser.getCreatedAt().format(formatter));
+            } else {
+                createdAtLabel.setText("Account created: N/A");
+            }
+
+            if (currentUser.getUpdatedAt() != null) {
+                updatedAtLabel.setText("Last updated: " + currentUser.getUpdatedAt().format(formatter));
+            } else {
+                updatedAtLabel.setText("Last updated: N/A");
+            }
         } else {
             errorLabel.setText("No user logged in");
         }
