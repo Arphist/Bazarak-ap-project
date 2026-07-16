@@ -56,7 +56,6 @@ public class FavoriteService {
         if (response.statusCode() == 200) {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
             Object favoritesObj = result.get("favorites");
-            //TODO: use other objects like 'count'
             if (favoritesObj != null) {
                 String json = objectMapper.writeValueAsString(favoritesObj);
                 return objectMapper.readValue(json, new TypeReference<List<Favorite>>() {
@@ -84,5 +83,23 @@ public class FavoriteService {
         }
     }
 
-    //TODO: handle "/count/{adId}" too.
+    /**
+     *  Get the number of favorites for a specific ad
+     */
+    public static Long getFavoriteCount (Long adId) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/favorites/count/"+adId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode()==200){
+            Map<String, Object> result = objectMapper.readValue(response.body(),Map.class);
+            Object count = result.get("favoriteCount");
+            if (count instanceof Number) {
+                return ((Number) count).longValue();
+            }
+        }
+        return 0L;
+    }
 }
