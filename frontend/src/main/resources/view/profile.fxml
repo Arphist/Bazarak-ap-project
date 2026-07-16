@@ -13,6 +13,12 @@
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.ProfileController">
 
+    <!-- Time Information -->
+    <VBox spacing="5">
+        <Label fx:id="createdAtLabel" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+        <Label fx:id="updatedAtLabel" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+    </VBox>
+
     <Label text="My Profile" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
 
     <Label fx:id="usernameLabel" style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
