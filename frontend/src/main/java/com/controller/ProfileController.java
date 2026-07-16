@@ -42,6 +42,12 @@ public class ProfileController {
     @FXML
     private PasswordField confirmPasswordField;
 
+    @FXML
+    private Label createdAtLabel;
+
+    @FXML
+    private Label updatedAtLabel;
+
     // INITIALIZE
 
     @FXML
@@ -87,13 +93,16 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhoneNumber(phone);
 
-            UserService.updateProfile(currentUser);
+            User updatedUser = UserService.updateProfile(currentUser);
+            SessionManager.setCurrentUser(updatedUser);
 
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
             alert.setContentText("Profile updated successfully!");
             alert.showAndWait();
+
+            loadUserProfile();
 
             errorLabel.setText("");
 
