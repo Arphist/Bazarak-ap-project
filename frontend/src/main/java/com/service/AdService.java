@@ -217,4 +217,25 @@ public class AdService {
             throw new Exception(error.getOrDefault("error", "Failed to mark as sold"));
         }
     }
+
+    public static List<Advertisement> getAdsByUser(User user) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/ads/user/"+user.getId()))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Object adsObj = responseBody.get("ads");
+            if (adsObj != null) {
+                String adsJson = objectMapper.writeValueAsString(adsObj);
+                return objectMapper.readValue(adsJson, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load ads: " + response.statusCode());
+        }
+    }
 }
