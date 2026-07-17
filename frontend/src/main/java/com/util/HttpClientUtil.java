@@ -4,13 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.net.http.HttpClient;
 import java.time.Duration;
 
 public class HttpClientUtil {
+    // CookieManager to store session cookies
+    private static final CookieManager cookieManager = new CookieManager(
+            (CookieStore) CookiePolicy.ACCEPT_ALL,  // Accept all cookies
+            null
+    );
+
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
-            .cookieHandler(new CookieManager())
+            .cookieHandler(cookieManager)
             .build();
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
@@ -22,5 +30,9 @@ public class HttpClientUtil {
 
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
+    }
+
+    public static void clearCookies() {
+        cookieManager.getCookieStore().removeAll();
     }
 }
