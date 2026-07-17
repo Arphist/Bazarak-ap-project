@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.model.Category;
 import com.model.Conversation;
+import com.model.Message;
 import com.util.Config;
 import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +67,55 @@ public class ConversationService {
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(),Map.class);
             throw new Exception(error.getOrDefault("error","Failed to load the conversation"));
+        }
+    }
+
+    public static Map<String, Object> startConversation(Long sellerId, Long adId) throws Exception {
+        // Build request body
+        Map<String, Long> requestBody = new HashMap<>();
+        requestBody.put("sellerId", sellerId);
+        requestBody.put("adId", adId);
+        String json = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/start"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", responseBody.get("id"));
+            result.put("message", responseBody.getOrDefault("message", "Conversation started successfully"));
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to start conversation"));
+        }
+    }
+
+    public static List<Message> getMessages(Long conversationId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/" + conversationId + "/messages"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Object messagesObj = responseBody.get("messages");
+            if (messagesObj != null) {
+                String messagesJson = objectMapper.writeValueAsString(messagesObj);
+                return objectMapper.readValue(messagesJson, new TypeReference<List<Message>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load messages"));
         }
     }
 }
