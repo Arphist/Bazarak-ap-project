@@ -7,9 +7,11 @@ import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CategoryService {
@@ -90,6 +92,25 @@ public class CategoryService {
             return objectMapper.readValue(response.body(), new TypeReference<Category>() {});
         } else {
             throw new Exception("Failed to load the category: " + response.statusCode());
+        }
+    }
+
+    public static List<Category> searchCategories (String keyword) throws Exception{
+        String url = Config.BASE_URL + "/categories/search";
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            url += "?keyword=" + URLEncoder.encode(keyword.trim(), StandardCharsets.UTF_8);
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<Category>>() {});
+        } else {
+            throw new Exception("Failed to load the categories: " + response.statusCode());
         }
     }
 }
