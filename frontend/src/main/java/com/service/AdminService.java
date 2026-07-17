@@ -48,4 +48,68 @@ public class AdminService {
             throw new Exception("Failed to load ads: " + response.statusCode());
         }
     }
+
+    public static Map<String,Object> approveAd (Advertisement ad)throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()+"/approve"))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Ad updated successfully"));
+            Object adObj = responseBody.get("ad");
+            if (adObj != null) {
+                String adJson = objectMapper.writeValueAsString(adObj);
+                result.put("ad", objectMapper.readValue(adJson, Advertisement.class));
+            } else {
+                result.put("ad", objectMapper.readValue(response.body(), Advertisement.class));
+            }
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to approve ad"));
+        }
+    }
+
+    public static Map<String,Object> rejectAd (Advertisement ad)throws Exception{
+        String json = objectMapper.writeValueAsString(ad);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()+"/reject"))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Ad updated successfully"));
+            result.put("reason",responseBody.get("reason"));
+            Object adObj = responseBody.get("ad");
+            if (adObj != null) {
+                String adJson = objectMapper.writeValueAsString(adObj);
+                result.put("ad", objectMapper.readValue(adJson, Advertisement.class));
+            } else {
+                result.put("ad", objectMapper.readValue(response.body(), Advertisement.class));
+            }
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to reject ad"));
+        }
+    }
+
+    public static void deleteAd (Advertisement ad) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to delete ad"));
+        }
+    }
 }
