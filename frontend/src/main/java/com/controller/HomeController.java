@@ -1,9 +1,8 @@
 package com.controller;
 
 import com.BazarakFrontendApplication;
-import com.model.Advertisement;
-import com.model.User;
-import com.service.AdService;
+import com.model.*;
+import com.service.*;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
@@ -11,6 +10,7 @@ import com.view.AdCell;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 
 import java.util.List;
 
@@ -32,6 +32,35 @@ public class HomeController {
 
     @FXML
     private Button adminButton;
+
+    // Advanced search fields
+
+    @FXML
+    private ComboBox<Category> categoryCombo;
+
+    @FXML
+    private ComboBox<City> cityCombo;
+
+    @FXML
+    private TextField minPriceField;
+
+    @FXML
+    private TextField maxPriceField;
+
+    @FXML
+    private ComboBox<String> sortByCombo;
+
+    @FXML
+    private ComboBox<String> sortOrderCombo;
+
+    @FXML
+    private Button clearFiltersButton;
+
+    @FXML
+    private HBox filterContainer;
+
+    @FXML
+    private ToggleButton filterToggleButton;
 
     // INITIALIZE
 
@@ -78,8 +107,56 @@ public class HomeController {
         }
 
 
-        // Load ads from backend
+        // Load data from backend
+        loadCategories();
+        loadCities();
+        loadSortOptions();
         loadAds();
+    }
+
+    // LOAD DATA
+
+    private void loadCategories() {
+        try {
+            List<Category> categories = CategoryService.getAllCategories();
+            categoryCombo.setItems(FXCollections.observableArrayList(categories));
+            categoryCombo.setPromptText("All Categories");
+            // Add a "null" option (show all)
+            Category allCategory = new Category();
+            allCategory.setId(null);
+            allCategory.setName("All Categories");
+            // We'll handle this differently - use null selection
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load categories: " + e.getMessage());
+        }
+    }
+
+    private void loadCities() {
+        try {
+            List<City> cities = CityService.getAllCities();
+            cityCombo.setItems(FXCollections.observableArrayList(cities));
+            cityCombo.setPromptText("All Cities");
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load cities: " + e.getMessage());
+        }
+    }
+
+    private void loadSortOptions() {
+        sortByCombo.setItems(FXCollections.observableArrayList(
+                "Newest First",
+                "Oldest First",
+                "Price: Low to High",
+                "Price: High to Low",
+                "Title: A to Z",
+                "Title: Z to A"
+        ));
+        sortByCombo.setValue("Newest First");
+
+        sortOrderCombo.setItems(FXCollections.observableArrayList(
+                "Descending",
+                "Ascending"
+        ));
+        sortOrderCombo.setValue("Descending");
     }
 
     // LOAD ADS
