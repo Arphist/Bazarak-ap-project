@@ -81,6 +81,13 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Retrieves a category by its unique identifier.
+     *
+     * @param id the ID of the category to retrieve
+     * @return the requested category
+     * @throws Exception if the request fails or the category cannot be loaded
+     */
     public static Category getCategoryById(Long id) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/categories/"+id))
@@ -96,6 +103,13 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Searches categories using the specified keyword.
+     *
+     * @param keyword the keyword used to search categories
+     * @return a list of matching categories
+     * @throws Exception if the request fails
+     */
     public static List<Category> searchCategories (String keyword) throws Exception{
         String url = Config.BASE_URL + "/categories/search";
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -115,6 +129,13 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Creates a new category in the system.
+     *
+     * @param category the category to create
+     * @return the created category
+     * @throws Exception if the category cannot be created
+     */
     public static Category createCategory (Category category) throws Exception{
         String json = objectMapper.writeValueAsString(category);
         HttpRequest request = HttpRequest.newBuilder()
@@ -133,6 +154,14 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Updates an existing category.
+     *
+     * @param id the ID of the category to update
+     * @param category the updated category information
+     * @return the updated category
+     * @throws Exception if the update operation fails
+     */
     public static Category updateCategory (Long id, Category category) throws Exception{
         String json = objectMapper.writeValueAsString(category);
         HttpRequest request=HttpRequest.newBuilder()
@@ -149,6 +178,13 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Deletes a category by its unique identifier.
+     *
+     * @param id the ID of the category to delete
+     * @return the success message returned by the server
+     * @throws Exception if the delete operation fails
+     */
     public static String deleteCategory (Long id) throws Exception{
         HttpRequest request=HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/categories/"+id))
