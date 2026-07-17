@@ -48,6 +48,34 @@ public class CityService {
         }
     }
 
+    /**
+     * Search cities by keyword.
+     *
+     * @param keyword the search keyword
+     * @return list of matching cities
+     */
+    public static List<City> searchCities(String keyword) throws Exception {
+        String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/cities/search?keyword=" + encodedKeyword))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String,Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object cities = responseObj.get("cities");
+            if (cities!=null){
+                String citiesJson = objectMapper.writeValueAsString(cities);
+                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to fetch cities by province: " + response.statusCode());
+        }
+    }
+
 
     /**
      * Fetch cities by province.
