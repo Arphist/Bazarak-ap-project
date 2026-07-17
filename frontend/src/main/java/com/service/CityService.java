@@ -10,7 +10,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CityService {
 
@@ -31,7 +33,14 @@ public class CityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<City>>() {});
+            Map<String,Object> result= objectMapper.readValue(response.body(), Map.class);
+            Object cities = result.get("cities");
+            if (cities!=null){
+                String citiesJson = objectMapper.writeValueAsString(cities);
+                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {});
+            }else{
+                return new ArrayList<>();
+            }
         } else {
             throw new Exception("Failed to fetch cities: " + response.statusCode());
         }
