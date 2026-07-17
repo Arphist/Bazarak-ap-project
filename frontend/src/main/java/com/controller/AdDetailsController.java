@@ -85,6 +85,8 @@ public class AdDetailsController {
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
 
+            //TODO: use isFavorited and favoriteCount
+
             // TODO: load all images
             // TODO: add addToFavorite button and then implement the logic
             //  from backend-service
