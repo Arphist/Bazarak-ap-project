@@ -178,24 +178,36 @@ public class HomeController {
         String keyword = searchField.getText().trim();
 
         try {
+            // Get filter values
+            Long categoryId = categoryCombo.getValue() != null ? categoryCombo.getValue().getId() : null;
+            Long cityId = cityCombo.getValue() != null ? cityCombo.getValue().getId() : null;
+            Long minPrice = parsePrice(minPriceField.getText());
+            Long maxPrice = parsePrice(maxPriceField.getText());
+
+            // Parse sort options
+            String sortBy = parseSortBy(sortByCombo.getValue());
+            String sortOrder = parseSortOrder(sortOrderCombo.getValue());
+
             List<Advertisement> results;
 
-            // If no keyword, show all active ads
-            if (keyword.isEmpty()) {
+            // If no keyword and no filters, show all active ads
+            if (keyword.isEmpty() && categoryId == null && cityId == null &&
+                    minPrice == null && maxPrice == null) {
                 results = AdService.getActiveAds();
             } else {
-                results = AdService.searchAds(keyword);
+                // Call the full search with all filters
+                results = AdService.searchAds(
+                        keyword.isEmpty() ? null : keyword,
+                        categoryId,
+                        cityId,
+                        minPrice,
+                        maxPrice,
+                        sortBy,
+                        sortOrder
+                );
             }
 
-            if (results.isEmpty()) {
-                adListView.setPlaceholder(new Label("No ads found"));
-            }
-
-            // Update list view with search results
-            adListView.getItems().clear();
-            adListView.getItems().addAll(results);
-
-
+            updateAdListView(results);
             errorLabel.setText("");
 
         } catch (Exception e) {
