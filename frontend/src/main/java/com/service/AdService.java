@@ -49,7 +49,8 @@ public class AdService {
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> map = new HashMap<>();
-            map.put("message", responseBody.get("message"));
+            map.put("isFavorited", responseBody.getOrDefault("isFavorited", false));
+            map.put("favoriteCount", responseBody.get("favoriteCount"));
             map.put("ad", responseBody.get("ad"));
             return map;
         } else {
