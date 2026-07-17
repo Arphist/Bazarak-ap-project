@@ -107,7 +107,7 @@ public class AdminAdvertisementController {
             Advertisement rejectedAd = advertisementService.rejectAd(id, reason);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("id", rejectedAd.getId());
+            response.put("ad", rejectedAd);
             response.put("title", rejectedAd.getTitle());
             response.put("status", rejectedAd.getStatus());
             response.put("reason", reason);

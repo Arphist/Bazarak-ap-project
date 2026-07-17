@@ -81,8 +81,7 @@ public class AdminUserController {
             blockedUser.setPassword(null);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("id", blockedUser.getId());
-            response.put("username", blockedUser.getUsername());
+            response.put("user", blockedUser);
             response.put("status", blockedUser.getStatus());
             response.put("message", "User blocked successfully");
 
