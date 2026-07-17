@@ -1,5 +1,6 @@
 package com.service;
 
+import com.model.Advertisement;
 import com.model.User;
 import com.util.Config;
 import com.util.HttpClientUtil;
@@ -9,13 +10,14 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UserService {
     private final static HttpClient httpClient = HttpClientUtil.getHttpClient();
     private final static ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
 
-    public static User updateProfile(User user) throws Exception {
+    public static Map<String,Object> updateProfile(User user) throws Exception {
         String json = objectMapper.writeValueAsString(user);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/users/me/profile"))
@@ -26,7 +28,17 @@ public class UserService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), User.class);
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Profile updated successfully"));
+            Object userObj = responseBody.get("user");
+            if (userObj != null) {
+                String adJson = objectMapper.writeValueAsString(userObj);
+                result.put("user", objectMapper.readValue(adJson, User.class));
+            } else {
+                result.put("user", objectMapper.readValue(response.body(), User.class));
+            }
+            return result;
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Update failed"));
