@@ -112,4 +112,57 @@ public class AdminService {
             throw new Exception(error.getOrDefault("error", "Failed to delete ad"));
         }
     }
+
+    public static List<Advertisement> getAdsByStatus (String status, String sortBy, String sortOrder) throws Exception{
+        // Build query parameters
+        StringBuilder query = new StringBuilder();
+        query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
+        query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
+        String url = Config.BASE_URL + "/admin/ads/status/"+status+"?" + query.toString();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object adsObj = result.get("ads");
+            if (adsObj != null) {
+                String json = objectMapper.writeValueAsString(adsObj);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {
+                });
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load ads: " + response.statusCode());
+        }
+    }
+
+    public static Map<String, Object> getDashboardStats() throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/admin/ads/dashboard"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("totalAds", ((Number) responseBody.getOrDefault("totalAds", 0)).longValue());
+            result.put("pendingAds", ((Number) responseBody.getOrDefault("pendingAds", 0)).longValue());
+            result.put("activeAds", ((Number) responseBody.getOrDefault("activeAds", 0)).longValue());
+            result.put("adsByCategory", responseBody.getOrDefault("adsByCategory", List.of()));
+            result.put("adsByCity", responseBody.getOrDefault("adsByCity", List.of()));
+            result.put("recentAds", ((Number) responseBody.getOrDefault("recentAds", 0)).intValue());
+
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load stats"));
+        }
+    }
 }
