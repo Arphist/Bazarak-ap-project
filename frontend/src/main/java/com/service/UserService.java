@@ -17,6 +17,13 @@ public class UserService {
     private final static HttpClient httpClient = HttpClientUtil.getHttpClient();
     private final static ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
 
+    /**
+     * Updates the profile information of the current user.
+     *
+     * @param user the updated user information
+     * @return a map containing the updated user and the server message
+     * @throws Exception if the profile update fails
+     */
     public static Map<String,Object> updateProfile(User user) throws Exception {
         String json = objectMapper.writeValueAsString(user);
         HttpRequest request = HttpRequest.newBuilder()
@@ -45,6 +52,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Changes the password of the current user.
+     *
+     * @param oldPassword the current password
+     * @param newPassword the new password
+     * @throws Exception if the password change fails
+     */
     public static void changePassword (String oldPassword, String newPassword) throws Exception{
         Map<String, String> passwords = Map.of("oldPassword", oldPassword, "newPassword", newPassword);
         String json = objectMapper.writeValueAsString(passwords);
