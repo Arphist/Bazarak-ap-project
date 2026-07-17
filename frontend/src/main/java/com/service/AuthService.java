@@ -74,5 +74,6 @@ public class AuthService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         SessionManager.clearSession();
+        HttpClientUtil.clearCookies();
     }
 }
