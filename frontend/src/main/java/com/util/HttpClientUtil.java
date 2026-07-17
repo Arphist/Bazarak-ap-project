@@ -12,8 +12,8 @@ import java.time.Duration;
 public class HttpClientUtil {
     // CookieManager to store session cookies
     private static final CookieManager cookieManager = new CookieManager(
-            (CookieStore) CookiePolicy.ACCEPT_ALL,  // Accept all cookies
-            null
+            null,  // Default CookieStore
+            CookiePolicy.ACCEPT_ALL  // CookiePolicy goes here!
     );
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
