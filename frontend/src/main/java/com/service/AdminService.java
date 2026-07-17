@@ -165,4 +165,32 @@ public class AdminService {
             throw new Exception(error.getOrDefault("error", "Failed to load stats"));
         }
     }
+
+    public static List<Advertisement> getAllAds (String sortBy, String sortOrder) throws Exception{
+        // Build query parameters
+        StringBuilder query = new StringBuilder();
+        query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
+        query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
+        String url = Config.BASE_URL + "/admin/ads/all?" + query.toString();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object adsObj = result.get("ads");
+            if (adsObj != null) {
+                String json = objectMapper.writeValueAsString(adsObj);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {
+                });
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load ads: " + response.statusCode());
+        }
+    }
 }
