@@ -77,4 +77,19 @@ public class CategoryService {
             throw new Exception("Failed to fetch sub-categories: " + response.statusCode());
         }
     }
+
+    public static Category getCategoryById(Long id) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/categories/"+id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<Category>() {});
+        } else {
+            throw new Exception("Failed to load the category: " + response.statusCode());
+        }
+    }
 }
