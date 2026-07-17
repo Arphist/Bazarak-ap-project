@@ -13,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 public class CategoryService {
 
@@ -111,6 +112,55 @@ public class CategoryService {
             return objectMapper.readValue(response.body(), new TypeReference<List<Category>>() {});
         } else {
             throw new Exception("Failed to load the categories: " + response.statusCode());
+        }
+    }
+
+    public static Category createCategory (Category category) throws Exception{
+        String json = objectMapper.writeValueAsString(category);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/categories"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode()==200||response.statusCode()==201){
+            return objectMapper.readValue(response.body(), new TypeReference<Category>(){});
+        }else{
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to create category"));
+        }
+    }
+
+    public static Category updateCategory (Long id, Category category) throws Exception{
+        String json = objectMapper.writeValueAsString(category);
+        HttpRequest request=HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/categories/"+id))
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode()==200){
+            return objectMapper.readValue(response.body(), new TypeReference<Category>() {});
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to update category"));
+        }
+    }
+
+    public static String deleteCategory (Long id) throws Exception{
+        HttpRequest request=HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/categories/"+id))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode()==200){
+            return objectMapper.readValue(response.body(),Map.class).get("message").toString();
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to delete category"));
         }
     }
 }
