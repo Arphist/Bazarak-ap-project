@@ -17,6 +17,12 @@ public class FavoriteService {
     private final static HttpClient httpClient = HttpClientUtil.getHttpClient();
     private final static ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
 
+    /**
+     * Adds an advertisement to the current user's favorites.
+     *
+     * @param adId the ID of the advertisement to add
+     * @throws Exception if the advertisement cannot be added to favorites
+     */
     public static void addToFavorite(Long adId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/favorites/" + adId))
@@ -31,6 +37,12 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Removes an advertisement from the current user's favorites.
+     *
+     * @param adId the ID of the advertisement to remove
+     * @throws Exception if the advertisement cannot be removed from favorites
+     */
     public static void removeFavorite(Long adId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/favorites/" + adId))
@@ -45,6 +57,12 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Retrieves all favorite advertisements of the current user.
+     *
+     * @return list of favorite advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Favorite> getFavorites() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/favorites"))
@@ -67,6 +85,13 @@ public class FavoriteService {
         }
     }
 
+    /**
+     * Checks whether an advertisement is in the current user's favorites.
+     *
+     * @param adId the ID of the advertisement
+     * @return true if the advertisement is favorited, otherwise false
+     * @throws Exception if the request fails
+     */
     public static boolean isFavorited(Long adId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/favorites/check/" + adId))
@@ -84,7 +109,11 @@ public class FavoriteService {
     }
 
     /**
-     *  Get the number of favorites for a specific ad
+     * Gets the number of users who have favorited a specific advertisement.
+     *
+     * @param adId the ID of the advertisement
+     * @return the number of favorites
+     * @throws Exception if the request fails
      */
     public static Long getFavoriteCount (Long adId) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
