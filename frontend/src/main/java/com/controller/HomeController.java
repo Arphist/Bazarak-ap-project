@@ -11,6 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -34,7 +35,6 @@ public class HomeController {
     private Button adminButton;
 
     // Advanced search fields
-
     @FXML
     private ComboBox<Category> categoryCombo;
 
@@ -57,7 +57,7 @@ public class HomeController {
     private Button clearFiltersButton;
 
     @FXML
-    private HBox filterContainer;
+    private VBox filterContainer;
 
     @FXML
     private ToggleButton filterToggleButton;
@@ -112,6 +112,12 @@ public class HomeController {
         loadCities();
         loadSortOptions();
         loadAds();
+
+        // Hide filters by default
+        if (filterContainer != null) {
+            filterContainer.setVisible(false);
+            filterContainer.setManaged(false);
+        }
     }
 
     // LOAD DATA
