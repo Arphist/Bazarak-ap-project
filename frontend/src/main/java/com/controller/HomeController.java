@@ -50,9 +50,6 @@ public class HomeController {
     private ComboBox<String> sortByCombo;
 
     @FXML
-    private ComboBox<String> sortOrderCombo;
-
-    @FXML
     private Button clearFiltersButton;
 
     @FXML
@@ -156,12 +153,6 @@ public class HomeController {
                 "Title: Z to A"
         ));
         sortByCombo.setValue("Newest First");
-
-        sortOrderCombo.setItems(FXCollections.observableArrayList(
-                "Descending",
-                "Ascending"
-        ));
-        sortOrderCombo.setValue("Descending");
     }
 
     // LOAD ADS
@@ -191,7 +182,7 @@ public class HomeController {
 
             // Parse sort options
             String sortBy = parseSortBy(sortByCombo.getValue());
-            String sortOrder = parseSortOrder(sortOrderCombo.getValue());
+            String sortOrder = parseSortOrder(sortByCombo.getValue());
 
             List<Advertisement> results;
 
@@ -230,7 +221,6 @@ public class HomeController {
         minPriceField.clear();
         maxPriceField.clear();
         sortByCombo.setValue("Newest First");
-        sortOrderCombo.setValue("Descending");
         loadAds();
     }
 
