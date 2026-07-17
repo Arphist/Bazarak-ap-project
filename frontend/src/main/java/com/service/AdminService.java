@@ -28,7 +28,7 @@ public class AdminService {
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = adsUrl+"pending?" + query.toString();
+        String url = adsUrl + "pending?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -120,7 +120,7 @@ public class AdminService {
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = adsUrl+"status/" + status + "?" + query.toString();
+        String url = adsUrl + "status/" + status + "?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -145,7 +145,7 @@ public class AdminService {
 
     public static Map<String, Object> getDashboardStats() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(adsUrl+"dashboard"))
+                .uri(URI.create(adsUrl + "dashboard"))
                 .GET()
                 .build();
 
@@ -173,7 +173,7 @@ public class AdminService {
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = adsUrl+"all?" + query.toString();
+        String url = adsUrl + "all?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -196,4 +196,41 @@ public class AdminService {
         }
     }
 
+    // OPERATIONS ON USERS
+    public static List<User> getAllUsers() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl + "all-users"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object usersObj = result.get("users");
+            if (usersObj != null) {
+                String json = objectMapper.writeValueAsString(usersObj);
+                return objectMapper.readValue(json, new TypeReference<List<User>>() {
+                });
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load users: " + response.statusCode());
+        }
+    }
+
+    public static User getUserDetails(Long userId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl + userId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<User>() {});
+        } else {
+            throw new Exception("User not found");
+        }
+    }
 }
