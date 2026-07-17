@@ -11,6 +11,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public class AdService {
         }
     }
     // Create new ad
-    public static Advertisement createAd(Advertisement ad) throws Exception {
+    public static Map<String,Object> createAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -88,8 +89,11 @@ public class AdService {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
             Long id = ((Number) result.get("id")).longValue();
 
-            // Get the full ad details
-            return getAdById(id);
+            // Get the full ad details + the backend-message
+            Map<String,Object> map = new HashMap<>();
+            map.put("message",result.get("message"));
+            map.put("ad",getAdById(id));
+            return map;
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to create ad"));
