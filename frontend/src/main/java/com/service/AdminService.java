@@ -233,4 +233,54 @@ public class AdminService {
             throw new Exception("User not found");
         }
     }
+
+    public static Map<String, Object> blockUser (Long userId) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl+userId+"/block"))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200){
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+                Map<String,Object> result = new HashMap<>();
+                result.put("message",responseBody.get("message"));
+                Object blockedUserObj = responseBody.get("user");
+                if (blockedUserObj != null){
+                    String userJson = objectMapper.writeValueAsString(blockedUserObj);
+                    result.put("user", objectMapper.readValue(userJson, User.class));
+                }else{
+                    result.put("user", objectMapper.readValue(response.body(),Map.class));
+                }
+                return result;
+        }else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to block user"));
+        }
+    }
+
+    public static Map<String, Object> unblockUser (Long userId) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl+userId+"/unblock"))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200){
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String,Object> result = new HashMap<>();
+            result.put("message",responseBody.get("message"));
+            Object unblockedUserObj = responseBody.get("user");
+            if (unblockedUserObj != null){
+                String userJson = objectMapper.writeValueAsString(unblockedUserObj);
+                result.put("user", objectMapper.readValue(userJson, User.class));
+            }else{
+                result.put("user", objectMapper.readValue(response.body(),Map.class));
+            }
+            return result;
+        }else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to unblock user"));
+        }
+    }
 }
