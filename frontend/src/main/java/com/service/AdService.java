@@ -2,6 +2,7 @@ package com.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.model.Advertisement;
+import com.model.User;
 import com.util.Config;
 import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +30,8 @@ public class AdService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<List<Advertisement>>() {
+            });
         } else {
             throw new Exception("Failed to load ads: " + response.statusCode());
         }
@@ -52,6 +54,7 @@ public class AdService {
     }
 
     // Search ads
+
     /**
      * Search ads with all filters and sorting
      */
@@ -111,7 +114,8 @@ public class AdService {
             Object adsObj = result.get("results");
             if (adsObj != null) {
                 String json = objectMapper.writeValueAsString(adsObj);
-                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {
+                });
             }
             return new ArrayList<>();
         } else {
@@ -120,7 +124,7 @@ public class AdService {
     }
 
     // Create new ad
-    public static Map<String,Object> createAd(Advertisement ad) throws Exception {
+    public static Map<String, Object> createAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -136,9 +140,9 @@ public class AdService {
             Long id = ((Number) result.get("id")).longValue();
 
             // Get the full ad details + the backend-message
-            Map<String,Object> map = new HashMap<>();
-            map.put("message",result.get("message"));
-            map.put("ad",getAdById(id));
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", result.get("message"));
+            map.put("ad", getAdById(id));
             return map;
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
@@ -146,5 +150,31 @@ public class AdService {
         }
     }
 
+    // Update an ad
+    public static Map<String, Object> updateAd(Advertisement ad) throws Exception {
+        String json = objectMapper.writeValueAsString(ad);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/ads/" + ad.getId()))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
 
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Ad updated successfully"));
+            Object adObj = responseBody.get("ad");
+            if (adObj != null) {
+                String adJson = objectMapper.writeValueAsString(adObj);
+                result.put("ad", objectMapper.readValue(adJson, Advertisement.class));
+            } else {
+                result.put("ad", objectMapper.readValue(response.body(), Advertisement.class));
+            }
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Update failed"));
+        }
+    }
 }
