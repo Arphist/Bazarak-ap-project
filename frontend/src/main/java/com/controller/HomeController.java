@@ -14,11 +14,9 @@ import javafx.scene.control.*;
 
 import java.util.List;
 
-public class MainController {
+public class HomeController {
 
-    // ============================================
     // FXML FIELDS
-    // ============================================
 
     @FXML
     private TextField searchField;
@@ -35,9 +33,7 @@ public class MainController {
     @FXML
     private Button adminButton;
 
-    // ============================================
     // INITIALIZE
-    // ============================================
 
     @FXML
     private void initialize() {
@@ -86,9 +82,7 @@ public class MainController {
         loadAds();
     }
 
-    // ============================================
     // LOAD ADS
-    // ============================================
 
     private void loadAds() {
         try {
@@ -100,9 +94,7 @@ public class MainController {
         }
     }
 
-    // ============================================
     // SEARCH
-    // ============================================
 
     @FXML
     private void handleSearch() {
@@ -133,9 +125,8 @@ public class MainController {
             errorLabel.setText("Search failed: " + e.getMessage());
         }
     }
-    // ============================================
+
     // NAVIGATION
-    // ============================================
 
     @FXML
     private void goToCreateAd() {
