@@ -25,6 +25,7 @@ public class CityService {
      * Fetch all cities from the backend.
      *
      * @return list of all cities
+     * @throws Exception if the request fails
      */
     public static List<City> getAllCities() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -49,6 +50,13 @@ public class CityService {
         }
     }
 
+    /**
+     * Retrieves a city by its unique identifier.
+     *
+     * @param id the ID of the city to retrieve
+     * @return the requested city
+     * @throws Exception if the request fails or the city cannot be loaded
+     */
     public static City getCityById(Long id) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+ "/cities/"+id))
@@ -70,6 +78,7 @@ public class CityService {
      *
      * @param keyword the search keyword
      * @return list of matching cities
+     * @throws Exception if the request fails
      */
     public static List<City> searchCities(String keyword) throws Exception {
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
@@ -94,12 +103,12 @@ public class CityService {
         }
     }
 
-
     /**
      * Fetch cities by province.
      *
      * @param province the name of the province
      * @return list of cities in that province
+     * @throws Exception if the request fails
      */
     public static List<City> getCitiesByProvince(String province) throws Exception {
         String encodedProvince = URLEncoder.encode(province, StandardCharsets.UTF_8);
@@ -124,6 +133,13 @@ public class CityService {
         }
     }
 
+    /**
+     * Creates a new city in the system.
+     *
+     * @param city the city to create
+     * @return the created city
+     * @throws Exception if the city cannot be created
+     */
     public static City createCity (City city) throws Exception {
         String json = objectMapper.writeValueAsString(city);
         HttpRequest request = HttpRequest.newBuilder()
@@ -141,6 +157,14 @@ public class CityService {
         }
     }
 
+    /**
+     * Updates an existing city.
+     *
+     * @param id the ID of the city to update
+     * @param city the updated city information
+     * @return the updated city
+     * @throws Exception if the update operation fails
+     */
     public static City updateCity (Long id, City city) throws Exception {
         String json = objectMapper.writeValueAsString(city);
         HttpRequest request = HttpRequest.newBuilder()
@@ -158,6 +182,13 @@ public class CityService {
         }
     }
 
+    /**
+     * Deletes a city by its unique identifier.
+     *
+     * @param id the ID of the city to delete
+     * @return the success message returned by the server
+     * @throws Exception if the delete operation fails
+     */
     public static String deleteCity (Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/cities/"+id))
