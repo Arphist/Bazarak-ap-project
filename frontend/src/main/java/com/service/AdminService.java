@@ -19,21 +19,23 @@ public class AdminService {
 
     private static final HttpClient httpClient = HttpClientUtil.getHttpClient();
     private static final ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
+    private static final String adsUrl = Config.BASE_URL + "/admin/ads/";
+    private static final String usersUrl = Config.BASE_URL + "/admin/users/";
 
-    // Get pending ads
-    public static List<Advertisement> getPendingAds (String sortBy, String sortOrder) throws Exception{
+    // OPERATIONS ON ADS
+    public static List<Advertisement> getPendingAds(String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = Config.BASE_URL + "/admin/ads/pending?" + query.toString();
+        String url = adsUrl+"pending?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
@@ -49,12 +51,12 @@ public class AdminService {
         }
     }
 
-    public static Map<String,Object> approveAd (Advertisement ad)throws Exception{
+    public static Map<String, Object> approveAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()+"/approve"))
+                .uri(URI.create(adsUrl + ad.getId() + "/approve"))
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> result = new HashMap<>();
@@ -73,18 +75,18 @@ public class AdminService {
         }
     }
 
-    public static Map<String,Object> rejectAd (Advertisement ad)throws Exception{
+    public static Map<String, Object> rejectAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()+"/reject"))
+                .uri(URI.create(adsUrl + ad.getId() + "/reject"))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> result = new HashMap<>();
             result.put("message", responseBody.getOrDefault("message", "Ad updated successfully"));
-            result.put("reason",responseBody.get("reason"));
+            result.put("reason", responseBody.get("reason"));
             Object adObj = responseBody.get("ad");
             if (adObj != null) {
                 String adJson = objectMapper.writeValueAsString(adObj);
@@ -99,13 +101,13 @@ public class AdminService {
         }
     }
 
-    public static void deleteAd (Advertisement ad) throws Exception{
+    public static void deleteAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/admin/ads/"+ad.getId()))
+                .uri(URI.create(adsUrl + ad.getId()))
                 .DELETE()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
@@ -113,19 +115,19 @@ public class AdminService {
         }
     }
 
-    public static List<Advertisement> getAdsByStatus (String status, String sortBy, String sortOrder) throws Exception{
+    public static List<Advertisement> getAdsByStatus(String status, String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = Config.BASE_URL + "/admin/ads/status/"+status+"?" + query.toString();
+        String url = adsUrl+"status/" + status + "?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
@@ -141,13 +143,13 @@ public class AdminService {
         }
     }
 
-    public static Map<String, Object> getDashboardStats() throws Exception{
+    public static Map<String, Object> getDashboardStats() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/admin/ads/dashboard"))
+                .uri(URI.create(adsUrl+"dashboard"))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
@@ -166,19 +168,19 @@ public class AdminService {
         }
     }
 
-    public static List<Advertisement> getAllAds (String sortBy, String sortOrder) throws Exception{
+    public static List<Advertisement> getAllAds(String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
         query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
         query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
-        String url = Config.BASE_URL + "/admin/ads/all?" + query.toString();
+        String url = adsUrl+"all?" + query.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
@@ -193,4 +195,5 @@ public class AdminService {
             throw new Exception("Failed to load ads: " + response.statusCode());
         }
     }
+
 }
