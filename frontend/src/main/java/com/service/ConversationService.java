@@ -25,6 +25,12 @@ public class ConversationService {
     private static final ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
     private static final String url = Config.BASE_URL + "/conversations";
 
+    /**
+     * Retrieves all conversations from the backend.
+     *
+     * @return list of all conversations
+     * @throws Exception if the request fails
+     */
     public static List<Conversation> getAllConversations() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -48,6 +54,13 @@ public class ConversationService {
         }
     }
 
+    /**
+     * Retrieves a conversation by its unique identifier.
+     *
+     * @param id the ID of the conversation to retrieve
+     * @return the requested conversation
+     * @throws Exception if the request fails or the conversation cannot be loaded
+     */
     public static Conversation getConversation (Long id) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url+"/"+id))
@@ -70,6 +83,14 @@ public class ConversationService {
         }
     }
 
+    /**
+     * Starts a new conversation between the current user and a seller.
+     *
+     * @param sellerId the ID of the seller
+     * @param adId the ID of the advertisement
+     * @return a map containing the conversation ID and server message
+     * @throws Exception if the conversation cannot be started
+     */
     public static Map<String, Object> startConversation(Long sellerId, Long adId) throws Exception {
         // Build request body
         Map<String, Long> requestBody = new HashMap<>();
@@ -97,6 +118,13 @@ public class ConversationService {
         }
     }
 
+    /**
+     * Retrieves all messages of a conversation.
+     *
+     * @param conversationId the ID of the conversation
+     * @return list of messages in the conversation
+     * @throws Exception if the request fails or messages cannot be loaded
+     */
     public static List<Message> getMessages(Long conversationId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/" + conversationId + "/messages"))
