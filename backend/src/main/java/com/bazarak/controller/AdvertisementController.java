@@ -208,9 +208,9 @@ public class AdvertisementController {
             Advertisement result = advertisementService.markAsSold(advertisement, currentUser.getId());
 
             Map<String, Object> response = new HashMap<>();
-            response.put("id", result.getId());
             response.put("title", result.getTitle());
             response.put("status", result.getStatus());
+            response.put("ad", result);
             response.put("message", "Ad marked as sold successfully");
 
             return ResponseEntity.ok(response);
