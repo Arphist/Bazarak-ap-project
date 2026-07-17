@@ -215,6 +215,82 @@ public class HomeController {
         }
     }
 
+    // CLEAR FILTERS
+
+    @FXML
+    private void clearFilters() {
+        searchField.clear();
+        categoryCombo.setValue(null);
+        cityCombo.setValue(null);
+        minPriceField.clear();
+        maxPriceField.clear();
+        sortByCombo.setValue("Newest First");
+        sortOrderCombo.setValue("Descending");
+        loadAds();
+    }
+
+    // TOGGLE FILTERS
+
+    @FXML
+    private void toggleFilters() {
+        if (filterContainer != null) {
+            boolean visible = !filterContainer.isVisible();
+            filterContainer.setVisible(visible);
+            filterContainer.setManaged(visible);
+            if (filterToggleButton != null) {
+                filterToggleButton.setText(visible ? "Hide Filters ▲" : "Show Filters ▼");
+            }
+        }
+    }
+
+    // HELPER METHODS
+
+    private Long parsePrice(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            String clean = text.trim().replace(",", "");
+            return Long.parseLong(clean);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String parseSortBy(String value) {
+        if (value == null) return "created_at";
+        switch (value) {
+            case "Oldest First":
+                return "created_at_asc";
+            case "Price: Low to High":
+                return "price_asc";
+            case "Price: High to Low":
+                return "price_desc";
+            case "Title: A to Z":
+                return "title_asc";
+            case "Title: Z to A":
+                return "title_desc";
+            case "Newest First":
+            default:
+                return "created_at_desc";
+        }
+    }
+
+    private String parseSortOrder(String value) {
+        if (value == null) return "desc";
+        return "asc".equalsIgnoreCase(value) ? "asc" : "desc";
+    }
+
+    private void updateAdListView(List<Advertisement> ads) {
+        adListView.getItems().clear();
+        if (ads.isEmpty()) {
+            adListView.setPlaceholder(new Label("No ads found"));
+        } else {
+            adListView.setPlaceholder(null);
+            adListView.getItems().addAll(ads);
+        }
+    }
+
     // NAVIGATION
 
     @FXML
