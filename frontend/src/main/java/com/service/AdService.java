@@ -7,13 +7,12 @@ import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class AdService {
 
@@ -53,9 +52,55 @@ public class AdService {
     }
 
     // Search ads
-    public static List<Advertisement> searchAds(String keyword) throws Exception {
+    /**
+     * Search ads with all filters and sorting
+     */
+    public static List<Advertisement> searchAds(
+            String keyword,
+            Long categoryId,
+            Long cityId,
+            Long minPrice,
+            Long maxPrice,
+            String sortBy,
+            String sortOrder
+    ) throws Exception {
+        // Build query parameters
+        StringBuilder query = new StringBuilder();
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            query.append("keyword=").append(URLEncoder.encode(keyword.trim(), StandardCharsets.UTF_8));
+        }
+
+        if (categoryId != null) {
+            if (!query.isEmpty()) query.append("&");
+            query.append("categoryId=").append(categoryId);
+        }
+
+        if (cityId != null) {
+            if (!query.isEmpty()) query.append("&");
+            query.append("cityId=").append(cityId);
+        }
+
+        if (minPrice != null) {
+            if (!query.isEmpty()) query.append("&");
+            query.append("minPrice=").append(minPrice);
+        }
+
+        if (maxPrice != null) {
+            if (!query.isEmpty()) query.append("&");
+            query.append("maxPrice=").append(maxPrice);
+        }
+
+        // Add sorting parameters (with defaults)
+        if (!query.isEmpty()) query.append("&");
+        query.append("sortBy=").append(sortBy != null ? sortBy : "created_at");
+        query.append("&sortOrder=").append(sortOrder != null ? sortOrder : "desc");
+
+        String url = Config.BASE_URL + "/ads/search" + (!query.isEmpty() ? "?" + query : "");
+        System.out.println("Search URL: " + url);  // For debugging
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL + "/ads/search?keyword=" + keyword))
+                .uri(URI.create(url))
                 .GET()
                 .build();
 
@@ -70,9 +115,10 @@ public class AdService {
             }
             return new ArrayList<>();
         } else {
-            throw new Exception("Search failed");
+            throw new Exception("Search failed: " + response.statusCode());
         }
     }
+
     // Create new ad
     public static Map<String,Object> createAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
