@@ -35,16 +35,33 @@ public class CityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Map<String,Object> result= objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
             Object cities = result.get("cities");
-            if (cities!=null){
+            if (cities != null) {
                 String citiesJson = objectMapper.writeValueAsString(cities);
-                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {});
-            }else{
+                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {
+                });
+            } else {
                 return new ArrayList<>();
             }
         } else {
             throw new Exception("Failed to fetch cities: " + response.statusCode());
+        }
+    }
+
+    public static City getCityById(Long id) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+ "/cities/"+id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode()==200){
+            return objectMapper.readValue(response.body(), City.class);
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to load the city"));
         }
     }
 
@@ -64,11 +81,12 @@ public class CityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Map<String,Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
             Object cities = responseObj.get("cities");
-            if (cities!=null){
+            if (cities != null) {
                 String citiesJson = objectMapper.writeValueAsString(cities);
-                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {});
+                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {
+                });
             }
             return new ArrayList<>();
         } else {
@@ -93,15 +111,66 @@ public class CityService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            Map<String,Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
             Object cities = responseObj.get("cities");
-            if (cities!=null){
+            if (cities != null) {
                 String citiesJson = objectMapper.writeValueAsString(cities);
-                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {});
+                return objectMapper.readValue(citiesJson, new TypeReference<List<City>>() {
+                });
             }
             return new ArrayList<>();
         } else {
             throw new Exception("Failed to fetch cities by province: " + response.statusCode());
+        }
+    }
+
+    public static City createCity (City city) throws Exception {
+        String json = objectMapper.writeValueAsString(city);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/cities"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(),City.class);
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to create the city"));
+        }
+    }
+
+    public static City updateCity (Long id, City city) throws Exception {
+        String json = objectMapper.writeValueAsString(city);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/cities/"+id))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(),City.class);
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to update the city"));
+        }
+    }
+
+    public static String deleteCity (Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL+"/cities/"+id))
+                .DELETE()
+                .build();
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String,String> result =objectMapper.readValue(response.body(),Map.class);
+            return result.get("message");
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to delete the city"));
         }
     }
 }
