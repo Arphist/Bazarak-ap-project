@@ -57,9 +57,7 @@
                 <!-- Row 3: Sort Options -->
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Sort By:" style="-fx-text-fill: white;"/>
-                    <ComboBox fx:id="sortByCombo" prefWidth="150"/>
-                    <Label text="Order:" style="-fx-text-fill: white;"/>
-                    <ComboBox fx:id="sortOrderCombo" prefWidth="120"/>
+                    <ComboBox fx:id="sortByCombo" prefWidth="200"/>
                     <Button fx:id="clearFiltersButton" text="Clear Filters" onAction="#clearFilters"
                             style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-padding: 5 15;"/>
                 </HBox>
