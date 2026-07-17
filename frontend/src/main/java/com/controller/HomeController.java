@@ -245,6 +245,7 @@ public class HomeController {
 
     // HELPER METHODS
 
+    //TODO: I might delete this
     private Long parsePrice(String text) {
         if (text == null || text.trim().isEmpty()) {
             return null;
@@ -261,24 +262,37 @@ public class HomeController {
         if (value == null) return "created_at";
         switch (value) {
             case "Oldest First":
-                return "created_at_asc";
-            case "Price: Low to High":
-                return "price_asc";
-            case "Price: High to Low":
-                return "price_desc";
-            case "Title: A to Z":
-                return "title_asc";
-            case "Title: Z to A":
-                return "title_desc";
             case "Newest First":
+                return "created_at";
+            case "Price: Low to High":
+            case "Price: High to Low":
+                return "price";
+            case "Title: A to Z":
+            case "Title: Z to A":
+                return "title";
             default:
-                return "created_at_desc";
+                return "created_at";
         }
     }
 
     private String parseSortOrder(String value) {
         if (value == null) return "desc";
-        return "asc".equalsIgnoreCase(value) ? "asc" : "desc";
+        switch (value) {
+            case "Oldest First":
+                return "asc";
+            case "Newest First":
+                return "desc";
+            case "Price: Low to High":
+                return "asc";
+            case "Price: High to Low":
+                return "desc";
+            case "Title: A to Z":
+                return "asc";
+            case "Title: Z to A":
+                return "desc";
+            default:
+                return "desc";
+        }
     }
 
     private void updateAdListView(List<Advertisement> ads) {
