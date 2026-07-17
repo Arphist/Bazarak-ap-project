@@ -94,7 +94,6 @@ public class CityController {
             List<City> cities = cityService.getCitiesByProvince(province);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("province", province);
             response.put("count", cities.size());
             response.put("cities", cities);
 
