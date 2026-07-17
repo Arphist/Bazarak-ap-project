@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
+import java.util.Map;
+
 public class AdDetailsController {
 
     // FXML FIELDS
@@ -70,7 +72,8 @@ public class AdDetailsController {
 
     private void loadAdDetails(Long adId) {
         try {
-            Advertisement ad = AdService.getAdById(adId);
+            Map<String, Object> result = AdService.getAdById(adId);
+            Advertisement ad = (Advertisement) result.get("ad");
 
             // Populate UI fields
             titleLabel.setText(ad.getTitle());
