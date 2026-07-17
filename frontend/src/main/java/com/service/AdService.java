@@ -38,7 +38,7 @@ public class AdService {
     }
 
     // Get ad by ID
-    public static Advertisement getAdById(Long id) throws Exception {
+    public static Map<String,Object> getAdById(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/" + id))
                 .GET()
@@ -47,7 +47,11 @@ public class AdService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), Advertisement.class);
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", responseBody.get("message"));
+            map.put("ad", responseBody.get("ad"));
+            return map;
         } else {
             throw new Exception("Ad not found");
         }
