@@ -73,7 +73,7 @@ public class AdminAdvertisementController {
             Advertisement approvedAd = advertisementService.approveAd(id);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("id", approvedAd.getId());
+            response.put("ad", approvedAd);
             response.put("title", approvedAd.getTitle());
             response.put("status", approvedAd.getStatus());
             response.put("message", "Ad approved successfully");
