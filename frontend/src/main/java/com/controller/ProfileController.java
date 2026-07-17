@@ -15,6 +15,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileController {
 
@@ -110,13 +112,14 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhoneNumber(phone);
 
-            User updatedUser = UserService.updateProfile(currentUser);
+            Map<String,Object> result = UserService.updateProfile(currentUser);
+            User updatedUser = (User)result.get("user");
             SessionManager.setCurrentUser(updatedUser);
 
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
-            alert.setContentText("Profile updated successfully!");
+            alert.setContentText((String) result.get("message"));
             alert.showAndWait();
 
             loadUserProfile();
