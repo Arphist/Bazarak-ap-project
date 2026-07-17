@@ -8,11 +8,9 @@ import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class AdminService {
@@ -281,6 +279,50 @@ public class AdminService {
         }else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to unblock user"));
+        }
+    }
+
+    public static List<User> getBlockedUsers() throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl+"blocked"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object usersObj = result.get("users");
+            if (usersObj != null) {
+                String json = objectMapper.writeValueAsString(usersObj);
+                return objectMapper.readValue(json, new TypeReference<List<User>>() {
+                });
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load users: " + response.statusCode());
+        }
+    }
+
+    public static List<User> getActiveUsers() throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(usersUrl+"active"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
+            Object usersObj = result.get("users");
+            if (usersObj != null) {
+                String json = objectMapper.writeValueAsString(usersObj);
+                return objectMapper.readValue(json, new TypeReference<List<User>>() {
+                });
+            }
+            return new ArrayList<>();
+        } else {
+            throw new Exception("Failed to load users: " + response.statusCode());
         }
     }
 }
