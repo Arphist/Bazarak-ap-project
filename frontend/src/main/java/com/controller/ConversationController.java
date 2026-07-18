@@ -8,6 +8,7 @@ import com.service.ConversationService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.ConversationCell;
+import com.view.MessageCell;
 import com.websocket.ChatWebSocketClient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -19,9 +20,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.LocalDateTime;
 
 public class ConversationController {
 
@@ -52,7 +53,6 @@ public class ConversationController {
     private Conversation currentConversation;
     private ChatWebSocketClient webSocketClient;
     private User currentUser;
-    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     // INITIALIZE
 
@@ -74,7 +74,7 @@ public class ConversationController {
 
         // Setup message list
         messageListView.setItems(messages);
-        messageListView.setCellFactory(lv -> new MessageCell());
+        messageListView.setCellFactory(lv -> new MessageCell(currentUser));
 
         // Setup send on Enter key
         messageInput.setOnKeyPressed(event -> {
