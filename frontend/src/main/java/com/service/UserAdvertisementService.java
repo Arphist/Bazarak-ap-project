@@ -261,4 +261,62 @@ public class UserAdvertisementService {
             throw new Exception(error.getOrDefault("error", "Failed to load rejected ads"));
         }
     }
+
+    public static List<Advertisement> getMySoldAds(String sortBy, String sortOrder) throws Exception {
+        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
+        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
+
+        String urlWithQuery = url + "/ads/sold" +
+                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
+                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(urlWithQuery))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object result = responseObj.get("ads");
+            if (result != null) {
+                String json = objectMapper.writeValueAsString(result);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load sold ads"));
+        }
+    }
+
+    public static List<Advertisement> getMyDeletedAds(String sortBy, String sortOrder) throws Exception {
+        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
+        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
+
+        String urlWithQuery = url + "/ads/deleted" +
+                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
+                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(urlWithQuery))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object result = responseObj.get("ads");
+            if (result != null) {
+                String json = objectMapper.writeValueAsString(result);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load deleted ads"));
+        }
+    }
 }
