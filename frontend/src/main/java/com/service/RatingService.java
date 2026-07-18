@@ -28,7 +28,8 @@ public class RatingService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
+            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {
+            });
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
@@ -48,16 +49,16 @@ public class RatingService {
             Map<String, Object> map = new HashMap<>();
             map.put("sellerId", result.get("sellerId"));
             map.put("averageScore", result.get("averageScore"));
-            map.put("totalRatings",result.get("totalRatings"));
+            map.put("totalRatings", result.get("totalRatings"));
 
             return map;
-        }else{
+        } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to load average rating"));
         }
     }
 
-    public static List<Rating> getMyRatings () throws Exception{
+    public static List<Rating> getMyRatings() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/my-ratings"))
                 .GET()
@@ -66,28 +67,51 @@ public class RatingService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
-        }else{
+            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {
+            });
+        } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
         }
     }
 
-    public static List<Rating> getRatingsByAdvertisement (Long id) throws Exception{
+    public static List<Rating> getRatingsByAdvertisement(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url + "/advertisement/"+id))
+                .uri(URI.create(url + "/advertisement/" + id))
                 .GET()
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
-        }else{
+            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {
+            });
+        } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
         }
     }
 
+    public static Rating createRating(Rating rating) throws Exception {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("score", rating.getScore());
+        requestBody.put("comment", rating.getComment() != null ? rating.getComment() : "");
+        requestBody.put("sellerId", rating.getSeller().getId());
+        requestBody.put("advertisementId", rating.getAdvertisement().getId());
+        String json = objectMapper.writeValueAsString(requestBody);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
 
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200 || response.statusCode() == 201) {
+            return objectMapper.readValue(response.body(), Rating.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to create ratings"));
+        }
+    }
 }

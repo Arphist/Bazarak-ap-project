@@ -12,6 +12,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -137,7 +138,11 @@ public class CategoryService {
      * @throws Exception if the category cannot be created
      */
     public static Category createCategory (Category category) throws Exception{
-        String json = objectMapper.writeValueAsString(category);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name", category.getName());
+        requestBody.put("description", category.getDescription());
+        requestBody.put("parentId", category.getParentId());
+        String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/categories"))
                 .header("Content-Type", "application/json")
@@ -163,7 +168,11 @@ public class CategoryService {
      * @throws Exception if the update operation fails
      */
     public static Category updateCategory (Long id, Category category) throws Exception{
-        String json = objectMapper.writeValueAsString(category);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name", category.getName());
+        requestBody.put("description", category.getDescription());
+        requestBody.put("parentId", category.getParentId());
+        String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request=HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/categories/"+id))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
