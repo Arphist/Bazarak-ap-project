@@ -25,7 +25,11 @@ public class UserService {
      * @throws Exception if the profile update fails
      */
     public static Map<String,Object> updateProfile(User user) throws Exception {
-        String json = objectMapper.writeValueAsString(user);
+        Map<String, Object> requestMap = new HashMap<>();
+        requestMap.put("fullName",user.getFullName());
+        requestMap.put("email",user.getEmail());
+        requestMap.put("phoneNumber",user.getPhoneNumber());
+        String json = objectMapper.writeValueAsString(requestMap);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/users/me/profile"))
                 .header("Content-Type", "application/json")
