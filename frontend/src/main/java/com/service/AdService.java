@@ -20,7 +20,12 @@ public class AdService {
     private static final HttpClient httpClient = HttpClientUtil.getHttpClient();
     private static final ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
 
-    // Get all active ads
+    /**
+     * Retrieves all active advertisements from the backend.
+     *
+     * @return list of active advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getActiveAds() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/active"))
@@ -37,7 +42,13 @@ public class AdService {
         }
     }
 
-    // Get ad by ID
+    /**
+     * Retrieves an advertisement by its unique identifier.
+     *
+     * @param id the ID of the advertisement
+     * @return a map containing the advertisement, favorite status, and favorite count
+     * @throws Exception if the advertisement cannot be loaded
+     */
     public static Map<String,Object> getAdById(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/" + id))
@@ -58,10 +69,18 @@ public class AdService {
         }
     }
 
-    // Search ads
-
     /**
-     * Search ads with all filters and sorting
+     * Searches advertisements using the provided filters and sorting options.
+     *
+     * @param keyword search keyword
+     * @param categoryId category identifier
+     * @param cityId city identifier
+     * @param minPrice minimum price
+     * @param maxPrice maximum price
+     * @param sortBy field used for sorting
+     * @param sortOrder sorting order (asc or desc)
+     * @return list of matching advertisements
+     * @throws Exception if the search request fails
      */
     public static List<Advertisement> searchAds(
             String keyword,
@@ -128,7 +147,13 @@ public class AdService {
         }
     }
 
-    // Create new ad
+    /**
+     * Creates a new advertisement.
+     *
+     * @param ad the advertisement to create
+     * @return a map containing the created advertisement and the server message
+     * @throws Exception if the advertisement cannot be created
+     */
     public static Map<String, Object> createAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
 
@@ -155,7 +180,13 @@ public class AdService {
         }
     }
 
-    // Update an ad
+    /**
+     * Updates an existing advertisement.
+     *
+     * @param ad the advertisement with updated information
+     * @return a map containing the updated advertisement and the server message
+     * @throws Exception if the update operation fails
+     */
     public static Map<String, Object> updateAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
         HttpRequest request = HttpRequest.newBuilder()
@@ -183,6 +214,12 @@ public class AdService {
         }
     }
 
+    /**
+     * Deletes an advertisement.
+     *
+     * @param ad the advertisement to delete
+     * @throws Exception if the delete operation fails
+     */
     public static void deleteAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/ads/"+ad.getId()))
@@ -197,6 +234,13 @@ public class AdService {
         }
     }
 
+    /**
+     * Marks an advertisement as sold.
+     *
+     * @param ad the advertisement to mark as sold
+     * @return a map containing the updated advertisement and the server message
+     * @throws Exception if the operation fails
+     */
     public static Map<String, Object> markAsSold(Advertisement ad) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/ads/"+ad.getId()+"/sold"))
@@ -223,6 +267,13 @@ public class AdService {
         }
     }
 
+    /**
+     * Retrieves all advertisements created by a specific user.
+     *
+     * @param user the owner of the advertisements
+     * @return list of the user's advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getAdsByUser(User user) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/ads/user/"+user.getId()))
