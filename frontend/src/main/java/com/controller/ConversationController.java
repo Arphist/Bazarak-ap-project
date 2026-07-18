@@ -143,7 +143,7 @@ public class ConversationController {
     // ============================================
 
 
-    // TODO: implement send message
+    // TODO: implement send message and its button in fxml file
 
 
     // ============================================
