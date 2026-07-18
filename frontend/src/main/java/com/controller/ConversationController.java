@@ -115,7 +115,7 @@ public class ConversationController {
                 message.setContent(chatMessage.getContent());
 
                 User sender = new User();
-                sender.setId(chatMessage.getSenderId());
+                sender.setId(Long.parseLong(chatMessage.getSenderId()));
                 sender.setUsername(chatMessage.getSenderUsername());
                 message.setSender(sender);
 
@@ -197,56 +197,28 @@ public class ConversationController {
             return;
         }
 
-        // Try to send via WebSocket first
+        // SEND VIA WEBSOCKET ONLY
         if (webSocketClient != null && webSocketClient.isConnected()) {
             ChatMessage chatMessage = new ChatMessage(
                     currentConversation.getId().toString(),
-                    currentUser.getId(),
+                    currentUser.getId().toString(),
                     currentUser.getUsername(),
                     content
             );
             webSocketClient.sendMessage(chatMessage);
-
-            // Clear input
             messageInput.clear();
-
-            // Also save via REST (to persist to database)
-            try {
-                ConversationService.sendMessage(currentConversation.getId(), content);
-            } catch (Exception e) {
-                System.err.println("Failed to save message: " + e.getMessage());
-            }
         } else {
-            // Fallback: send via REST only
-            try {
-                ConversationService.sendMessage(currentConversation.getId(), content);
-
-                // Reload messages after sending
-                List<Message> messageList = ConversationService.getMessages(currentConversation.getId());
-                messages.clear();
-                messages.addAll(messageList);
-                messageListView.scrollTo(messages.size() - 1);
-
-                messageInput.clear();
-            } catch (Exception e) {
-                errorLabel.setText("Failed to send message: " + e.getMessage());
-            }
+            errorLabel.setText("Connection lost. Please refresh.");
         }
     }
 
-    // ============================================
     // REFRESH
-    // ============================================
-
     @FXML
     private void refreshConversations() {
         loadConversations();
     }
 
-    // ============================================
     // NAVIGATION
-    // ============================================
-
     @FXML
     private void goToHome() {
         NavigationUtil.goToHome();
