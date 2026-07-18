@@ -37,7 +37,7 @@ public class WebSocketChatController {
         // 2. Save to database
         try {
             Long conversationId = Long.parseLong(String.valueOf(message.getConversationId()));
-            User sender = userService.getUserById(message.getSenderId());
+            User sender = userService.getUserById(Long.parseLong(message.getSenderId()));
             conversationService.validateParticipant(conversationId,sender);
             Message savedMessage = conversationService.sendMessageAndBroadcast(
                     conversationId,
@@ -46,7 +46,7 @@ public class WebSocketChatController {
             );
 
             // Update message with saved data
-            message.setId(savedMessage.getId());
+            message.setId(savedMessage.getId().toString());
             message.setSenderUsername(savedMessage.getSender().getUsername());
             message.setTimestamp(savedMessage.getSentAt());
         } catch (Exception e) {
