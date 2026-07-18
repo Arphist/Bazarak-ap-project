@@ -18,17 +18,43 @@ public class UserService {
     private final static ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
 
     /**
+     * Retrieves the profile information of the currently authenticated user.
+     * <p>
+     * This method makes a GET request to the backend endpoint that returns
+     * the current user's profile data. The password is removed from the
+     * response for security reasons.
+     * </p>
+     *
+     * @return the current user's profile as a {@code User} object
+     * @throws Exception if the request fails, the user is not authenticated,
+     *                   or the server returns an error response
+     */
+    public static User getMyProfile() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/profile"))
+                .GET().build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), User.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load user"));
+        }
+    }
+
+    /**
      * Updates the profile information of the current user.
      *
      * @param user the updated user information
      * @return a map containing the updated user and the server message
      * @throws Exception if the profile update fails
      */
-    public static Map<String,Object> updateProfile(User user) throws Exception {
+    public static Map<String, Object> updateProfile(User user) throws Exception {
         Map<String, Object> requestMap = new HashMap<>();
-        requestMap.put("fullName",user.getFullName());
-        requestMap.put("email",user.getEmail());
-        requestMap.put("phoneNumber",user.getPhoneNumber());
+        requestMap.put("fullName", user.getFullName());
+        requestMap.put("email", user.getEmail());
+        requestMap.put("phoneNumber", user.getPhoneNumber());
         String json = objectMapper.writeValueAsString(requestMap);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/users/me/profile"))
@@ -63,7 +89,7 @@ public class UserService {
      * @param newPassword the new password
      * @throws Exception if the password change fails
      */
-    public static void changePassword (String oldPassword, String newPassword) throws Exception{
+    public static void changePassword(String oldPassword, String newPassword) throws Exception {
         Map<String, String> passwords = Map.of("oldPassword", oldPassword, "newPassword", newPassword);
         String json = objectMapper.writeValueAsString(passwords);
 
@@ -75,9 +101,9 @@ public class UserService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200){
-            Map<String, String> error = objectMapper.readValue(response.body(),Map.class);
-            throw new Exception(error.getOrDefault("error","Password change failed"));
+        if (response.statusCode() != 200) {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Password change failed"));
         }
     }
 
