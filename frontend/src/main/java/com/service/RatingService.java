@@ -31,7 +31,7 @@ public class RatingService {
             return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
-            throw new Exception(error.getOrDefault("error", "Failed to load the rating"));
+            throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
         }
     }
 
@@ -56,5 +56,38 @@ public class RatingService {
             throw new Exception(error.getOrDefault("error", "Failed to load average rating"));
         }
     }
+
+    public static List<Rating> getMyRatings () throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/my-ratings"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
+        }else{
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
+        }
+    }
+
+    public static List<Rating> getRatingsByAdvertisement (Long id) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/advertisement/"+id))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<Rating>>() {});
+        }else{
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load ratings"));
+        }
+    }
+
 
 }
