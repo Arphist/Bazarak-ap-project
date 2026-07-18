@@ -7,13 +7,13 @@ import com.model.User;
 import com.service.ConversationService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ConversationCell;
 import com.websocket.ChatWebSocketClient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
@@ -62,7 +62,7 @@ public class ConversationController {
 
         // Setup conversation list
         conversationListView.setItems(conversations);
-        conversationListView.setCellFactory(lv -> new ConversationCell());
+        conversationListView.setCellFactory(lv -> new ConversationCell(currentUser.getId()));
         conversationListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 Conversation selected = conversationListView.getSelectionModel().getSelectedItem();
