@@ -60,9 +60,11 @@ public class ConversationController {
 
     @FXML
     private void initialize() {
+        currentUser = SessionManager.getCurrentUser();
 
         // Setup conversation list
         conversationListView.setItems(conversations);
+        conversationListView.setCellFactory(lv -> new ConversationCell());
         conversationListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 Conversation selected = conversationListView.getSelectionModel().getSelectedItem();
@@ -74,7 +76,17 @@ public class ConversationController {
 
         // Setup message list
         messageListView.setItems(messages);
+        messageListView.setCellFactory(lv -> new MessageCell());
 
+        // Setup send on Enter key
+        messageInput.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER && !event.isShiftDown()) {
+                event.consume();
+                sendMessage();
+            }
+        });
+        // Connect WebSocket
+        connectWebSocket();
 
         // Load conversations
         loadConversations();
