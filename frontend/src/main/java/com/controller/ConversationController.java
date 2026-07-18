@@ -50,4 +50,101 @@ public class ConversationController {
     private ObservableList<Message> messages = FXCollections.observableArrayList();
     private Conversation currentConversation;
 
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        // Setup conversation list
+        conversationListView.setItems(conversations);
+        conversationListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                Conversation selected = conversationListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    loadConversation(selected);
+                }
+            }
+        });
+
+        // Setup message list
+        messageListView.setItems(messages);
+
+        // TODO: WebSocket connection will be added here later
+
+        // Load conversations
+        loadConversations();
+    }
+
+    // ============================================
+    // LOAD CONVERSATIONS
+    // ============================================
+
+    private void loadConversations() {
+        try {
+            List<Conversation> conversationList = ConversationService.getAllConversations();
+            conversations.clear();
+            conversations.addAll(conversationList);
+
+            if (conversations.isEmpty()) {
+                errorLabel.setText("No conversations yet.");
+                conversationTitleLabel.setText("No conversation selected");
+            } else {
+                errorLabel.setText("");
+                // Auto-select first conversation
+                conversationListView.getSelectionModel().selectFirst();
+                loadConversation(conversationListView.getSelectionModel().getSelectedItem());
+            }
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load conversations: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD CONVERSATION
+    // ============================================
+
+    private void loadConversation(Conversation conversation) {
+        if (conversation == null) return;
+
+        this.currentConversation = conversation;
+
+        try {
+            List<Message> messageList = ConversationService.getMessages(conversation.getId());
+            messages.clear();
+            messages.addAll(messageList);
+
+            // Scroll to bottom
+            Platform.runLater(() -> {
+                messageListView.scrollTo(messages.size() - 1);
+            });
+
+            // Update title with other participant's name
+            User currentUser = SessionManager.getCurrentUser();
+            if (currentUser != null) {
+                try {
+                    String otherUser = conversation.getOtherParticipantUsername(currentUser.getId());
+                    conversationTitleLabel.setText("Chat with " + otherUser);
+                } catch (IllegalStateException e) {
+                    conversationTitleLabel.setText("Conversation");
+                }
+            }
+
+            errorLabel.setText("");
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load messages: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // SEND MESSAGE
+    // ============================================
+
+
+    // TODO: implement send message
+
+
+
 }
