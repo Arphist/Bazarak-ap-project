@@ -155,7 +155,13 @@ public class AdService {
      * @throws Exception if the advertisement cannot be created
      */
     public static Map<String, Object> createAd(Advertisement ad) throws Exception {
-        String json = objectMapper.writeValueAsString(ad);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("title", ad.getTitle());
+        requestBody.put("description", ad.getDescription());
+        requestBody.put("price", ad.getPrice());
+        requestBody.put("categoryId", ad.getCategory().getId());
+        requestBody.put("cityId", ad.getCity().getId());
+        String json = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads"))
@@ -188,7 +194,13 @@ public class AdService {
      * @throws Exception if the update operation fails
      */
     public static Map<String, Object> updateAd(Advertisement ad) throws Exception {
-        String json = objectMapper.writeValueAsString(ad);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("title", ad.getTitle());
+        requestBody.put("description", ad.getDescription());
+        requestBody.put("price", ad.getPrice());
+        requestBody.put("categoryId", ad.getCategory().getId());
+        requestBody.put("cityId", ad.getCity().getId());
+        String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/" + ad.getId()))
                 .header("Content-Type", "application/json")
