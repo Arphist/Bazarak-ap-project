@@ -13,6 +13,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,7 +142,10 @@ public class CityService {
      * @throws Exception if the city cannot be created
      */
     public static City createCity (City city) throws Exception {
-        String json = objectMapper.writeValueAsString(city);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name",city.getName());
+        requestBody.put("province",city.getProvince());
+        String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/cities"))
                 .header("Content-Type", "application/json")
@@ -166,7 +170,10 @@ public class CityService {
      * @throws Exception if the update operation fails
      */
     public static City updateCity (Long id, City city) throws Exception {
-        String json = objectMapper.writeValueAsString(city);
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name",city.getName());
+        requestBody.put("province",city.getProvince());
+        String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/cities/"+id))
                 .header("Content-Type", "application/json")
