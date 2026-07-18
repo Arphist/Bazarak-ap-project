@@ -16,8 +16,8 @@ public class BazarakFrontendApplication extends Application {
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
         stage.setTitle("Bazarak - Second Hand Marketplace");
-        stage.setMinWidth(1024);
-        stage.setMinHeight(768);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         stage.setResizable(true);
 
         FXMLLoader loader = new FXMLLoader(
@@ -29,8 +29,8 @@ public class BazarakFrontendApplication extends Application {
         stage.show();
 
         System.out.println("========================================");
-        System.out.println("  🪙  Bazarak Frontend is running!  🪙  ");
-        System.out.println("  Second-hand marketplace client      ");
+        System.out.println("     Bazarak Frontend is running!      ");
+        System.out.println("    Second-hand marketplace client      ");
         System.out.println("========================================");
     }
 
