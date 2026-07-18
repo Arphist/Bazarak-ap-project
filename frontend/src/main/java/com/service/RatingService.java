@@ -114,4 +114,21 @@ public class RatingService {
             throw new Exception(error.getOrDefault("error", "Failed to create ratings"));
         }
     }
+
+    public static String deleteRating(Long id) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/" + id))
+                .DELETE().build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, String> map = new HashMap<>();
+            Map<String,String> result = objectMapper.readValue(response.body(), Map.class);
+            map.put("message",result.get("message"));
+            return map.get("message");
+        }else{
+            Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
+            throw new Exception(error.getOrDefault("error","Failed to delete rating"));
+        }
+    }
 }
