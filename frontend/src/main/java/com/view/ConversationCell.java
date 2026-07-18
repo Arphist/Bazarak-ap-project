@@ -2,7 +2,6 @@ package com.view;
 
 
 import com.model.Conversation;
-import com.model.User;
 import javafx.scene.control.ListCell;
 
 public class ConversationCell extends ListCell<Conversation> {
