@@ -117,9 +117,9 @@ public class ConversationService {
 
         // Create WebSocket message
         ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setId(savedMessage.getId());
-        chatMessage.setConversationId(conversationId);
-        chatMessage.setSenderId(sender.getId());
+        chatMessage.setId(savedMessage.getId().toString());
+        chatMessage.setConversationId(conversationId.toString());
+        chatMessage.setSenderId(sender.getId().toString());
         chatMessage.setSenderUsername(sender.getUsername());
         chatMessage.setContent(content);
         chatMessage.setTimestamp(savedMessage.getSentAt());
