@@ -103,6 +103,7 @@ public class ConversationController {
 
     // LOAD CONVERSATIONS
 
+    // Load all conversations
     private void loadConversations() {
         try {
             List<Conversation> conversationList = ConversationService.getAllConversations();
@@ -124,10 +125,7 @@ public class ConversationController {
         }
     }
 
-    // ============================================
-    // LOAD CONVERSATION
-    // ============================================
-
+    // Load a specific conversation
     private void loadConversation(Conversation conversation) {
         if (conversation == null) return;
 
@@ -161,13 +159,51 @@ public class ConversationController {
         }
     }
 
-    // ============================================
     // SEND MESSAGE
-    // ============================================
 
+    @FXML
+    private void sendMessage() {
+        String content = messageInput.getText().trim();
+        if (content.isEmpty() || currentConversation == null || currentUser == null) {
+            return;
+        }
 
-    // TODO: implement send message and its button in fxml file
+        // Try to send via WebSocket first
+        if (webSocketClient != null && webSocketClient.isConnected()) {
+            ChatMessage chatMessage = new ChatMessage(
+                    currentConversation.getId().toString(),
+                    currentUser.getId(),
+                    currentUser.getUsername(),
+                    content
+            );
+            webSocketClient.sendMessage(chatMessage);
 
+            // Clear input
+            messageInput.clear();
+
+            // Also save via REST (to persist to database)
+            try {
+                ConversationService.sendMessage(currentConversation.getId(), content);
+            } catch (Exception e) {
+                System.err.println("Failed to save message: " + e.getMessage());
+            }
+        } else {
+            // Fallback: send via REST only
+            try {
+                ConversationService.sendMessage(currentConversation.getId(), content);
+
+                // Reload messages after sending
+                List<Message> messageList = ConversationService.getMessages(currentConversation.getId());
+                messages.clear();
+                messages.addAll(messageList);
+                messageListView.scrollTo(messages.size() - 1);
+
+                messageInput.clear();
+            } catch (Exception e) {
+                errorLabel.setText("Failed to send message: " + e.getMessage());
+            }
+        }
+    }
 
     // ============================================
     // REFRESH
@@ -191,7 +227,6 @@ public class ConversationController {
     private void goBack() {
         NavigationUtil.goBack();
     }
-
 
 
 }
