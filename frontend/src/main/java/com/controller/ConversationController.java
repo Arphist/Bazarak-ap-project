@@ -54,9 +54,7 @@ public class ConversationController {
     private User currentUser;
     private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    // ============================================
     // INITIALIZE
-    // ============================================
 
     @FXML
     private void initialize() {
@@ -92,9 +90,18 @@ public class ConversationController {
         loadConversations();
     }
 
-    // ============================================
+    // WEBSOCKET CONNECTION
+    private void connectWebSocket() {
+        try {
+            webSocketClient = new ChatWebSocketClient(this::handleWebSocketMessage);
+            webSocketClient.connect();
+        } catch (Exception e) {
+            System.err.println("Failed to connect WebSocket: " + e.getMessage());
+            //TODO: Continue without WebSocket (fallback to REST)
+        }
+    }
+
     // LOAD CONVERSATIONS
-    // ============================================
 
     private void loadConversations() {
         try {
