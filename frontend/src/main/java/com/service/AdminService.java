@@ -97,7 +97,7 @@ public class AdminService {
      * @throws Exception if the operation fails
      */
     public static Map<String, Object> rejectAd(Advertisement ad) throws Exception {
-        String json = objectMapper.writeValueAsString(ad);
+        String json = objectMapper.writeValueAsString(ad.getRejectionReason());
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(adsUrl + ad.getId() + "/reject"))
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
