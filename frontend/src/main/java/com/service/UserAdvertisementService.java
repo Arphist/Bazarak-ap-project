@@ -136,4 +136,42 @@ public class UserAdvertisementService {
         }
         return group;
     }
+
+    public static Advertisement getMyAd(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/ads/" + adId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), Advertisement.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load ad"));
+        }
+    }
+
+    public static List<Advertisement> getMyRecentAds() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/ads/recent"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object result = responseObj.get("ads");
+            if (result != null) {
+                String json = objectMapper.writeValueAsString(result);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load recent ads"));
+        }
+    }
 }
