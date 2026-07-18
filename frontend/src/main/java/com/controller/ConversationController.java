@@ -97,8 +97,37 @@ public class ConversationController {
             webSocketClient.connect();
         } catch (Exception e) {
             System.err.println("Failed to connect WebSocket: " + e.getMessage());
-            //TODO: Continue without WebSocket (fallback to REST)
         }
+    }
+
+    /**
+     * Handle incoming WebSocket messages
+     */
+    private void handleWebSocketMessage(ChatMessage chatMessage) {
+        Platform.runLater(() -> {
+            // Check if this message belongs to the current conversation
+            if (currentConversation != null &&
+                    chatMessage.getConversationId().equals(currentConversation.getId().toString())) {
+
+                // Convert ChatMessage to Message for display
+                Message message = new Message();
+                message.setId(Long.parseLong(chatMessage.getId()));
+                message.setContent(chatMessage.getContent());
+
+                User sender = new User();
+                sender.setId(chatMessage.getSenderId());
+                sender.setUsername(chatMessage.getSenderUsername());
+                message.setSender(sender);
+
+                message.setSentAt(chatMessage.getTimestamp());
+
+                // Add to message list
+                messages.add(message);
+
+                // Scroll to bottom
+                messageListView.scrollTo(messages.size() - 1);
+            }
+        });
     }
 
     // LOAD CONVERSATIONS
