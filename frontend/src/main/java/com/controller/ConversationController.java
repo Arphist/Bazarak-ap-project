@@ -146,5 +146,29 @@ public class ConversationController {
     // TODO: implement send message
 
 
+    // ============================================
+    // REFRESH
+    // ============================================
+
+    @FXML
+    private void refreshConversations() {
+        loadConversations();
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void goToHome() {
+        NavigationUtil.goToHome();
+    }
+
+    @FXML
+    private void goBack() {
+        NavigationUtil.goBack();
+    }
+
+
 
 }
