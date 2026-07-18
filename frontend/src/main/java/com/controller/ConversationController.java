@@ -1,28 +1,31 @@
 package com.controller;
 
+import com.model.ChatMessage;
 import com.model.Conversation;
 import com.model.Message;
 import com.model.User;
 import com.service.ConversationService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.websocket.ChatWebSocketClient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ConversationController {
 
-    // ============================================
     // FXML FIELDS
-    // ============================================
 
     @FXML
     private ListView<Conversation> conversationListView;
@@ -42,13 +45,14 @@ public class ConversationController {
     @FXML
     private VBox chatContainer;
 
-    // ============================================
     // DATA
-    // ============================================
 
     private ObservableList<Conversation> conversations = FXCollections.observableArrayList();
     private ObservableList<Message> messages = FXCollections.observableArrayList();
     private Conversation currentConversation;
+    private ChatWebSocketClient webSocketClient;
+    private User currentUser;
+    private DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     // ============================================
     // INITIALIZE
@@ -56,6 +60,7 @@ public class ConversationController {
 
     @FXML
     private void initialize() {
+
         // Setup conversation list
         conversationListView.setItems(conversations);
         conversationListView.setOnMouseClicked(event -> {
@@ -70,7 +75,6 @@ public class ConversationController {
         // Setup message list
         messageListView.setItems(messages);
 
-        // TODO: WebSocket connection will be added here later
 
         // Load conversations
         loadConversations();
