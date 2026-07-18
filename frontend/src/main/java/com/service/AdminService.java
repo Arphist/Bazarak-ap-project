@@ -21,6 +21,15 @@ public class AdminService {
     private static final String usersUrl = Config.BASE_URL + "/admin/users/";
 
     // OPERATIONS ON ADS
+
+    /**
+     * Retrieves all pending advertisements.
+     *
+     * @param sortBy the field used for sorting
+     * @param sortOrder the sorting order (asc or desc)
+     * @return list of pending advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getPendingAds(String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
@@ -49,6 +58,13 @@ public class AdminService {
         }
     }
 
+    /**
+     * Approves a pending advertisement.
+     *
+     * @param ad the advertisement to approve
+     * @return a map containing the updated advertisement and the server message
+     * @throws Exception if the operation fails
+     */
     public static Map<String, Object> approveAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(adsUrl + ad.getId() + "/approve"))
@@ -73,6 +89,13 @@ public class AdminService {
         }
     }
 
+    /**
+     * Rejects a pending advertisement.
+     *
+     * @param ad the advertisement to reject
+     * @return a map containing the updated advertisement, rejection reason, and server message
+     * @throws Exception if the operation fails
+     */
     public static Map<String, Object> rejectAd(Advertisement ad) throws Exception {
         String json = objectMapper.writeValueAsString(ad);
         HttpRequest request = HttpRequest.newBuilder()
@@ -99,6 +122,12 @@ public class AdminService {
         }
     }
 
+    /**
+     * Deletes an advertisement.
+     *
+     * @param ad the advertisement to delete
+     * @throws Exception if the delete operation fails
+     */
     public static void deleteAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(adsUrl + ad.getId()))
@@ -113,6 +142,15 @@ public class AdminService {
         }
     }
 
+    /**
+     * Retrieves advertisements with the specified status.
+     *
+     * @param status the advertisement status
+     * @param sortBy the field used for sorting
+     * @param sortOrder the sorting order (asc or desc)
+     * @return list of matching advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getAdsByStatus(String status, String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
@@ -141,6 +179,12 @@ public class AdminService {
         }
     }
 
+    /**
+     * Retrieves dashboard statistics for the administrator.
+     *
+     * @return a map containing dashboard statistics
+     * @throws Exception if the request fails
+     */
     public static Map<String, Object> getDashboardStats() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(adsUrl + "dashboard"))
@@ -165,7 +209,14 @@ public class AdminService {
             throw new Exception(error.getOrDefault("error", "Failed to load stats"));
         }
     }
-
+    /**
+     * Retrieves all advertisements in the system.
+     *
+     * @param sortBy the field used for sorting
+     * @param sortOrder the sorting order (asc or desc)
+     * @return list of all advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getAllAds(String sortBy, String sortOrder) throws Exception {
         // Build query parameters
         StringBuilder query = new StringBuilder();
@@ -195,6 +246,13 @@ public class AdminService {
     }
 
     // OPERATIONS ON USERS
+
+    /**
+     * Retrieves all users in the system.
+     *
+     * @return list of all users
+     * @throws Exception if the request fails
+     */
     public static List<User> getAllUsers() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl + "all-users"))
@@ -217,6 +275,13 @@ public class AdminService {
         }
     }
 
+    /**
+     * Retrieves detailed information about a user.
+     *
+     * @param userId the ID of the user
+     * @return the requested user
+     * @throws Exception if the user cannot be found
+     */
     public static User getUserDetails(Long userId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl + userId))
@@ -232,6 +297,13 @@ public class AdminService {
         }
     }
 
+    /**
+     * Blocks a user account.
+     *
+     * @param userId the ID of the user to block
+     * @return a map containing the blocked user and the server message
+     * @throws Exception if the operation fails
+     */
     public static Map<String, Object> blockUser (Long userId) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl+userId+"/block"))
@@ -241,22 +313,29 @@ public class AdminService {
 
         if (response.statusCode() == 200){
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
-                Map<String,Object> result = new HashMap<>();
-                result.put("message",responseBody.get("message"));
-                Object blockedUserObj = responseBody.get("user");
-                if (blockedUserObj != null){
-                    String userJson = objectMapper.writeValueAsString(blockedUserObj);
-                    result.put("user", objectMapper.readValue(userJson, User.class));
-                }else{
-                    result.put("user", objectMapper.readValue(response.body(),Map.class));
-                }
-                return result;
+            Map<String,Object> result = new HashMap<>();
+            result.put("message",responseBody.get("message"));
+            Object blockedUserObj = responseBody.get("user");
+            if (blockedUserObj != null){
+                String userJson = objectMapper.writeValueAsString(blockedUserObj);
+                result.put("user", objectMapper.readValue(userJson, User.class));
+            }else{
+                result.put("user", objectMapper.readValue(response.body(),Map.class));
+            }
+            return result;
         }else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to block user"));
         }
     }
 
+    /**
+     * Unblocks a user account.
+     *
+     * @param userId the ID of the user to unblock
+     * @return a map containing the unblocked user and the server message
+     * @throws Exception if the operation fails
+     */
     public static Map<String, Object> unblockUser (Long userId) throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl+userId+"/unblock"))
@@ -282,6 +361,12 @@ public class AdminService {
         }
     }
 
+    /**
+     * Retrieves all blocked users.
+     *
+     * @return list of blocked users
+     * @throws Exception if the request fails
+     */
     public static List<User> getBlockedUsers() throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl+"blocked"))
@@ -304,6 +389,12 @@ public class AdminService {
         }
     }
 
+    /**
+     * Retrieves all active users.
+     *
+     * @return list of active users
+     * @throws Exception if the request fails
+     */
     public static List<User> getActiveUsers() throws Exception{
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(usersUrl+"active"))
