@@ -236,6 +236,31 @@ public class UserAdController {
                 return "desc";
         }
     }
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void goToHome() {
+        NavigationUtil.goToHome();
+    }
+
+    @FXML
+    private void goToCreateAd() {
+        NavigationUtil.goToCreateAd();
+    }
+
+    @FXML
+    private void goToFavorites() {
+        NavigationUtil.goToFavorites();
+    }
+
+    @FXML
+    private void goToProfile() {
+        NavigationUtil.goToProfile();
+    }
+
+
 
 
 
