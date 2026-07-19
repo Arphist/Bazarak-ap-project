@@ -252,5 +252,90 @@ public class AdminDashboard {
         });
     }
 
+    // ============================================
+    // LOAD ALL ADS
+    // ============================================
+
+    private void loadAllAds() {
+        try {
+            List<Advertisement> ads = AdminService.getAllAds("created_at", "desc");
+            allAds.clear();
+            allAds.addAll(ads);
+            allAdsTable.setItems(allAds);
+            allAdsCountLabel.setText("Total Ads: " + allAds.size());
+            allAdsErrorLabel.setText("");
+        } catch (Exception e) {
+            allAdsErrorLabel.setText("Failed to load all ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD USERS
+    // ============================================
+
+    private void loadUsers() {
+        try {
+            List<User> userList = AdminService.getAllUsers();
+            users.clear();
+            users.addAll(userList);
+            usersTable.setItems(users);
+            usersCountLabel.setText("Total Users: " + users.size());
+            usersErrorLabel.setText("");
+        } catch (Exception e) {
+            usersErrorLabel.setText("Failed to load users: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // BLOCK / UNBLOCK USER
+    // ============================================
+
+    @FXML
+    private void blockUser() {
+        User selected = usersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            usersErrorLabel.setText("Please select a user");
+            return;
+        }
+
+        if ("BANNED".equals(selected.getStatus())) {
+            usersErrorLabel.setText("User is already blocked");
+            return;
+        }
+
+        try {
+            Map<String, Object> result = AdminService.blockUser(selected.getId());
+            usersErrorLabel.setText("✅ " + result.getOrDefault("message", "User blocked"));
+            loadUsers();
+        } catch (Exception e) {
+            usersErrorLabel.setText("Failed to block user: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void unblockUser() {
+        User selected = usersTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            usersErrorLabel.setText("Please select a user");
+            return;
+        }
+
+        if (!"BANNED".equals(selected.getStatus())) {
+            usersErrorLabel.setText("User is not blocked");
+            return;
+        }
+
+        try {
+            Map<String, Object> result = AdminService.unblockUser(selected.getId());
+            usersErrorLabel.setText("✅ " + result.getOrDefault("message", "User unblocked"));
+            loadUsers();
+        } catch (Exception e) {
+            usersErrorLabel.setText("Failed to unblock user: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }
