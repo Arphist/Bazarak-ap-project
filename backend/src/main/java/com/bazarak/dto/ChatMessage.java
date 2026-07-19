@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
  * This is LIGHTWEIGHT compared to the Message entity
  */
 public class ChatMessage {
-    private Long id;
-    private Long conversationId;
-    private Long senderId;
+    private String id;
+    private String conversationId;
+    private String senderId;
     private String senderUsername;
     private String content;
     private LocalDateTime timestamp;
@@ -17,7 +17,7 @@ public class ChatMessage {
     // Constructors
     public ChatMessage(){}
 
-    public ChatMessage (Long conversationId, Long senderId, String senderUsername, String content){
+    public ChatMessage (String conversationId, String senderId, String senderUsername, String content){
         this.content=content;
         this.conversationId=conversationId;
         this.senderId=senderId;
@@ -27,27 +27,27 @@ public class ChatMessage {
 
     // Getters and Setters
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getConversationId() {
+    public String getConversationId() {
         return conversationId;
     }
 
-    public void setConversationId(Long conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 
-    public Long getSenderId() {
+    public String getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(Long senderId) {
+    public void setSenderId(String senderId) {
         this.senderId = senderId;
     }
 
