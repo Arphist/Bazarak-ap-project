@@ -148,4 +148,73 @@ public class ImageService {
     public static String getImageUrl(Long imageId) {
         return Config.BASE_IMAGE_URL + "/images/" + imageId;
     }
+
+    // DELETE IMAGE
+
+    /**
+     * Deletes a specific image by its ID.
+     *
+     * @param imageId the ID of the image to delete
+     * @throws Exception if the deletion fails
+     */
+    public static void deleteImage(Long imageId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/" + imageId))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to delete image"));
+        }
+    }
+
+    // DELETE ALL IMAGES FOR AN AD
+
+    /**
+     * Deletes all images associated with an advertisement.
+     *
+     * @param adId the ID of the advertisement
+     * @throws Exception if the deletion fails
+     */
+    public static void deleteAllImages(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/" + adId))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to delete images"));
+        }
+    }
+
+    // SET PRIMARY IMAGE
+
+    /**
+     * Sets an image as the primary image for its advertisement.
+     *
+     * @param imageId the ID of the image to set as primary
+     * @return the updated Image object
+     * @throws Exception if the operation fails
+     */
+    public static Image setPrimaryImage(Long imageId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/" + imageId + "/primary"))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), Image.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to set primary image"));
+        }
+    }
 }
