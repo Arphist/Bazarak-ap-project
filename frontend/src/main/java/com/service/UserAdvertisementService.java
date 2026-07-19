@@ -21,6 +21,14 @@ public class UserAdvertisementService {
     private static final ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
     private static final String url = Config.BASE_URL + "/users/me";
 
+    /**
+     * Retrieves all advertisements created by the current user.
+     *
+     * @param sortBy the field used for sorting
+     * @param sortOrder the sorting order (asc or desc)
+     * @return list of the user's advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getMyAds(String sortBy, String sortOrder) throws Exception {
         String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
         String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
@@ -52,6 +60,15 @@ public class UserAdvertisementService {
         }
     }
 
+    /**
+     * Retrieves the current user's advertisements with a specific status.
+     *
+     * @param status the advertisement status
+     * @param sortBy the field used for sorting
+     * @param sortOrder the sorting order (asc or desc)
+     * @return list of matching advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getMyAdsByStatus(String status, String sortBy, String sortOrder) throws Exception {
         String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
         String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
@@ -82,6 +99,12 @@ public class UserAdvertisementService {
         }
     }
 
+    /**
+     * Retrieves dashboard information for the current user's advertisements.
+     *
+     * @return a map containing advertisement statistics grouped by status
+     * @throws Exception if the request fails
+     */
     public static Map<String, Map<String, Object>> getMyAdsDashboard() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/ads/dashboard"))
@@ -110,7 +133,13 @@ public class UserAdvertisementService {
         }
     }
 
-    // Helper method to extract status group data
+    /**
+     * Creates a status group from the dashboard response.
+     *
+     * @param responseBody the dashboard response received from the server
+     * @param key the status key to extract
+     * @return a map containing the advertisement count and list for the specified status
+     */
     private static Map<String, Object> createStatusGroup(Map<String, Object> responseBody, String key) {
         Map<String, Object> group = new HashMap<>();
         Object data = responseBody.get(key);
@@ -137,6 +166,13 @@ public class UserAdvertisementService {
         return group;
     }
 
+    /**
+     * Retrieves one of the current user's advertisements by its ID.
+     *
+     * @param adId the advertisement ID
+     * @return the requested advertisement
+     * @throws Exception if the request fails
+     */
     public static Advertisement getMyAd(Long adId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/ads/" + adId))
@@ -152,7 +188,12 @@ public class UserAdvertisementService {
             throw new Exception(error.getOrDefault("error", "Failed to load ad"));
         }
     }
-
+    /**
+     * Retrieves the advertisements created by the current user within the last seven days.
+     *
+     * @return list of recent advertisements
+     * @throws Exception if the request fails
+     */
     public static List<Advertisement> getMyRecentAds() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/ads/recent"))
@@ -175,103 +216,15 @@ public class UserAdvertisementService {
         }
     }
 
-    public static List<Advertisement> getMyActiveAds(String sortBy, String sortOrder) throws Exception {
-        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
-        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
-
-        String urlWithQuery = url + "/ads/active" +
-                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
-                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
-
+    /**
+     * Retrieves the advertisements marked as sold by the current user.
+     *
+     * @return list of sold advertisements
+     * @throws Exception if the request fails
+     */
+    public static List<Advertisement> getMySoldAds() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlWithQuery))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
-            Object result = responseObj.get("ads");
-            if (result != null) {
-                String json = objectMapper.writeValueAsString(result);
-                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
-            }
-            return new ArrayList<>();
-        } else {
-            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
-            throw new Exception(error.getOrDefault("error", "Failed to load active ads"));
-        }
-    }
-
-    public static List<Advertisement> getMyPendingAds(String sortBy, String sortOrder) throws Exception {
-        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
-        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
-
-        String urlWithQuery = url + "/ads/pending" +
-                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
-                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlWithQuery))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
-            Object result = responseObj.get("ads");
-            if (result != null) {
-                String json = objectMapper.writeValueAsString(result);
-                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
-            }
-            return new ArrayList<>();
-        } else {
-            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
-            throw new Exception(error.getOrDefault("error", "Failed to load pending ads"));
-        }
-    }
-
-    public static List<Advertisement> getMyRejectedAds(String sortBy, String sortOrder) throws Exception {
-        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
-        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
-
-        String urlWithQuery = url + "/ads/rejected" +
-                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
-                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlWithQuery))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() == 200) {
-            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
-            Object result = responseObj.get("ads");
-            if (result != null) {
-                String json = objectMapper.writeValueAsString(result);
-                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
-            }
-            return new ArrayList<>();
-        } else {
-            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
-            throw new Exception(error.getOrDefault("error", "Failed to load rejected ads"));
-        }
-    }
-
-    public static List<Advertisement> getMySoldAds(String sortBy, String sortOrder) throws Exception {
-        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
-        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
-
-        String urlWithQuery = url + "/ads/sold" +
-                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
-                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlWithQuery))
+                .uri(URI.create(url + "/ads/sold"))
                 .GET()
                 .build();
 
@@ -291,16 +244,43 @@ public class UserAdvertisementService {
         }
     }
 
-    public static List<Advertisement> getMyDeletedAds(String sortBy, String sortOrder) throws Exception {
-        String sortByParam = (sortBy != null && !sortBy.isEmpty()) ? sortBy : "created_at";
-        String sortOrderParam = (sortOrder != null && !sortOrder.isEmpty()) ? sortOrder : "desc";
-
-        String urlWithQuery = url + "/ads/deleted" +
-                "?sortBy=" + URLEncoder.encode(sortByParam, StandardCharsets.UTF_8) +
-                "&sortOrder=" + URLEncoder.encode(sortOrderParam, StandardCharsets.UTF_8);
-
+    /**
+     * Retrieves the advertisements rejected by the administrator.
+     *
+     * @return list of rejected advertisements
+     * @throws Exception if the request fails
+     */
+    public static List<Advertisement> getMyRejectedAds() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(urlWithQuery))
+                .uri(URI.create(url + "/ads/rejected"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object result = responseObj.get("ads");
+            if (result != null) {
+                String json = objectMapper.writeValueAsString(result);
+                return objectMapper.readValue(json, new TypeReference<List<Advertisement>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load rejected ads"));
+        }
+    }
+
+    /**
+     * Retrieves the advertisements deleted by the current user.
+     *
+     * @return list of deleted advertisements
+     * @throws Exception if the request fails
+     */
+    public static List<Advertisement> getMyDeletedAds() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url + "/ads/deleted"))
                 .GET()
                 .build();
 
