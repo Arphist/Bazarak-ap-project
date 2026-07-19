@@ -76,6 +76,8 @@ public class BazarakFrontendApplication extends Application {
         loadPage("/view/admin-dashboard.fxml", "Bazarak - Admin Dashboard");
     }
 
+    public static void showRatingPage() {loadPage("/view/rating.fxml", "Bazarak - Rate Seller");}
+
     // HELPER METHODS
 
     private static void loadPage(String fxmlPath, String title) {
