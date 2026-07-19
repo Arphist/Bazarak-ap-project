@@ -55,6 +55,87 @@ public class RatingController {
     private ObservableList<Rating> ratings = FXCollections.observableArrayList();
     private Long sellerId;
     private Long advertisementId;
+    // ============================================
+    // INITIALIZE
+    // ============================================
 
+    @FXML
+    private void initialize() {
+        // Check if user is logged in
+        if (!SessionManager.isLoggedIn()) {
+            NavigationUtil.goToLogin();
+            return;
+        }
+
+        // Get seller and ad IDs from DataHolder
+        sellerId = DataHolder.getSelectedUserId();
+        advertisementId = DataHolder.getSelectedAdId();
+
+        if (sellerId == null) {
+            errorLabel.setText("No seller selected");
+            return;
+        }
+
+        // Setup score combo box (1-5)
+        scoreComboBox.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5));
+        scoreComboBox.setValue(3);
+
+        // Setup ratings list view
+        ratingsListView.setItems(ratings);
+
+        // Load data
+        loadSellerInfo();
+        loadRatings();
+    }
+
+    // ============================================
+    // LOAD SELLER INFO
+    // ============================================
+
+    private void loadSellerInfo() {
+        try {
+            // Get seller info from ratings (use first rating to get seller)
+            List<Rating> ratingList = RatingService.getRatingsBySeller(sellerId);
+            if (!ratingList.isEmpty()) {
+                User seller = ratingList.get(0).getSeller();
+                sellerNameLabel.setText("Seller: " + seller.getFullName());
+            } else {
+                sellerNameLabel.setText("Seller ID: " + sellerId);
+            }
+
+            // Get average score
+            Map<String, Object> avgData = RatingService.getAverageScore(sellerId);
+            Double avg = (Double) avgData.getOrDefault("averageScore", 0.0);
+            Long count = ((Number) avgData.getOrDefault("totalRatings", 0)).longValue();
+
+            averageRatingLabel.setText(String.format("⭐ %.1f", avg));
+            totalRatingsLabel.setText("(" + count + " ratings)");
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load seller info: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD RATINGS
+    // ============================================
+
+    private void loadRatings() {
+        try {
+            List<Rating> ratingList = RatingService.getRatingsBySeller(sellerId);
+            ratings.clear();
+            ratings.addAll(ratingList);
+            ratingsListView.setItems(ratings);
+
+            if (ratings.isEmpty()) {
+                ratingsListView.setPlaceholder(new Label("No ratings yet"));
+            }
+
+            errorLabel.setText("");
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load ratings: " + e.getMessage());
+        }
+    }
 
 }
