@@ -178,6 +178,66 @@ public class UserAdController {
         }
         return 0;
     }
+    // ============================================
+    // FILTER / SORT
+    // ============================================
+
+    @FXML
+    private void applyFilter() {
+        currentStatusFilter = statusFilterCombo.getValue();
+        loadMyAds();
+    }
+
+    @FXML
+    private void applySort() {
+        loadMyAds();
+    }
+
+    // ============================================
+    // REFRESH
+    // ============================================
+
+    @FXML
+    private void refreshAll() {
+        loadDashboardStats();
+        loadMyAds();
+    }
+
+    // ============================================
+    // HELPER METHODS
+    // ============================================
+
+    private String parseSortBy(String value) {
+        if (value == null) return "created_at";
+        switch (value) {
+            case "Oldest First":
+            case "Newest First":
+                return "created_at";
+            case "Price: Low to High":
+            case "Price: High to Low":
+                return "price";
+            default:
+                return "created_at";
+        }
+    }
+
+    private String parseSortOrder(String value) {
+        if (value == null) return "desc";
+        switch (value) {
+            case "Oldest First":
+                return "asc";
+            case "Newest First":
+                return "desc";
+            case "Price: Low to High":
+                return "asc";
+            case "Price: High to Low":
+                return "desc";
+            default:
+                return "desc";
+        }
+    }
+
+
 
 
 }
