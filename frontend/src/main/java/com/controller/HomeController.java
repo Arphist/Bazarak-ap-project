@@ -8,6 +8,7 @@ import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.AdCell;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
@@ -32,6 +33,10 @@ public class HomeController {
 
     @FXML
     private Button adminButton;
+
+    // ===== TEST DATA (TODO: remove after testing) =====
+    private boolean useTestData = true;
+    private ObservableList<Advertisement> testAds = FXCollections.observableArrayList();
 
     // Advanced search fields
     @FXML
@@ -102,6 +107,11 @@ public class HomeController {
             adminButton.setVisible(SessionManager.isAdmin());
         }
 
+        // ===== TEST DATA (TODO: remove after testing) =====
+        if (useTestData) {
+            createTestAds();
+        }
+
 
         // Load data from backend
         loadCategories();
@@ -158,13 +168,111 @@ public class HomeController {
     // LOAD ADS
 
     private void loadAds() {
+
         try {
+            //TODO: remove this after testing
+            if (useTestData) {
+                return;
+            }
+            //-----//
             List<Advertisement> ads = AdService.getActiveAds();
             adListView.setItems(FXCollections.observableArrayList(ads));
             adListView.setCellFactory(lv -> new AdCell());
         } catch (Exception e) {
             errorLabel.setText("Failed to load ads: " + e.getMessage());
         }
+    }
+
+    // ===== TEST DATA (TODO: remove this whole method after testing) =====
+    private void createTestAds() {
+        testAds.clear();
+
+        User testUser = SessionManager.getCurrentUser();
+        if (testUser == null) {
+            testUser = new User();
+            testUser.setId(1L);
+            testUser.setUsername("testuser");
+            testUser.setFullName("Test User");
+        }
+
+        Category electronics = new Category();
+        electronics.setId(1L);
+        electronics.setName("Electronics");
+
+        Category vehicles = new Category();
+        vehicles.setId(2L);
+        vehicles.setName("Vehicles");
+
+        City tehran = new City();
+        tehran.setId(1L);
+        tehran.setName("Tehran");
+
+        City mashhad = new City();
+        mashhad.setId(2L);
+        mashhad.setName("Mashhad");
+
+        // Ad 1
+        Advertisement ad1 = new Advertisement();
+        ad1.setId(1L);
+        ad1.setTitle("MacBook Pro 2023");
+        ad1.setDescription("Used MacBook Pro 2023, 16GB RAM, 512GB SSD");
+        ad1.setPrice(45000000L);
+        ad1.setOwner(testUser);
+        ad1.setCategory(electronics);
+        ad1.setCity(tehran);
+        ad1.setStatus("ACCEPTED");
+        testAds.add(ad1);
+
+        // Ad 2
+        Advertisement ad2 = new Advertisement();
+        ad2.setId(2L);
+        ad2.setTitle("iPhone 14 Pro Max");
+        ad2.setDescription("iPhone 14 Pro Max, 256GB, Deep Purple");
+        ad2.setPrice(38000000L);
+        ad2.setOwner(testUser);
+        ad2.setCategory(electronics);
+        ad2.setCity(mashhad);
+        ad2.setStatus("ACCEPTED");
+        testAds.add(ad2);
+
+        // Ad 3
+        Advertisement ad3 = new Advertisement();
+        ad3.setId(3L);
+        ad3.setTitle("Toyota Camry 2022");
+        ad3.setDescription("40,000 km, full options, leather seats");
+        ad3.setPrice(1200000000L);
+        ad3.setOwner(testUser);
+        ad3.setCategory(vehicles);
+        ad3.setCity(tehran);
+        ad3.setStatus("ACCEPTED");
+        testAds.add(ad3);
+
+        // Ad 4 (Pending)
+        Advertisement ad4 = new Advertisement();
+        ad4.setId(4L);
+        ad4.setTitle("Samsung Galaxy S24 Ultra");
+        ad4.setDescription("Brand new, 512GB, Titanium Black");
+        ad4.setPrice(52000000L);
+        ad4.setOwner(testUser);
+        ad4.setCategory(electronics);
+        ad4.setCity(tehran);
+        ad4.setStatus("PENDING");
+        testAds.add(ad4);
+
+        // Ad 5 (Sold)
+        Advertisement ad5 = new Advertisement();
+        ad5.setId(5L);
+        ad5.setTitle("Sony WH-1000XM5");
+        ad5.setDescription("Noise-canceling headphones, like new");
+        ad5.setPrice(8000000L);
+        ad5.setOwner(testUser);
+        ad5.setCategory(electronics);
+        ad5.setCity(tehran);
+        ad5.setStatus("SOLD");
+        testAds.add(ad5);
+
+        adListView.setItems(testAds);
+        errorLabel.setText("🔧 " + testAds.size() + " test ads loaded");
     }
 
     // SEARCH

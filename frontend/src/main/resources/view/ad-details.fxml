@@ -30,6 +30,9 @@
 <!--        <Button text="Add to Favorites" onAction="#addToFavorites" />-->
     </HBox>
 
+    <Button text="⭐ Rate Seller" onAction="#goToRating"
+            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
     <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
 
 </VBox>

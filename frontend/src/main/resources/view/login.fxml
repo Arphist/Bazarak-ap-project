@@ -30,5 +30,7 @@
 
     <Button text="Skip Login (Test Mode)" onAction="#handleSkipLogin" maxWidth="300"
             style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
+    <Button text="🚀 Skip to Admin Dashboard (Test)" onAction="#skipToAdmin"
+            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"/>
 
 </VBox>

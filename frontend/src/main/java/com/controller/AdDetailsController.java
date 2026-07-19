@@ -7,7 +7,6 @@ import com.util.NavigationUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
@@ -50,12 +49,14 @@ public class AdDetailsController {
     @FXML
     private VBox imageContainer;
 
+    private Long adId;
+
     // INITIALIZE
 
     @FXML
     private void initialize() {
         // Get ad ID from DataHolder
-        Long adId = DataHolder.getSelectedAdId();
+        adId = DataHolder.getSelectedAdId();  
 
         if (adId == null) {
             errorLabel.setText("No ad selected");
@@ -95,6 +96,20 @@ public class AdDetailsController {
 
         } catch (Exception e) {
             errorLabel.setText("Failed to load ad details: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // GO TO RATING
+    // ============================================
+
+    @FXML
+    private void goToRating() {
+        if (adId != null) {
+            DataHolder.setSelectedAdId(adId);
+            NavigationUtil.goToRating();
+        } else {
+            errorLabel.setText("No ad selected");
         }
     }
 
