@@ -1,26 +1,28 @@
 package com.controller;
 
 import com.BazarakFrontendApplication;
-import com.fasterxml.jackson.databind.util.NativeImageUtil;
 import com.model.User;
 import com.service.AuthService;
 import com.service.UserService;
+import com.util.Config;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileController {
 
+    // ============================================
     // FXML FIELDS
+    // ============================================
 
     @FXML
     private Label usernameLabel;
@@ -46,11 +48,13 @@ public class ProfileController {
     @FXML
     private PasswordField confirmPasswordField;
 
+
+    // Profile photo
     @FXML
-    private Label createdAtLabel;
+    private ImageView profileImageView;
 
     @FXML
-    private Label updatedAtLabel;
+    private Button changePhotoButton;
 
     // INITIALIZE
 
@@ -68,22 +72,77 @@ public class ProfileController {
             emailField.setText(currentUser.getEmail());
             phoneField.setText(currentUser.getPhoneNumber());
 
-            // Display time information
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-            if (currentUser.getCreatedAt() != null) {
-                createdAtLabel.setText("Account created: " + currentUser.getCreatedAt().format(formatter));
-            } else {
-                createdAtLabel.setText("Account created: N/A");
-            }
+            // Display profile photo
+            loadProfilePhoto(currentUser);
 
-            if (currentUser.getUpdatedAt() != null) {
-                updatedAtLabel.setText("Last updated: " + currentUser.getUpdatedAt().format(formatter));
-            } else {
-                updatedAtLabel.setText("Last updated: N/A");
-            }
         } else {
             errorLabel.setText("No user logged in");
+        }
+    }
+
+
+    private void loadProfilePhoto(User user) {
+        if (user.getProfilePhoto() != null && !user.getProfilePhoto().isEmpty()) {
+            try {
+                // Construct full URL
+                String photoUrl = Config.BASE_IMAGE_URL + user.getProfilePhoto();
+                Image image = new Image(photoUrl, true);
+                profileImageView.setImage(image);
+                profileImageView.setPreserveRatio(true);
+                profileImageView.setFitWidth(100);
+                profileImageView.setFitHeight(100);
+            } catch (Exception e) {
+                // If image fails to load, use default
+                setDefaultProfilePhoto();
+            }
+        } else {
+            setDefaultProfilePhoto();
+        }
+    }
+
+    private void setDefaultProfilePhoto() {
+        // TODO: Use default avatar (you can add a default image in resources)
+        //  profileImageView.setImage(new Image(getClass().getResourceAsStream("/images/default-avatar.png")));
+        profileImageView.setImage(null);
+        profileImageView.setStyle("-fx-background-color: #bdc3c7; -fx-background-radius: 50;");
+    }
+
+    // UPDATE PROFILE PHOTO
+
+    @FXML
+    private void handleChangeProfilePhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Photo");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp")
+        );
+
+        Stage stage = (Stage) changePhotoButton.getScene().getWindow();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+
+        if (selectedFile != null) {
+            try {
+                // Call UserService.updateProfilePhoto()
+                Map<String, Object> result = UserService.updateProfilePhoto(selectedFile);
+                String message = (String) result.get("message");
+                String photoUrl = (String) result.get("photoUrl");
+
+                // Show success message
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+                alert.showAndWait();
+
+                // Reload profile to show new photo
+                loadUserProfile();
+
+                errorLabel.setText("");
+
+            } catch (Exception e) {
+                errorLabel.setText("Failed to update profile photo: " + e.getMessage());
+            }
         }
     }
 
@@ -101,7 +160,6 @@ public class ProfileController {
         }
 
         try {
-            // Get current user and update fields
             User currentUser = SessionManager.getCurrentUser();
             if (currentUser == null) {
                 errorLabel.setText("No user logged in");
@@ -112,18 +170,21 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhoneNumber(phone);
 
-            Map<String,Object> result = UserService.updateProfile(currentUser);
-            User updatedUser = (User)result.get("user");
+            // Call backend to update profile
+            Map<String, Object> result = UserService.updateProfile(currentUser);
+            User updatedUser = (User) result.get("user");
+
+            // Update session with new user
             SessionManager.setCurrentUser(updatedUser);
 
-            Alert alert = new Alert(AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
             alert.setContentText((String) result.get("message"));
             alert.showAndWait();
 
+            // Reload profile to show updated data
             loadUserProfile();
-
             errorLabel.setText("");
 
         } catch (Exception e) {
@@ -155,9 +216,10 @@ public class ProfileController {
         }
 
         try {
+            // Call backend to change password
             UserService.changePassword(oldPassword, newPassword);
 
-            Alert alert = new Alert(AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
             alert.setContentText("Password changed successfully!");
@@ -173,9 +235,8 @@ public class ProfileController {
             errorLabel.setText("Password change failed: " + e.getMessage());
         }
     }
-    // ============================================
+
     // NAVIGATION
-    // ============================================
 
     @FXML
     private void goToHome() {
@@ -184,7 +245,11 @@ public class ProfileController {
 
     @FXML
     private void handleLogout() {
-        NavigationUtil.logout();
+        try {
+            AuthService.logout();
+            NavigationUtil.goToLogin();
+        } catch (Exception e) {
+            errorLabel.setText("Logout failed: " + e.getMessage());
+        }
     }
-
 }
