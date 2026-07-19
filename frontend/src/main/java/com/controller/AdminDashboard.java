@@ -333,6 +333,26 @@ public class AdminDashboard {
             usersErrorLabel.setText("Failed to unblock user: " + e.getMessage());
         }
     }
+    // ============================================
+    // REFRESH ALL
+    // ============================================
+
+    @FXML
+    private void refreshAll() {
+        loadPendingAds();
+        loadAllAds();
+        loadUsers();
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void goToHome() {
+        NavigationUtil.goToHome();
+    }
+
 
 
 
