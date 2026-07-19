@@ -84,4 +84,68 @@ public class ImageService {
         }
     }
 
+    // GET IMAGES FOR AN AD
+
+    /**
+     * Retrieves all images associated with an advertisement.
+     *
+     * @param adId the ID of the advertisement
+     * @return a list of Image objects
+     * @throws Exception if the request fails
+     */
+    public static List<Image> getImagesByAd(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/ad/" + adId))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
+            Object imagesObj = responseObj.get("images");
+            if (imagesObj != null) {
+                String json = objectMapper.writeValueAsString(imagesObj);
+                return objectMapper.readValue(json, new TypeReference<List<Image>>() {});
+            }
+            return new ArrayList<>();
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load images"));
+        }
+    }
+
+    // GET SINGLE IMAGE (as bytes)
+
+    /**
+     * Retrieves an image file as a byte array.
+     *
+     * @param imageId the ID of the image
+     * @return the image as byte array
+     * @throws Exception if the request fails
+     */
+    public static byte[] getImageBytes(Long imageId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/" + imageId))
+                .GET()
+                .build();
+
+        HttpResponse<byte[]> response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        if (response.statusCode() == 200) {
+            return response.body();
+        } else {
+            throw new Exception("Failed to load image: " + response.statusCode());
+        }
+    }
+
+    /**
+     * Gets the URL for an image to be used in UI components.
+     *
+     * @param imageId the ID of the image
+     * @return the full URL of the image
+     */
+    public static String getImageUrl(Long imageId) {
+        return Config.BASE_IMAGE_URL + "/images/" + imageId;
+    }
 }
