@@ -138,4 +138,77 @@ public class RatingController {
         }
     }
 
+    // ============================================
+    // CREATE RATING
+    // ============================================
+
+    @FXML
+    private void submitRating() {
+        Integer score = scoreComboBox.getValue();
+        String comment = commentTextArea.getText().trim();
+
+        if (score == null) {
+            errorLabel.setText("Please select a score");
+            return;
+        }
+
+        User currentUser = SessionManager.getCurrentUser();
+        if (currentUser == null) {
+            errorLabel.setText("Please login first");
+            return;
+        }
+
+        // Check if user is rating themselves
+        if (currentUser.getId().equals(sellerId)) {
+            errorLabel.setText("You cannot rate yourself");
+            return;
+        }
+
+        try {
+            // Create rating object
+            Rating rating = new Rating();
+            rating.setScore(score);
+            rating.setComment(comment.isEmpty() ? null : comment);
+
+            User seller = new User();
+            seller.setId(sellerId);
+            rating.setSeller(seller);
+
+            Advertisement ad = new Advertisement();
+            ad.setId(advertisementId);
+            rating.setAdvertisement(ad);
+
+            // Submit to backend
+            Rating created = RatingService.createRating(rating);
+
+            // Clear form
+            scoreComboBox.setValue(3);
+            commentTextArea.clear();
+            errorLabel.setText("✅ Rating submitted successfully");
+
+            // Reload ratings
+            loadRatings();
+            loadSellerInfo();
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to submit rating: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // NAVIGATION
+    // ============================================
+
+    @FXML
+    private void goBack() {
+        NavigationUtil.goBack();
+    }
+
+    @FXML
+    private void goToHome() {
+        NavigationUtil.goToHome();
+    }
+
+
+
 }
