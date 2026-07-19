@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.controller.UserAdController">
+
+    <!-- TOP: Header -->
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #2c3e50;">
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button text="← Back" onAction="#goToHome"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14;"/>
+                <Label text="My Ads" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Button text="➕ New Ad" onAction="#goToCreateAd"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 5 15;"/>
+                <Button text="❤️ Favorites" onAction="#goToFavorites"
+                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 5 15;"/>
+                <Button text="👤 Profile" onAction="#goToProfile"
+                        style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 5 15;"/>
+                <Button text="↻ Refresh" onAction="#refreshAll"
+                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 5 15;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER: Content -->
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Dashboard Stats -->
+            <VBox spacing="5" style="-fx-padding: 10; -fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5;">
+                <Label text="📊 Dashboard" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                <HBox spacing="20">
+                    <Label fx:id="totalLabel" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+                    <Label fx:id="pendingLabel" style="-fx-text-fill: #f39c12;"/>
+                    <Label fx:id="activeLabel" style="-fx-text-fill: #27ae60;"/>
+                    <Label fx:id="rejectedLabel" style="-fx-text-fill: #e74c3c;"/>
+                    <Label fx:id="soldLabel" style="-fx-text-fill: #3498db;"/>
+                    <Label fx:id="deletedLabel" style="-fx-text-fill: #7f8c8d;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Filter & Sort Controls -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Status:" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="statusFilterCombo" onAction="#applyFilter" prefWidth="120"/>
+                <Label text="Sort:" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="sortByCombo" onAction="#applySort" prefWidth="160"/>
+                <Label fx:id="countLabel" style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+            </HBox>
+
+            <!-- Ad List -->
+            <ListView fx:id="myAdsListView" VBox.vgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5;"/>
+
+            <!-- Error Label -->
+            <Label fx:id="errorLabel" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
+
+        </VBox>
+    </center>
+
+</BorderPane>
