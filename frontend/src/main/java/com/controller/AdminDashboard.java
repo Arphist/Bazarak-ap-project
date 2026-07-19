@@ -161,4 +161,96 @@ public class AdminDashboard {
         loadUsers();
     }
 
+    // ============================================
+    // LOAD PENDING ADS
+    // ============================================
+
+    private void loadPendingAds() {
+        try {
+            List<Advertisement> ads = AdminService.getPendingAds("created_at", "asc");
+            pendingAds.clear();
+            pendingAds.addAll(ads);
+            pendingAdsTable.setItems(pendingAds);
+            pendingCountLabel.setText("Pending: " + pendingAds.size());
+            pendingErrorLabel.setText("");
+        } catch (Exception e) {
+            pendingErrorLabel.setText("Failed to load pending ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // APPROVE AD
+    // ============================================
+
+    @FXML
+    private void approveAd() {
+        Advertisement selected = pendingAdsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            pendingErrorLabel.setText("Please select an ad to approve");
+            return;
+        }
+
+        try {
+            Map<String, Object> result = AdminService.approveAd(selected);
+            pendingErrorLabel.setText("✅ " + result.getOrDefault("message", "Ad approved"));
+            loadPendingAds();
+            loadAllAds();
+        } catch (Exception e) {
+            pendingErrorLabel.setText("Failed to approve ad: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // REJECT AD
+    // ============================================
+
+    @FXML
+    private void rejectAd() {
+        Advertisement selected = pendingAdsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            pendingErrorLabel.setText("Please select an ad to reject");
+            return;
+        }
+
+        try {
+            Map<String, Object> result = AdminService.rejectAd(selected);
+            pendingErrorLabel.setText("✅ " + result.getOrDefault("message", "Ad rejected"));
+            loadPendingAds();
+            loadAllAds();
+        } catch (Exception e) {
+            pendingErrorLabel.setText("Failed to reject ad: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // DELETE AD (Admin)
+    // ============================================
+
+    @FXML
+    private void deleteAd() {
+        Advertisement selected = allAdsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            allAdsErrorLabel.setText("Please select an ad to delete");
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Ad");
+        alert.setHeaderText("Delete advertisement: " + selected.getTitle());
+        alert.setContentText("Are you sure you want to permanently delete this ad?");
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    AdminService.deleteAd(selected);
+                    allAdsErrorLabel.setText("✅ Ad deleted successfully");
+                    loadAllAds();
+                    loadPendingAds();
+                } catch (Exception e) {
+                    allAdsErrorLabel.setText("Failed to delete ad: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+
 }
