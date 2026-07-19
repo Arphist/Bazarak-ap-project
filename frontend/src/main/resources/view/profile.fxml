@@ -4,19 +4,43 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
 
 <VBox spacing="15" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #f5f5f5;"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.ProfileController">
 
+    <!-- Back Button -->
+    <HBox alignment="CENTER_LEFT" style="-fx-padding: 0 0 10 0;">
+        <Button text="← Back to Home" onAction="#goToHome"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5;"/>
+    </HBox>
+
+    <!-- Profile Header -->
+    <VBox spacing="10" alignment="CENTER">
+        <!-- Profile Photo -->
+        <ImageView fx:id="profileImageView" fitWidth="100" fitHeight="100" preserveRatio="true"
+                   style="-fx-background-color: #bdc3c7; -fx-background-radius: 50; -fx-border-color: #2c3e50; -fx-border-width: 2; -fx-border-radius: 50;">
+            <clip>
+                <Circle centerX="50" centerY="50" radius="50"/>
+            </clip>
+        </ImageView>
+
+        <!-- Change Photo Button -->
+        <Button fx:id="changePhotoButton" text="📷 Change Photo" onAction="#handleChangeProfilePhoto"
+                style="-fx-background-color: #34495e; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 5 15; -fx-background-radius: 20;"/>
+    </VBox>
+
     <!-- Time Information -->
-    <VBox spacing="5">
-        <Label fx:id="createdAtLabel" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
-        <Label fx:id="updatedAtLabel" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+    <VBox spacing="3" alignment="CENTER">
+        <Label fx:id="createdAtLabel" style="-fx-text-fill: #666; -fx-font-size: 11px;" />
+        <Label fx:id="updatedAtLabel" style="-fx-text-fill: #666; -fx-font-size: 11px;" />
+        <Label fx:id="lastLoginLabel" style="-fx-text-fill: #666; -fx-font-size: 11px;" />
     </VBox>
 
     <Label text="My Profile" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
