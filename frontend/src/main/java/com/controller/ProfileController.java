@@ -48,6 +48,12 @@ public class ProfileController {
     @FXML
     private PasswordField confirmPasswordField;
 
+    // Time information labels
+    @FXML
+    private Label createdAtLabel;
+
+    @FXML
+    private Label updatedAtLabel;
 
     // Profile photo
     @FXML
@@ -72,6 +78,8 @@ public class ProfileController {
             emailField.setText(currentUser.getEmail());
             phoneField.setText(currentUser.getPhoneNumber());
 
+            // Display time information
+            displayTimeInfo(currentUser);
 
             // Display profile photo
             loadProfilePhoto(currentUser);
@@ -81,6 +89,21 @@ public class ProfileController {
         }
     }
 
+    private void displayTimeInfo(User user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        if (user.getCreatedAt() != null) {
+            createdAtLabel.setText("Account created: " + user.getCreatedAt().format(formatter));
+        } else {
+            createdAtLabel.setText("Account created: N/A");
+        }
+
+        if (user.getUpdatedAt() != null) {
+            updatedAtLabel.setText("Last updated: " + user.getUpdatedAt().format(formatter));
+        } else {
+            updatedAtLabel.setText("Last updated: N/A");
+        }
+    }
 
     private void loadProfilePhoto(User user) {
         if (user.getProfilePhoto() != null && !user.getProfilePhoto().isEmpty()) {

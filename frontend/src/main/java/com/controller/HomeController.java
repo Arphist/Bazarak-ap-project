@@ -348,7 +348,6 @@ public class HomeController {
 
     // HELPER METHODS
 
-    //TODO: I might delete this
     private Long parsePrice(String text) {
         if (text == null || text.trim().isEmpty()) {
             return null;
