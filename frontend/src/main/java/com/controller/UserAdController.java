@@ -67,6 +67,117 @@ public class UserAdController {
 
     private ObservableList<Advertisement> myAds = FXCollections.observableArrayList();
     private String currentStatusFilter = "ALL";
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        // Check if user is logged in
+        if (!SessionManager.isLoggedIn()) {
+            NavigationUtil.goToLogin();
+            return;
+        }
+
+        // Setup list view
+        myAdsListView.setItems(myAds);
+        myAdsListView.setCellFactory(lv -> new AdCell());
+        myAdsListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    DataHolder.setSelectedAdId(selected.getId());
+                    BazarakFrontendApplication.showAdDetailsPage();
+                }
+            }
+        });
+
+        // Setup filter combo box
+        statusFilterCombo.setItems(FXCollections.observableArrayList(
+                "ALL",
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED",
+                "SOLD",
+                "DELETED"
+        ));
+        statusFilterCombo.setValue("ALL");
+
+        // Setup sort combo box
+        sortByCombo.setItems(FXCollections.observableArrayList(
+                "Newest First",
+                "Oldest First",
+                "Price: Low to High",
+                "Price: High to Low"
+        ));
+        sortByCombo.setValue("Newest First");
+
+        // Load data
+        loadDashboardStats();
+        loadMyAds();
+    }
+
+    // ============================================
+    // LOAD MY ADS
+    // ============================================
+
+    @FXML
+    private void loadMyAds() {
+        String sortBy = parseSortBy(sortByCombo.getValue());
+        String sortOrder = parseSortOrder(sortByCombo.getValue());
+
+        try {
+            List<Advertisement> ads;
+
+            if ("ALL".equals(currentStatusFilter)) {
+                ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
+            } else {
+                ads = UserAdvertisementService.getMyAdsByStatus(currentStatusFilter, sortBy, sortOrder);
+            }
+
+            myAds.clear();
+            myAds.addAll(ads);
+            myAdsListView.setItems(myAds);
+
+            countLabel.setText("Total: " + myAds.size());
+            errorLabel.setText("");
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load my ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // DASHBOARD STATS
+    // ============================================
+
+    @FXML
+    private void loadDashboardStats() {
+        try {
+            Map<String, Map<String, Object>> dashboard = UserAdvertisementService.getMyAdsDashboard();
+
+            totalLabel.setText("Total: " + getCount(dashboard, "total"));
+            pendingLabel.setText("Pending: " + getCount(dashboard, "pending"));
+            activeLabel.setText("Active: " + getCount(dashboard, "active"));
+            rejectedLabel.setText("Rejected: " + getCount(dashboard, "rejected"));
+            soldLabel.setText("Sold: " + getCount(dashboard, "sold"));
+            deletedLabel.setText("Deleted: " + getCount(dashboard, "deleted"));
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load stats: " + e.getMessage());
+        }
+    }
+
+    private long getCount(Map<String, Map<String, Object>> dashboard, String key) {
+        Map<String, Object> group = dashboard.get(key);
+        if (group != null) {
+            Object count = group.get("count");
+            if (count instanceof Number) {
+                return ((Number) count).longValue();
+            }
+        }
+        return 0;
+    }
 
 
 }
