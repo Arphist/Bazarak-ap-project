@@ -111,5 +111,54 @@ public class AdminDashboard {
     private ObservableList<Advertisement> allAds = FXCollections.observableArrayList();
     private ObservableList<User> users = FXCollections.observableArrayList();
 
+    // ============================================
+    // INITIALIZE
+    // ============================================
+
+    @FXML
+    private void initialize() {
+        // Check if user is admin
+        if (!SessionManager.isAdmin()) {
+            NavigationUtil.goToHome();
+            return;
+        }
+
+        // Setup pending ads table
+        pendingIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        pendingTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        pendingOwnerCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(
+                        cellData.getValue().getOwner() != null ?
+                                cellData.getValue().getOwner().getFullName() : "Unknown"
+                )
+        );
+        pendingPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        pendingStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        // Setup all ads table
+        allIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        allTitleCol.setCellValueFactory(new PropertyValueFactory<>("title"));
+        allOwnerCol.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(
+                        cellData.getValue().getOwner() != null ?
+                                cellData.getValue().getOwner().getFullName() : "Unknown"
+                )
+        );
+        allPriceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+        allStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        // Setup users table
+        userIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        userUsernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
+        userFullNameCol.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        userEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
+        userStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
+        userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
+
+        // Load data
+        loadPendingAds();
+        loadAllAds();
+        loadUsers();
+    }
 
 }
