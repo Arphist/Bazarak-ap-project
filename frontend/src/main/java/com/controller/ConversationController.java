@@ -62,7 +62,7 @@ public class ConversationController {
 
         // Setup conversation list
         conversationListView.setItems(conversations);
-        conversationListView.setCellFactory(lv -> new ConversationCell(currentUser.getId()));
+        conversationListView.setCellFactory(lv -> new ConversationCell(currentUser));
         conversationListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 1) {
                 Conversation selected = conversationListView.getSelectionModel().getSelectedItem();
@@ -123,6 +123,9 @@ public class ConversationController {
 
                 // Add to message list
                 messages.add(message);
+                messageListView.scrollTo(messages.size() - 1);
+
+                conversationListView.refresh();
 
                 // Scroll to bottom
                 messageListView.scrollTo(messages.size() - 1);
@@ -228,6 +231,4 @@ public class ConversationController {
     private void goBack() {
         NavigationUtil.goBack();
     }
-
-
 }
