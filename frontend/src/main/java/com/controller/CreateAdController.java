@@ -11,6 +11,7 @@ import com.service.CityService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -45,6 +46,12 @@ public class CreateAdController {
     @FXML
     private Label errorLabel;
 
+    @FXML
+    private ComboBox<Category> subCategoryCombo;
+
+    private ObservableList<Category> rootCategories = FXCollections.observableArrayList();
+    private ObservableList<Category> subCategories = FXCollections.observableArrayList();
+
     // ============================================
     // INITIALIZE
     // ============================================
@@ -61,9 +68,31 @@ public class CreateAdController {
 
     private void loadCategories() {
         try {
-            List<Category> categories = CategoryService.getAllCategories();
-            categoryCombo.setItems(FXCollections.observableArrayList(categories));
+            // Load all categories for parent combo
+            List<Category> allCategories = CategoryService.getAllCategories();
+            categoryCombo.setItems(FXCollections.observableArrayList(allCategories));
             categoryCombo.setPromptText("Select Category");
+
+            // Load root categories for sub-category selection
+            List<Category> roots = CategoryService.getRootCategories();
+            rootCategories.setAll(roots);
+            subCategoryCombo.setItems(rootCategories);
+            subCategoryCombo.setPromptText("Select Sub-Category");
+
+            // Add listener for sub-category selection
+            subCategoryCombo.setOnAction(e -> {
+                Category selected = subCategoryCombo.getValue();
+                if (selected != null) {
+                    try {
+                        List<Category> subs = CategoryService.getSubCategories(selected.getId());
+                        subCategories.setAll(subs);
+                        // You could show sub-categories in another combo or list
+                    } catch (Exception ex) {
+                        errorLabel.setText("Failed to load sub-categories: " + ex.getMessage());
+                    }
+                }
+            });
+
         } catch (Exception e) {
             errorLabel.setText("Failed to load categories: " + e.getMessage());
         }
