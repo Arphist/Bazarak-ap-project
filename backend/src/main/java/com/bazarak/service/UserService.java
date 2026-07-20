@@ -209,6 +209,13 @@ public class UserService {
     }
 
 
+    /***
+     * Check if user is banned
+     */
+    public void isUserBanned (User user){
+        if (user.isBanned()) throw new UnauthorizedAccessException("Operation failed, Your account is banned");
+    }
+
     /**
      * Check if the User owns the Ad
      */
