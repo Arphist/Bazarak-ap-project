@@ -50,7 +50,7 @@
                     <TextArea fx:id="messageInput" promptText="Type a message..." HBox.hgrow="ALWAYS"
                               prefHeight="60" wrapText="true"
                               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
-                    <Button text="Send"
+                    <Button text="Send" onAction="#sendMessage"
                             style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
                 </HBox>
 
