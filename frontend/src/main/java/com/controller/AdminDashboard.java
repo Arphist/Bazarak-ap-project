@@ -371,9 +371,23 @@ public class AdminDashboard {
 
     private void loadCities() {
         try {
-            List<City> cityList = CityService.getAllCities();
-            cities.setAll(cityList);
-            cityListView.setItems(cities);
+            List<City> cities = CityService.getAllCities();
+            cityListView.getItems().setAll(cities);
+            cityListView.setCellFactory(lv -> new ListCell<City>() {
+                @Override
+                protected void updateItem(City city, boolean empty) {
+                    super.updateItem(city, empty);
+                    if (empty || city == null) {
+                        setText(null);
+                    } else {
+                        String display = city.getName();
+                        if (city.getProvince() != null && !city.getProvince().isEmpty()) {
+                            display += " (" + city.getProvince() + ")";
+                        }
+                        setText(display);
+                    }
+                }
+            });
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
                     "Load Cities Error",
@@ -386,9 +400,23 @@ public class AdminDashboard {
 
     private void loadCategories() {
         try {
-            List<Category> categoryList = CategoryService.getAllCategories();
-            categories.setAll(categoryList);
-            categoryListView.setItems(categories);
+            List<Category> categories = CategoryService.getAllCategories();
+            categoryListView.getItems().setAll(categories);
+            categoryListView.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category cat, boolean empty) {
+                    super.updateItem(cat, empty);
+                    if (empty || cat == null) {
+                        setText(null);
+                    } else {
+                        String display = cat.getName();
+                        if (cat.getParentId() != null) {
+                            display += " (subcategory)";
+                        }
+                        setText(display);
+                    }
+                }
+            });
 
             // Update parent combo box
             updateCategoryParentCombo();
