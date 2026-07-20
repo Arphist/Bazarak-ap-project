@@ -3,6 +3,7 @@ package com.controller;
 import com.model.Advertisement;
 import com.model.User;
 import com.service.AdminService;
+import com.service.AdminService;
 import com.util.NavigationUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,14 +11,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AdminDashboard {
 
     // FXML FIELDS - PENDING ADS
-
 
     @FXML
     private ListView<Advertisement> pendingAdsListView;
@@ -28,9 +27,13 @@ public class AdminDashboard {
     @FXML
     private Label pendingErrorLabel;
 
+    @FXML
+    private ComboBox<String> pendingSortByCombo;
+
+    @FXML
+    private ComboBox<String> pendingSortOrderCombo;
 
     // FXML FIELDS - ACTIVE ADS
-
 
     @FXML
     private ListView<Advertisement> activeAdsListView;
@@ -41,9 +44,13 @@ public class AdminDashboard {
     @FXML
     private Label activeErrorLabel;
 
+    @FXML
+    private ComboBox<String> activeSortByCombo;
+
+    @FXML
+    private ComboBox<String> activeSortOrderCombo;
 
     // FXML FIELDS - REJECTED ADS
-
 
     @FXML
     private ListView<Advertisement> rejectedAdsListView;
@@ -54,9 +61,13 @@ public class AdminDashboard {
     @FXML
     private Label rejectedErrorLabel;
 
+    @FXML
+    private ComboBox<String> rejectedSortByCombo;
+
+    @FXML
+    private ComboBox<String> rejectedSortOrderCombo;
 
     // FXML FIELDS - SOLD ADS
-
 
     @FXML
     private ListView<Advertisement> soldAdsListView;
@@ -67,9 +78,13 @@ public class AdminDashboard {
     @FXML
     private Label soldErrorLabel;
 
+    @FXML
+    private ComboBox<String> soldSortByCombo;
+
+    @FXML
+    private ComboBox<String> soldSortOrderCombo;
 
     // FXML FIELDS - DELETED ADS
-
 
     @FXML
     private ListView<Advertisement> deletedAdsListView;
@@ -80,9 +95,13 @@ public class AdminDashboard {
     @FXML
     private Label deletedErrorLabel;
 
+    @FXML
+    private ComboBox<String> deletedSortByCombo;
+
+    @FXML
+    private ComboBox<String> deletedSortOrderCombo;
 
     // FXML FIELDS - USERS
-
 
     @FXML
     private TableView<User> usersTable;
@@ -111,9 +130,7 @@ public class AdminDashboard {
     @FXML
     private Label usersErrorLabel;
 
-
     // DATA
-
 
     private ObservableList<Advertisement> pendingAds = FXCollections.observableArrayList();
     private ObservableList<Advertisement> activeAds = FXCollections.observableArrayList();
@@ -122,9 +139,7 @@ public class AdminDashboard {
     private ObservableList<Advertisement> deletedAds = FXCollections.observableArrayList();
     private ObservableList<User> users = FXCollections.observableArrayList();
 
-
     // INITIALIZE
-
 
     @FXML
     private void initialize() {
@@ -135,6 +150,9 @@ public class AdminDashboard {
         setupAdListView(deletedAdsListView);
 
         setupUserTable();
+
+        // Setup sort combo boxes
+        setupSortCombos();
 
         loadAllData();
     }
@@ -177,9 +195,21 @@ public class AdminDashboard {
         userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
     }
 
+    private void setupSortCombos() {
+        // Set default values for all sort combos
+        setupSingleSortCombo(pendingSortByCombo, pendingSortOrderCombo);
+        setupSingleSortCombo(activeSortByCombo, activeSortOrderCombo);
+        setupSingleSortCombo(rejectedSortByCombo, rejectedSortOrderCombo);
+        setupSingleSortCombo(soldSortByCombo, soldSortOrderCombo);
+        setupSingleSortCombo(deletedSortByCombo, deletedSortOrderCombo);
+    }
+
+    private void setupSingleSortCombo(ComboBox<String> sortBy, ComboBox<String> sortOrder) {
+        sortBy.setValue("created_at");
+        sortOrder.setValue("desc");
+    }
 
     // LOAD DATA
-
 
     private void loadAllData() {
         loadPendingAds();
@@ -192,7 +222,9 @@ public class AdminDashboard {
 
     private void loadPendingAds() {
         try {
-            List<Advertisement> ads = AdminService.getPendingAds("created_at", "asc");
+            String sortBy = pendingSortByCombo.getValue();
+            String sortOrder = pendingSortOrderCombo.getValue();
+            List<Advertisement> ads = AdminService.getPendingAds(sortBy, sortOrder);
             pendingAds.setAll(ads);
             pendingAdsListView.setItems(pendingAds);
             pendingCountLabel.setText("Pending: " + pendingAds.size());
@@ -205,7 +237,9 @@ public class AdminDashboard {
 
     private void loadActiveAds() {
         try {
-            List<Advertisement> ads = AdminService.getAdsByStatus("ACTIVE", "created_at", "desc");
+            String sortBy = activeSortByCombo.getValue();
+            String sortOrder = activeSortOrderCombo.getValue();
+            List<Advertisement> ads = AdminService.getAdsByStatus("ACTIVE", sortBy, sortOrder);
             activeAds.setAll(ads);
             activeAdsListView.setItems(activeAds);
             activeCountLabel.setText("Active: " + activeAds.size());
@@ -218,7 +252,9 @@ public class AdminDashboard {
 
     private void loadRejectedAds() {
         try {
-            List<Advertisement> ads = AdminService.getAdsByStatus("REJECTED", "created_at", "desc");
+            String sortBy = rejectedSortByCombo.getValue();
+            String sortOrder = rejectedSortOrderCombo.getValue();
+            List<Advertisement> ads = AdminService.getAdsByStatus("REJECTED", sortBy, sortOrder);
             rejectedAds.setAll(ads);
             rejectedAdsListView.setItems(rejectedAds);
             rejectedCountLabel.setText("Rejected: " + rejectedAds.size());
@@ -231,7 +267,9 @@ public class AdminDashboard {
 
     private void loadSoldAds() {
         try {
-            List<Advertisement> ads = AdminService.getAdsByStatus("SOLD", "created_at", "desc");
+            String sortBy = soldSortByCombo.getValue();
+            String sortOrder = soldSortOrderCombo.getValue();
+            List<Advertisement> ads = AdminService.getAdsByStatus("SOLD", sortBy, sortOrder);
             soldAds.setAll(ads);
             soldAdsListView.setItems(soldAds);
             soldCountLabel.setText("Sold: " + soldAds.size());
@@ -244,7 +282,9 @@ public class AdminDashboard {
 
     private void loadDeletedAds() {
         try {
-            List<Advertisement> ads = AdminService.getAdsByStatus("DELETED", "created_at", "desc");
+            String sortBy = deletedSortByCombo.getValue();
+            String sortOrder = deletedSortOrderCombo.getValue();
+            List<Advertisement> ads = AdminService.getAdsByStatus("DELETED", sortBy, sortOrder);
             deletedAds.setAll(ads);
             deletedAdsListView.setItems(deletedAds);
             deletedCountLabel.setText("Deleted: " + deletedAds.size());
@@ -268,9 +308,34 @@ public class AdminDashboard {
         }
     }
 
+    // SORT ACTIONS
+
+    @FXML
+    private void applyPendingSort() {
+        loadPendingAds();
+    }
+
+    @FXML
+    private void applyActiveSort() {
+        loadActiveAds();
+    }
+
+    @FXML
+    private void applyRejectedSort() {
+        loadRejectedAds();
+    }
+
+    @FXML
+    private void applySoldSort() {
+        loadSoldAds();
+    }
+
+    @FXML
+    private void applyDeletedSort() {
+        loadDeletedAds();
+    }
 
     // ACTIONS
-
 
     @FXML
     private void approveAd() {
@@ -343,10 +408,6 @@ public class AdminDashboard {
         }
     }
 
-    /**
-     * Restores a deleted advertisement back to pending status.
-     * This allows the ad to be reviewed and approved again.
-     */
     @FXML
     private void restoreAd() {
         Advertisement selected = deletedAdsListView.getSelectionModel().getSelectedItem();
@@ -355,23 +416,20 @@ public class AdminDashboard {
             return;
         }
 
-        // Confirmation dialog
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Restore");
         confirm.setHeaderText("Restore advertisement?");
-        confirm.setContentText("Are you sure you want to restore '" + selected.getTitle() + "'?\nIt will be sent back for admin review.");
+        confirm.setContentText("Are you sure you want to restore '" + selected.getTitle() + "'?");
 
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) {
-            return;
-        }
-
-        try {
-            Map<String, Object> result = AdminService.restoreAd(selected.getId());
-            loadAllData();
-            deletedErrorLabel.setText((String) result.get("message"));
-        } catch (Exception e) {
-            String msg = e.getMessage();
-            deletedErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to restore ad"));
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                Map<String, Object> result = AdminService.restoreAd(selected.getId());
+                loadAllData();
+                deletedErrorLabel.setText((String) result.get("message"));
+            } catch (Exception e) {
+                String msg = e.getMessage();
+                deletedErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to restore ad"));
+            }
         }
     }
 
@@ -418,18 +476,21 @@ public class AdminDashboard {
         }
     }
 
-
     // REFRESH
-
 
     @FXML
     private void refreshAll() {
         loadAllData();
     }
 
+    // NAVIGATION
+
+    @FXML
+    private void goToHome() {
+        // Admin stays in admin panel
+    }
 
     // HELPERS
-
 
     private ListView<Advertisement> getCurrentListView() {
         TabPane tabPane = (TabPane) pendingAdsListView.getParent().getParent().getParent();
@@ -437,18 +498,12 @@ public class AdminDashboard {
         String tabText = selectedTab.getText();
 
         switch (tabText) {
-            case "Pending":
-                return pendingAdsListView;
-            case "Active":
-                return activeAdsListView;
-            case "Rejected":
-                return rejectedAdsListView;
-            case "Sold":
-                return soldAdsListView;
-            case "Deleted":
-                return deletedAdsListView;
-            default:
-                return pendingAdsListView;
+            case "Pending": return pendingAdsListView;
+            case "Active": return activeAdsListView;
+            case "Rejected": return rejectedAdsListView;
+            case "Sold": return soldAdsListView;
+            case "Deleted": return deletedAdsListView;
+            default: return pendingAdsListView;
         }
     }
 
@@ -458,23 +513,12 @@ public class AdminDashboard {
         String tabText = selectedTab.getText();
 
         switch (tabText) {
-            case "Pending":
-                pendingErrorLabel.setText(message);
-                break;
-            case "Active":
-                activeErrorLabel.setText(message);
-                break;
-            case "Rejected":
-                rejectedErrorLabel.setText(message);
-                break;
-            case "Sold":
-                soldErrorLabel.setText(message);
-                break;
-            case "Deleted":
-                deletedErrorLabel.setText(message);
-                break;
-            default:
-                break;
+            case "Pending": pendingErrorLabel.setText(message); break;
+            case "Active": activeErrorLabel.setText(message); break;
+            case "Rejected": rejectedErrorLabel.setText(message); break;
+            case "Sold": soldErrorLabel.setText(message); break;
+            case "Deleted": deletedErrorLabel.setText(message); break;
+            default: break;
         }
     }
 
