@@ -74,7 +74,6 @@ public class CityService {
         }
     }
 
-    // TODO: add a search box for this
     /**
      * Search cities by keyword.
      *

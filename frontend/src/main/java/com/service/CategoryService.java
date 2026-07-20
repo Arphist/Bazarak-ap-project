@@ -104,7 +104,6 @@ public class CategoryService {
         }
     }
 
-    // TODO: add this to category panel (a search box)
     /**
      * Searches categories using the specified keyword.
      *
