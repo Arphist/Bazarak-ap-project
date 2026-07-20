@@ -45,7 +45,12 @@ public class LoginController {
 
             // Clear error and go to main page
             errorLabel.setText("");
-            BazarakFrontendApplication.showHomePage();
+
+            if (user.isAdmin()){
+                BazarakFrontendApplication.showAdminDashboard();
+            }else{
+                BazarakFrontendApplication.showHomePage();
+            }
 
         } catch (Exception e) {
             errorLabel.setText("Login failed: " + e.getMessage());
