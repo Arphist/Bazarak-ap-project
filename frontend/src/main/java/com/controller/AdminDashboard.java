@@ -152,9 +152,41 @@ public class AdminDashboard {
         setupUserTable();
 
         // Setup sort combo boxes
-        setupSortCombos();
+        setupSortComboBoxes();
 
         loadAllData();
+    }
+
+    private void setupSortComboBoxes() {
+        // Pending
+        pendingSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        pendingSortByCombo.setValue("created_at");
+        pendingSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        pendingSortOrderCombo.setValue("desc");
+
+        // Active
+        activeSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        activeSortByCombo.setValue("created_at");
+        activeSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        activeSortOrderCombo.setValue("desc");
+
+        // Rejected
+        rejectedSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        rejectedSortByCombo.setValue("created_at");
+        rejectedSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        rejectedSortOrderCombo.setValue("desc");
+
+        // Sold
+        soldSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        soldSortByCombo.setValue("created_at");
+        soldSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        soldSortOrderCombo.setValue("desc");
+
+        // Deleted
+        deletedSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        deletedSortByCombo.setValue("created_at");
+        deletedSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        deletedSortOrderCombo.setValue("desc");
     }
 
     private void setupAdListView(ListView<Advertisement> listView) {
@@ -193,15 +225,6 @@ public class AdminDashboard {
         userEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
         userStatusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
-    }
-
-    private void setupSortCombos() {
-        // Set default values for all sort combos
-        setupSingleSortCombo(pendingSortByCombo, pendingSortOrderCombo);
-        setupSingleSortCombo(activeSortByCombo, activeSortOrderCombo);
-        setupSingleSortCombo(rejectedSortByCombo, rejectedSortOrderCombo);
-        setupSingleSortCombo(soldSortByCombo, soldSortOrderCombo);
-        setupSingleSortCombo(deletedSortByCombo, deletedSortOrderCombo);
     }
 
     private void setupSingleSortCombo(ComboBox<String> sortBy, ComboBox<String> sortOrder) {
