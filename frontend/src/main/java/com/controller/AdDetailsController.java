@@ -18,7 +18,6 @@ import javafx.scene.control.Button;
 
 import java.util.Map;
 
-
 public class AdDetailsController {
 
     // FXML FIELDS
@@ -56,8 +55,10 @@ public class AdDetailsController {
     private Long adId;
 
     // Favorite UI elements
-    @FXML private Button favoriteButton;
-    @FXML private Label favoriteCountLabel;
+    @FXML
+    private Button favoriteButton;
+    @FXML
+    private Label favoriteCountLabel;
     private Advertisement currentAd;
     private boolean isFavorited = false;
     private Long favoriteCount = 0L;
@@ -70,7 +71,7 @@ public class AdDetailsController {
         adId = DataHolder.getSelectedAdId();
 
         if (adId == null) {
-            ShowErrorDialog.showErrorDialog("Failed","No ad selected", "Please select an ad","ERROR");
+            ShowErrorDialog.showErrorDialog("Failed", "No ad selected", "Please select an ad", "ERROR");
             return;
         }
 
@@ -111,7 +112,6 @@ public class AdDetailsController {
                 FavoriteService.removeFavorite(currentAd.getId());
                 isFavorited = false;
                 favoriteCount--;
-
             } else {
                 // Add to favorites
                 FavoriteService.addToFavorite(currentAd.getId());
