@@ -134,6 +134,9 @@ public class AdminDashboard {
     @FXML
     private Label usersErrorLabel;
 
+    @FXML
+    private Label totalAdsLabel;
+
     // FXML FIELDS - CITIES
     @FXML
     private ListView<City> cityListView;
@@ -164,6 +167,7 @@ public class AdminDashboard {
 
     @FXML
     private Label categoryErrorLabel;
+
 
 
 
@@ -395,6 +399,20 @@ public class AdminDashboard {
             categoryErrorLabel.setText("");
         } catch (Exception e) {
             categoryErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    private void loadDashboardStats() {
+        try {
+            Map<String, Object> stats = AdminService.getDashboardStats();
+
+            totalAdsLabel.setText("Total: " + stats.get("totalAds"));
+            pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
+            activeCountLabel.setText("Active: " + stats.get("activeAds"));
+            // You can add more stats here
+
+        } catch (Exception e) {
+            // Optional: log error
         }
     }
 
