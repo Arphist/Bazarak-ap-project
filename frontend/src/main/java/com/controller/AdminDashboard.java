@@ -286,6 +286,7 @@ public class AdminDashboard {
         loadUsers();
         loadCategories();
         loadCities();
+        loadDashboardStats();
     }
 
     private void loadPendingAds() {
