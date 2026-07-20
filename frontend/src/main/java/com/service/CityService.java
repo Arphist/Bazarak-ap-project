@@ -74,6 +74,7 @@ public class CityService {
         }
     }
 
+    // TODO: add a search box for this
     /**
      * Search cities by keyword.
      *
@@ -104,6 +105,7 @@ public class CityService {
         }
     }
 
+    // TODO: add a list where user can select a province and then they get the cities of the province
     /**
      * Fetch cities by province.
      *
@@ -153,7 +155,7 @@ public class CityService {
                 .build();
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) {
+        if (response.statusCode() == 200 || response.statusCode() == 201) {
             return objectMapper.readValue(response.body(),City.class);
         }else{
             Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
