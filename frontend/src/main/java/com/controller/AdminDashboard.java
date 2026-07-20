@@ -6,6 +6,7 @@ import com.model.City;
 import com.model.User;
 import com.service.AdminService;
 import com.service.AdminService;
+import com.service.CategoryService;
 import com.service.CityService;
 import com.util.NavigationUtil;
 import javafx.collections.FXCollections;
@@ -378,6 +379,27 @@ public class AdminDashboard {
         } catch (Exception e) {
             cityErrorLabel.setText("Error: " + e.getMessage());
         }
+    }
+
+    private void loadCategories() {
+        try {
+            List<Category> categoryList = CategoryService.getAllCategories();
+            categories.setAll(categoryList);
+            categoryListView.setItems(categories);
+
+            // Update parent combo box
+            updateCategoryParentCombo();
+
+            categoryErrorLabel.setText("");
+        } catch (Exception e) {
+            categoryErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    private void updateCategoryParentCombo() {
+        categoryParentCombo.getItems().clear();
+        categoryParentCombo.getItems().addAll(categories);
+        categoryParentCombo.setPromptText("Parent (optional)");
     }
 
     // SORT ACTIONS
