@@ -212,6 +212,37 @@
                 </VBox>
             </Tab>
 
+            <!-- TAB 8: CATEGORIES -->
+            <Tab text="Categories" closable="false">
+                <VBox spacing="12" style="-fx-padding: 15; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
+
+                    <!-- Add Category Section -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="categoryNameField" promptText="Category Name" prefWidth="200"
+                                   style="-fx-padding: 6; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                        <TextField fx:id="categoryDescriptionField" promptText="Description (optional)" prefWidth="250"
+                                   style="-fx-padding: 6; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                        <ComboBox fx:id="categoryParentCombo" promptText="Parent (optional)" prefWidth="150"/>
+                        <Button text="➕ Add Category" onAction="#handleAddCategory"
+                                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    </HBox>
+
+                    <!-- Category List -->
+                    <ListView fx:id="categoryListView" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+
+                    <!-- Actions -->
+                    <HBox spacing="10">
+                        <Button text="✏️ Edit Selected" onAction="#handleEditCategory"
+                                style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                        <Button text="🗑️ Delete Selected" onAction="#handleDeleteCategory"
+                                style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    </HBox>
+
+                    <Label fx:id="categoryErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
+                </VBox>
+            </Tab>
+
         </TabPane>
     </center>
 
