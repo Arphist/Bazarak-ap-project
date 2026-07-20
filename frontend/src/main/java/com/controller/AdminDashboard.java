@@ -280,6 +280,8 @@ public class AdminDashboard {
         loadSoldAds();
         loadDeletedAds();
         loadUsers();
+        loadCategories();
+        loadCities();
     }
 
     private void loadPendingAds() {
