@@ -5,6 +5,9 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox spacing="12" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #f5f5f5;"
@@ -27,11 +30,41 @@
     <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="300"
                style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
 
-    <PasswordField fx:id="passwordField" promptText="Password (min 6 chars)" maxWidth="300"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <!-- ========================================== -->
+    <!-- PASSWORD FIELD WITH SHOW/HIDE TOGGLE      -->
+    <!-- ========================================== -->
+    <StackPane maxWidth="300" style="-fx-padding: 0;">
 
-    <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password" maxWidth="300"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+        <!-- Hidden TextField (shown when toggled) -->
+        <TextField fx:id="passwordVisibleField" promptText="Password"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
+                   visible="false" managed="false"/>
+
+        <!-- PasswordField (shown by default) -->
+        <PasswordField fx:id="passwordField" promptText="Password"
+                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+        <!-- Toggle Button on the RIGHT side (not inside mouseTransparent container) -->
+        <ToggleButton fx:id="passwordToggle" text="👁️" onAction="#togglePasswordVisibility"
+                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                      StackPane.alignment="CENTER_RIGHT"/>
+    </StackPane>
+
+    <!-- ========================================== -->
+    <!-- CONFIRM PASSWORD FIELD                     -->
+    <!-- ========================================== -->
+    <StackPane maxWidth="300" style="-fx-padding: 0;">
+        <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm Password"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
+                   visible="false" managed="false"/>
+
+        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"
+                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+        <ToggleButton fx:id="confirmPasswordToggle" text="👁️" onAction="#toggleConfirmPasswordVisibility"
+                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                      StackPane.alignment="CENTER_RIGHT"/>
+    </StackPane>
 
     <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
 
