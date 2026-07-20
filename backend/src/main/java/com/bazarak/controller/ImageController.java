@@ -46,6 +46,7 @@ public class ImageController {
                                          @RequestParam(required = false, defaultValue = "false") boolean isPrimary, HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             Advertisement ad = advertisementService.findById(adId);
@@ -131,6 +132,7 @@ public class ImageController {
             Image image = imageService.getImageById(imageId);
             Advertisement ad = advertisementService.findById(image.getAdvertisement().getId());
             userService.checkOwnership(currentUser, ad);
+            userService.isUserBanned(currentUser);
 
             imageService.deleteImage(imageId);
 
@@ -176,6 +178,7 @@ public class ImageController {
     @PutMapping("/{imageId}/primary")
     public ResponseEntity<?> setPrimaryImage(@PathVariable Long imageId, HttpSession session) {
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
         try {
             Image image = imageService.setPrimaryImage(imageId);
 
