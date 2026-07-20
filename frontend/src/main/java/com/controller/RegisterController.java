@@ -144,7 +144,7 @@ public class RegisterController {
             visibleField.setManaged(true);
             passwordField.setVisible(false);
             passwordField.setManaged(false);
-            toggle.setText("👁️");
+            toggle.setText("👁");
         } else {
             // Hide password - show PasswordField, hide TextField
             passwordField.setText(visibleField.getText());
@@ -152,7 +152,7 @@ public class RegisterController {
             passwordField.setManaged(true);
             visibleField.setVisible(false);
             visibleField.setManaged(false);
-            toggle.setText("👁️");
+            toggle.setText("👁");
         }
     }
 
