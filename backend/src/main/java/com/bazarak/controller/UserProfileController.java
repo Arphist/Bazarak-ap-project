@@ -1,6 +1,7 @@
 package com.bazarak.controller;
 
 import com.bazarak.entity.User;
+import com.bazarak.exception.user.UserNotFoundException;
 import com.bazarak.repository.UserRepository;
 import com.bazarak.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -81,10 +82,14 @@ public class UserProfileController {
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
                                             HttpSession session) {
-        User currentUser = userService.getCurrentUserOrThrow(session);
-        userService.isUserBanned(currentUser);
+        User user = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(user);
 
         try {
+            // Load the user from database to get user's password.
+            // because we already set the user's password to null
+            User currentUser = userService.findById(user.getId()).
+                    orElseThrow(()-> new UserNotFoundException("User not found"));
             // Verify old password
             if (!currentUser.getPassword().equals(request.getOldPassword())) {
                 return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
