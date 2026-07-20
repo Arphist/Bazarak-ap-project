@@ -122,6 +122,40 @@ public class ProfileController {
         toggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
     }
 
+    // TOGGLE METHODS
+    @FXML
+    private void toggleOldPasswordVisibility() {
+        togglePasswordField(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
+    }
+
+    @FXML
+    private void toggleNewPasswordVisibility() {
+        togglePasswordField(newPasswordField, newPasswordVisibleField, newPasswordToggle);
+    }
+
+    @FXML
+    private void toggleConfirmPasswordVisibility() {
+        togglePasswordField(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
+    }
+
+    private void togglePasswordField(PasswordField passwordField, TextField visibleField, ToggleButton toggle) {
+        if (toggle.isSelected()) {
+            visibleField.setText(passwordField.getText());
+            visibleField.setVisible(true);
+            visibleField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            toggle.setText("👁");
+        } else {
+            passwordField.setText(visibleField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            visibleField.setVisible(false);
+            visibleField.setManaged(false);
+            toggle.setText("👁");
+        }
+    }
+
     private void displayTimeInfo(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
