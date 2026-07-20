@@ -417,11 +417,6 @@ public class HomeController {
     }
 
     @FXML
-    private void goToAdmin() {
-        NavigationUtil.goToAdminDashboard();
-    }
-
-    @FXML
     private void goToMyAds() {
         NavigationUtil.goToMyAds();
     }
