@@ -9,6 +9,7 @@ import com.service.AdminService;
 import com.service.CategoryService;
 import com.service.CityService;
 import com.util.NavigationUtil;
+import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -297,10 +298,13 @@ public class AdminDashboard {
             pendingAds.setAll(ads);
             pendingAdsListView.setItems(pendingAds);
             pendingCountLabel.setText("Pending: " + pendingAds.size());
-            pendingErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            pendingErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load pending ads"));
+            ShowErrorDialog.showErrorDialog(
+                    "Pending Ads Error",
+                    "Failed to load pending ads",
+                    "There was a problem loading pending ads. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -312,10 +316,13 @@ public class AdminDashboard {
             activeAds.setAll(ads);
             activeAdsListView.setItems(activeAds);
             activeCountLabel.setText("Active: " + activeAds.size());
-            activeErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            activeErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load active ads"));
+            ShowErrorDialog.showErrorDialog(
+                    "Active Ads Error",
+                    "Failed to load active ads",
+                    "There was a problem loading active ads. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -327,10 +334,13 @@ public class AdminDashboard {
             rejectedAds.setAll(ads);
             rejectedAdsListView.setItems(rejectedAds);
             rejectedCountLabel.setText("Rejected: " + rejectedAds.size());
-            rejectedErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            rejectedErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load rejected ads"));
+            ShowErrorDialog.showErrorDialog(
+                    "Rejected Ads Error",
+                    "Failed to load rejected ads",
+                    "There was a problem loading rejected ads. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -342,10 +352,13 @@ public class AdminDashboard {
             soldAds.setAll(ads);
             soldAdsListView.setItems(soldAds);
             soldCountLabel.setText("Sold: " + soldAds.size());
-            soldErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            soldErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load sold ads"));
+            ShowErrorDialog.showErrorDialog(
+                    "Sold Ads Error",
+                    "Failed to load sold ads",
+                    "There was a problem loading sold ads. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -357,10 +370,13 @@ public class AdminDashboard {
             deletedAds.setAll(ads);
             deletedAdsListView.setItems(deletedAds);
             deletedCountLabel.setText("Deleted: " + deletedAds.size());
-            deletedErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            deletedErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load deleted ads"));
+            ShowErrorDialog.showErrorDialog(
+                    "Deleted Ads Error",
+                    "Failed to load deleted ads",
+                    "There was a problem loading deleted ads. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -370,10 +386,13 @@ public class AdminDashboard {
             users.setAll(userList);
             usersTable.setItems(users);
             usersCountLabel.setText("Total Users: " + users.size());
-            usersErrorLabel.setText("");
         } catch (Exception e) {
-            String msg = e.getMessage();
-            usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load users"));
+            ShowErrorDialog.showErrorDialog(
+                    "Load Users Error",
+                    "Failed to load users",
+                    "There was a problem loading users. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -382,9 +401,13 @@ public class AdminDashboard {
             List<City> cityList = CityService.getAllCities();
             cities.setAll(cityList);
             cityListView.setItems(cities);
-            cityErrorLabel.setText("");
         } catch (Exception e) {
-            cityErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Load Cities Error",
+                    "Failed to load cities",
+                    "There was a problem loading cities. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -397,9 +420,13 @@ public class AdminDashboard {
             // Update parent combo box
             updateCategoryParentCombo();
 
-            categoryErrorLabel.setText("");
         } catch (Exception e) {
-            categoryErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Load Categories Error",
+                    "Failed to load categories",
+                    "There was a problem loading categories. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -456,7 +483,12 @@ public class AdminDashboard {
     private void approveAd() {
         Advertisement selected = pendingAdsListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            pendingErrorLabel.setText("Please select an ad to approve");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select an ad",
+                    "ERROR"
+            );
             return;
         }
 
@@ -464,10 +496,20 @@ public class AdminDashboard {
             Map<String,Object> result = AdminService.approveAd(selected);
             loadPendingAds();
             loadActiveAds();
-            pendingErrorLabel.setText((String)result.get("message"));
+
+            ShowErrorDialog.showErrorDialog(
+                    "Approve Ad Success",
+                    (String)result.get("message"),
+                    null,
+                    "CONFIRMATION"
+            );
         } catch (Exception e) {
-            String msg = e.getMessage();
-            pendingErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to approve ad"));
+            ShowErrorDialog.showErrorDialog(
+                    "Approve Ad Error",
+                    "Failed to approve ad",
+                    "There was a problem approving ad. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -490,10 +532,20 @@ public class AdminDashboard {
             Map<String,Object> result = AdminService.rejectAd(selected);
             loadPendingAds();
             loadRejectedAds();
-            pendingErrorLabel.setText((String)result.get("message"));
+
+            ShowErrorDialog.showErrorDialog(
+                    "Reject Ad Success",
+                    (String)result.get("message"),
+                    null,
+                    "CONFIRMATION"
+            );
         } catch (Exception e) {
-            String msg = e.getMessage();
-            pendingErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to reject ad"));
+            ShowErrorDialog.showErrorDialog(
+                    "Reject Ad Error",
+                    "Failed to reject ad",
+                    "There was a problem rejecting ad. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -515,10 +567,20 @@ public class AdminDashboard {
             try {
                 AdminService.deleteAd(selected);
                 loadAllData();
-                showSuccess("Ad deleted successfully");
+
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Ad Success",
+                        "The ad deleted successfully",
+                        null,
+                        "INFORMATION"
+                );
             } catch (Exception e) {
-                String msg = e.getMessage();
-                showError("Error: " + (msg != null ? msg : "Failed to delete ad"));
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Ad Error",
+                        "Failed to delete ad",
+                        "There was a problem deleting ad. Please try again later.",
+                        "ERROR"
+                );
             }
         }
     }
@@ -540,10 +602,19 @@ public class AdminDashboard {
             try {
                 Map<String, Object> result = AdminService.restoreAd(selected.getId());
                 loadAllData();
-                deletedErrorLabel.setText((String) result.get("message"));
+                ShowErrorDialog.showErrorDialog(
+                        "Restore Ad Success",
+                        (String) result.get("message"),
+                        null,
+                        "INFORMATION"
+                );
             } catch (Exception e) {
-                String msg = e.getMessage();
-                deletedErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to restore ad"));
+                ShowErrorDialog.showErrorDialog(
+                        "Restore Ad Error",
+                        "Failed to restore ad",
+                        "There was a problem restoring ad. Please try again later.",
+                        "ERROR"
+                );
             }
         }
     }
@@ -565,10 +636,19 @@ public class AdminDashboard {
             try {
                 Map<String, Object> result = AdminService.blockUser(selected.getId());
                 loadUsers();
-                usersErrorLabel.setText((String) result.get("message"));
+                ShowErrorDialog.showErrorDialog(
+                        "Block User Success",
+                        (String) result.get("message"),
+                        null,
+                        "INFORMATION"
+                );
             } catch (Exception e) {
-                String msg = e.getMessage();
-                usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to block user"));
+                ShowErrorDialog.showErrorDialog(
+                        "Block User Error",
+                        "Failed to block user",
+                        "There was a problem blocking user. Please try again later.",
+                        "ERROR"
+                );
             }
         }
     }
@@ -584,10 +664,19 @@ public class AdminDashboard {
         try {
             Map<String, Object> result = AdminService.unblockUser(selected.getId());
             loadUsers();
-            usersErrorLabel.setText((String) result.get("message"));
+            ShowErrorDialog.showErrorDialog(
+                    "Unblock User Success",
+                    (String) result.get("message"),
+                    null,
+                    "INFORMATION"
+            );
         } catch (Exception e) {
-            String msg = e.getMessage();
-            usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to unblock user"));
+            ShowErrorDialog.showErrorDialog(
+                    "Unblock User Error",
+                    "Failed to unblock user",
+                    "There was a problem unblocking user. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -611,9 +700,19 @@ public class AdminDashboard {
             cityNameField.clear();
             cityProvinceField.clear();
             loadCities();
-            cityErrorLabel.setText("City added successfully");
+            ShowErrorDialog.showErrorDialog(
+                    "Add City Success",
+                    "City added successfully",
+                    null,
+                    "INFORMATION"
+            );
         } catch (Exception e) {
-            cityErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Add City Error",
+                    "Failed to add city",
+                    "There was a problem adding city. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
