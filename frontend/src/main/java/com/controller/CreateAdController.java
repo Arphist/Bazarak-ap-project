@@ -21,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 import java.util.List;
+import java.util.Map;
 
 public class CreateAdController {
 
@@ -167,13 +168,13 @@ public class CreateAdController {
             ad.setCity(selectedCity);
 
             // Send to backend
-            AdService.createAd(ad);
+            Map<String, Object> result =  AdService.createAd(ad);
 
             // Show success message
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
-            alert.setContentText("Your ad has been created successfully!");
+            alert.setContentText((String)result.get("message"));
             alert.showAndWait();
 
             // Go back to home page
