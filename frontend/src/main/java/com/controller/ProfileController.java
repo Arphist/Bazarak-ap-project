@@ -1,6 +1,5 @@
 package com.controller;
 
-import com.BazarakFrontendApplication;
 import com.model.User;
 import com.service.AuthService;
 import com.service.UserService;
@@ -20,9 +19,25 @@ import java.util.Map;
 
 public class ProfileController {
 
-    // ============================================
     // FXML FIELDS
-    // ============================================
+
+    @FXML
+    private TextField oldPasswordVisibleField;
+
+    @FXML
+    private ToggleButton oldPasswordToggle;
+
+    @FXML
+    private TextField newPasswordVisibleField;
+
+    @FXML
+    private ToggleButton newPasswordToggle;
+
+    @FXML
+    private TextField confirmPasswordVisibleField;
+
+    @FXML
+    private ToggleButton confirmPasswordToggle;
 
     @FXML
     private Label usernameLabel;
@@ -81,12 +96,30 @@ public class ProfileController {
             // Display time information
             displayTimeInfo(currentUser);
 
+            // Setup password toggles
+            setupPasswordToggle(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
+            setupPasswordToggle(newPasswordField, newPasswordVisibleField, newPasswordToggle);
+            setupPasswordToggle(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
+
             // Display profile photo
             loadProfilePhoto(currentUser);
 
         } else {
             errorLabel.setText("No user logged in");
         }
+    }
+
+    private void setupPasswordToggle(PasswordField passwordField, TextField visibleField, ToggleButton toggle) {
+        // Sync password fields
+        passwordField.textProperty().addListener((obs, old, newVal) -> {
+            visibleField.setText(newVal);
+        });
+
+        visibleField.textProperty().addListener((obs, old, newVal) -> {
+            passwordField.setText(newVal);
+        });
+
+        toggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
     }
 
     private void displayTimeInfo(User user) {
