@@ -7,14 +7,14 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.StackPane?>
 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.ProfileController">
@@ -81,14 +81,41 @@
         <VBox spacing="8" alignment="CENTER" style="-fx-padding: 5 0;">
             <Label text="Change Password" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
 
-            <PasswordField fx:id="oldPasswordField" promptText="Current Password" maxWidth="360"
-                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+            <!-- Old Password -->
+            <StackPane maxWidth="360" style="-fx-padding: 0;">
+                <TextField fx:id="oldPasswordVisibleField" promptText="Current Password"
+                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
+                           visible="false" managed="false"/>
+                <PasswordField fx:id="oldPasswordField" promptText="Current Password"
+                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+                <ToggleButton fx:id="oldPasswordToggle" text="👁" onAction="#toggleOldPasswordVisibility"
+                              style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                              StackPane.alignment="CENTER_RIGHT"/>
+            </StackPane>
 
-            <PasswordField fx:id="newPasswordField" promptText="New Password" maxWidth="360"
-                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+            <!-- New Password -->
+            <StackPane maxWidth="360" style="-fx-padding: 0;">
+                <TextField fx:id="newPasswordVisibleField" promptText="New Password"
+                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
+                           visible="false" managed="false"/>
+                <PasswordField fx:id="newPasswordField" promptText="New Password"
+                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+                <ToggleButton fx:id="newPasswordToggle" text="👁" onAction="#toggleNewPasswordVisibility"
+                              style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                              StackPane.alignment="CENTER_RIGHT"/>
+            </StackPane>
 
-            <PasswordField fx:id="confirmPasswordField" promptText="Confirm New Password" maxWidth="360"
-                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+            <!-- Confirm Password -->
+            <StackPane maxWidth="360" style="-fx-padding: 0;">
+                <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm New Password"
+                           style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
+                           visible="false" managed="false"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Confirm New Password"
+                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+                <ToggleButton fx:id="confirmPasswordToggle" text="👁️" onAction="#toggleConfirmPasswordVisibility"
+                              style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                              StackPane.alignment="CENTER_RIGHT"/>
+            </StackPane>
 
             <Button text="Update Password" onAction="#handleChangePassword" maxWidth="360"
                     style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 4; -fx-cursor: hand;"/>
