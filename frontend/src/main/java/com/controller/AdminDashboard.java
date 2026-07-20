@@ -30,9 +30,6 @@ public class AdminDashboard {
     private Label pendingCountLabel;
 
     @FXML
-    private Label pendingErrorLabel;
-
-    @FXML
     private ComboBox<String> pendingSortByCombo;
 
     @FXML
@@ -45,9 +42,6 @@ public class AdminDashboard {
 
     @FXML
     private Label activeCountLabel;
-
-    @FXML
-    private Label activeErrorLabel;
 
     @FXML
     private ComboBox<String> activeSortByCombo;
@@ -64,9 +58,6 @@ public class AdminDashboard {
     private Label rejectedCountLabel;
 
     @FXML
-    private Label rejectedErrorLabel;
-
-    @FXML
     private ComboBox<String> rejectedSortByCombo;
 
     @FXML
@@ -81,9 +72,6 @@ public class AdminDashboard {
     private Label soldCountLabel;
 
     @FXML
-    private Label soldErrorLabel;
-
-    @FXML
     private ComboBox<String> soldSortByCombo;
 
     @FXML
@@ -96,9 +84,6 @@ public class AdminDashboard {
 
     @FXML
     private Label deletedCountLabel;
-
-    @FXML
-    private Label deletedErrorLabel;
 
     @FXML
     private ComboBox<String> deletedSortByCombo;
@@ -133,9 +118,6 @@ public class AdminDashboard {
     private Label usersCountLabel;
 
     @FXML
-    private Label usersErrorLabel;
-
-    @FXML
     private Label totalAdsLabel;
 
     // FXML FIELDS - CITIES
@@ -147,9 +129,6 @@ public class AdminDashboard {
 
     @FXML
     private TextField cityProvinceField;
-
-    @FXML
-    private Label cityErrorLabel;
 
 
     // FXML FIELDS - CATEGORIES
@@ -165,12 +144,6 @@ public class AdminDashboard {
 
     @FXML
     private ComboBox<Category> categoryParentCombo;
-
-    @FXML
-    private Label categoryErrorLabel;
-
-
-
 
     // DATA
 
@@ -493,13 +466,13 @@ public class AdminDashboard {
         }
 
         try {
-            Map<String,Object> result = AdminService.approveAd(selected);
+            Map<String, Object> result = AdminService.approveAd(selected);
             loadPendingAds();
             loadActiveAds();
 
             ShowErrorDialog.showErrorDialog(
                     "Approve Ad Success",
-                    (String)result.get("message"),
+                    (String) result.get("message"),
                     null,
                     "CONFIRMATION"
             );
@@ -517,7 +490,12 @@ public class AdminDashboard {
     private void rejectAd() {
         Advertisement selected = pendingAdsListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            pendingErrorLabel.setText("Please select an ad to reject");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select an ad",
+                    "ERROR"
+            );
             return;
         }
 
@@ -529,13 +507,13 @@ public class AdminDashboard {
 
             String reason = dialog.showAndWait().orElse("No reason provided");
             selected.setRejectionReason(reason);
-            Map<String,Object> result = AdminService.rejectAd(selected);
+            Map<String, Object> result = AdminService.rejectAd(selected);
             loadPendingAds();
             loadRejectedAds();
 
             ShowErrorDialog.showErrorDialog(
                     "Reject Ad Success",
-                    (String)result.get("message"),
+                    (String) result.get("message"),
                     null,
                     "CONFIRMATION"
             );
@@ -554,7 +532,12 @@ public class AdminDashboard {
         ListView<Advertisement> currentListView = getCurrentListView();
         Advertisement selected = currentListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showError("Please select an ad to delete");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select an ad",
+                    "ERROR"
+            );
             return;
         }
 
@@ -589,7 +572,12 @@ public class AdminDashboard {
     private void restoreAd() {
         Advertisement selected = deletedAdsListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            deletedErrorLabel.setText("Please select an ad to restore");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select an ad",
+                    "ERROR"
+            );
             return;
         }
 
@@ -623,7 +611,12 @@ public class AdminDashboard {
     private void blockUser() {
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            usersErrorLabel.setText("Please select a user to block");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a user",
+                    "ERROR"
+            );
             return;
         }
 
@@ -657,7 +650,12 @@ public class AdminDashboard {
     private void unblockUser() {
         User selected = usersTable.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            usersErrorLabel.setText("Please select a user to unblock");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a user",
+                    "ERROR"
+            );
             return;
         }
 
@@ -687,7 +685,12 @@ public class AdminDashboard {
         String province = cityProvinceField.getText().trim();
 
         if (name.isEmpty()) {
-            cityErrorLabel.setText("City name is required");
+            ShowErrorDialog.showErrorDialog(
+                    "Add City Error",
+                    "Failed to add city",
+                    "City name is required. Please enter name for city.",
+                    "ERROR"
+            );
             return;
         }
 
@@ -720,7 +723,12 @@ public class AdminDashboard {
     private void handleEditCity() {
         City selected = cityListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            cityErrorLabel.setText("Please select a city to edit");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a city",
+                    "ERROR"
+            );
             return;
         }
 
@@ -728,7 +736,12 @@ public class AdminDashboard {
         String newProvince = cityProvinceField.getText().trim();
 
         if (newName.isEmpty()) {
-            cityErrorLabel.setText("City name is required");
+            ShowErrorDialog.showErrorDialog(
+                    "Update City Error",
+                    "Failed to update city",
+                    "City name is required. Please enter name for city.",
+                    "ERROR"
+            );
             return;
         }
 
@@ -737,9 +750,19 @@ public class AdminDashboard {
             selected.setProvince(newProvince.isEmpty() ? null : newProvince);
             CityService.updateCity(selected.getId(), selected);
             loadCities();
-            cityErrorLabel.setText("City updated successfully");
+            ShowErrorDialog.showErrorDialog(
+                    "Update City Success",
+                    "City updated successfully",
+                    null,
+                    "INFORMATION"
+            );
         } catch (Exception e) {
-            cityErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Update City Error",
+                    "Failed to update city",
+                    "There was a problem updating city. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -747,7 +770,12 @@ public class AdminDashboard {
     private void handleDeleteCity() {
         City selected = cityListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            cityErrorLabel.setText("Please select a city to delete");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a city",
+                    "ERROR"
+            );
             return;
         }
 
@@ -760,9 +788,19 @@ public class AdminDashboard {
             try {
                 String result = CityService.deleteCity(selected.getId());
                 loadCities();
-                cityErrorLabel.setText(result);
+                ShowErrorDialog.showErrorDialog(
+                        "Delete City Success",
+                        result,
+                        null,
+                        "INFORMATION"
+                );
             } catch (Exception e) {
-                cityErrorLabel.setText("Error: " + e.getMessage());
+                ShowErrorDialog.showErrorDialog(
+                        "Delete City Error",
+                        "Failed to delete city",
+                        "There was a problem deleting city. Please try again later.",
+                        "ERROR"
+                );
             }
         }
     }
@@ -774,7 +812,12 @@ public class AdminDashboard {
         Category parent = categoryParentCombo.getValue();
 
         if (name.isEmpty()) {
-            categoryErrorLabel.setText("Category name is required");
+            ShowErrorDialog.showErrorDialog(
+                    "Add category Error",
+                    "Failed to add category",
+                    "Category name is required. Please enter name for category.",
+                    "ERROR"
+            );
             return;
         }
 
@@ -791,9 +834,19 @@ public class AdminDashboard {
             categoryDescriptionField.clear();
             categoryParentCombo.setValue(null);
             loadCategories();
-            categoryErrorLabel.setText("Category added successfully");
+            ShowErrorDialog.showErrorDialog(
+                    "Add Category Success",
+                    "Category added successfully",
+                    null,
+                    "INFORMATION"
+            );
         } catch (Exception e) {
-            categoryErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Add Category Error",
+                    "Failed to add category",
+                    "There was a problem adding category. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -801,7 +854,12 @@ public class AdminDashboard {
     private void handleEditCategory() {
         Category selected = categoryListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            categoryErrorLabel.setText("Please select a category to edit");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a category",
+                    "ERROR"
+            );
             return;
         }
 
@@ -810,7 +868,12 @@ public class AdminDashboard {
         Category newParent = categoryParentCombo.getValue();
 
         if (newName.isEmpty()) {
-            categoryErrorLabel.setText("Category name is required");
+            ShowErrorDialog.showErrorDialog(
+                    "Update Category Error",
+                    "Failed to update category",
+                    "Category name is required. Please enter name for category.",
+                    "ERROR"
+            );
             return;
         }
 
@@ -825,9 +888,19 @@ public class AdminDashboard {
 
             CategoryService.updateCategory(selected.getId(), selected);
             loadCategories();
-            categoryErrorLabel.setText("Category updated successfully");
+            ShowErrorDialog.showErrorDialog(
+                    "Update Category Success",
+                    "Category updated successfully",
+                    null,
+                    "INFORMATION"
+            );
         } catch (Exception e) {
-            categoryErrorLabel.setText("Error: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Update Category Error",
+                    "Failed to update category",
+                    "There was a problem updating category. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -835,7 +908,12 @@ public class AdminDashboard {
     private void handleDeleteCategory() {
         Category selected = categoryListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            categoryErrorLabel.setText("Please select a category to delete");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select a category",
+                    "ERROR"
+            );
             return;
         }
 
@@ -848,9 +926,19 @@ public class AdminDashboard {
             try {
                 String result = CategoryService.deleteCategory(selected.getId());
                 loadCategories();
-                categoryErrorLabel.setText(result);
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Category Success",
+                        result,
+                        null,
+                        "INFORMATION"
+                );
             } catch (Exception e) {
-                categoryErrorLabel.setText("Error: " + e.getMessage());
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Category Error",
+                        "Failed to delete category",
+                        "There was a problem deleting category. Please try again later.",
+                        "ERROR"
+                );
             }
         }
     }
@@ -877,31 +965,18 @@ public class AdminDashboard {
         String tabText = selectedTab.getText();
 
         switch (tabText) {
-            case "Pending": return pendingAdsListView;
-            case "Active": return activeAdsListView;
-            case "Rejected": return rejectedAdsListView;
-            case "Sold": return soldAdsListView;
-            case "Deleted": return deletedAdsListView;
-            default: return pendingAdsListView;
+            case "Pending":
+                return pendingAdsListView;
+            case "Active":
+                return activeAdsListView;
+            case "Rejected":
+                return rejectedAdsListView;
+            case "Sold":
+                return soldAdsListView;
+            case "Deleted":
+                return deletedAdsListView;
+            default:
+                return pendingAdsListView;
         }
-    }
-
-    private void showError(String message) {
-        TabPane tabPane = (TabPane) pendingAdsListView.getParent().getParent().getParent();
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        String tabText = selectedTab.getText();
-
-        switch (tabText) {
-            case "Pending": pendingErrorLabel.setText(message); break;
-            case "Active": activeErrorLabel.setText(message); break;
-            case "Rejected": rejectedErrorLabel.setText(message); break;
-            case "Sold": soldErrorLabel.setText(message); break;
-            case "Deleted": deletedErrorLabel.setText(message); break;
-            default: break;
-        }
-    }
-
-    private void showSuccess(String message) {
-        showError(message);
     }
 }
