@@ -86,13 +86,6 @@
                     style="-fx-background-color: #1abc9c; -fx-text-fill: white; -fx-padding: 8 15;"/>
             <Button text="Profile" onAction="#goToProfile"
                     style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 8 15;"/>
-
-            <!-- Admin button (only visible for admins) -->
-            <Button fx:id="adminButton"
-                    text="Admin Panel"
-                    onAction="#goToAdmin"
-                    style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-padding: 8 15;"/>
-
             <Button text="Logout" onAction="#handleLogout"
                     style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 8 15;"/>
         </HBox>
