@@ -45,7 +45,30 @@ public class RegisterController {
     @FXML
     private Label errorLabel;
 
+    @FXML
+    private void initialize() {
+        // Sync password fields
+        passwordField.textProperty().addListener((obs, old, newVal) -> {
+            passwordVisibleField.setText(newVal);
+        });
 
+        passwordVisibleField.textProperty().addListener((obs, old, newVal) -> {
+            passwordField.setText(newVal);
+        });
+
+        // Sync confirm password fields
+        confirmPasswordField.textProperty().addListener((obs, old, newVal) -> {
+            confirmPasswordVisibleField.setText(newVal);
+        });
+
+        confirmPasswordVisibleField.textProperty().addListener((obs, old, newVal) -> {
+            confirmPasswordField.setText(newVal);
+        });
+
+        // Add tooltip to toggle buttons
+        passwordToggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
+        confirmPasswordToggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
+    }
 
     // ======== HANDLE REGISTER ========
 
