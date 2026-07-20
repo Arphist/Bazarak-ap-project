@@ -12,6 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import com.service.FavoriteService;
+import javafx.scene.control.Button;
+
+import java.util.Map;
 
 import java.util.Map;
 
@@ -54,6 +58,13 @@ public class AdDetailsController {
 
     private Long adId;
 
+    // Favorite UI elements
+    @FXML private Button favoriteButton;
+    @FXML private Label favoriteCountLabel;
+    private Advertisement currentAd;
+    private boolean isFavorited = false;
+    private Long favoriteCount = 0L;
+
     // INITIALIZE
 
     @FXML
@@ -72,6 +83,59 @@ public class AdDetailsController {
         DataHolder.clearSelectedAdId();
     }
 
+    private void loadFavoriteState(Long adId) {
+        try {
+            // Only if user is logged in
+            User currentUser = SessionManager.getCurrentUser();
+            if (currentUser != null) {
+                isFavorited = FavoriteService.isFavorited(adId);
+                updateFavoriteButton();
+            }
+
+            // Load favorite count
+            favoriteCount = FavoriteService.getFavoriteCount(adId);
+            favoriteCountLabel.setText(String.valueOf(favoriteCount));
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load favorite status: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void toggleFavorite() {
+        try {
+            if (isFavorited) {
+                // Remove from favorites
+                FavoriteService.removeFavorite(currentAd.getId());
+                isFavorited = false;
+                favoriteCount--;
+                errorLabel.setText("Removed from favorites");
+            } else {
+                // Add to favorites
+                FavoriteService.addToFavorite(currentAd.getId());
+                isFavorited = true;
+                favoriteCount++;
+                errorLabel.setText("Added to favorites");
+            }
+
+            // Update UI
+            updateFavoriteButton();
+            favoriteCountLabel.setText(String.valueOf(favoriteCount));
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to update favorite: " + e.getMessage());
+        }
+    }
+
+    private void updateFavoriteButton() {
+        if (isFavorited) {
+            favoriteButton.setText("♥");  // Filled heart
+            favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
+        } else {
+            favoriteButton.setText("♡");  // Empty heart
+            favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
+        }
+    }
     // LOAD AD DETAILS
 
     private void loadAdDetails(Long adId) {
@@ -89,11 +153,8 @@ public class AdDetailsController {
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
 
-            //TODO: use isFavorited and favoriteCount
-
-            // TODO: load all images
-            // TODO: add addToFavorite button and then implement the logic
-            //  from backend-service
+            // Load favorite status and count
+            loadFavoriteState(adId);
 
             errorLabel.setText("");
 
@@ -102,9 +163,7 @@ public class AdDetailsController {
         }
     }
 
-    // ============================================
     // GO TO RATING
-    // ============================================
 
     @FXML
     private void goToRating() {
