@@ -182,6 +182,35 @@
                     <Label fx:id="usersErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
                 </VBox>
             </Tab>
+            <!-- TAB 7: CITIES -->
+            <Tab text="Cities" closable="false">
+                <VBox spacing="12" style="-fx-padding: 15; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
+
+                    <!-- Add City Section -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="cityNameField" promptText="City Name" prefWidth="200"
+                                   style="-fx-padding: 6; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                        <TextField fx:id="cityProvinceField" promptText="Province (optional)" prefWidth="200"
+                                   style="-fx-padding: 6; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                        <Button text="➕ Add City" onAction="#handleAddCity"
+                                style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    </HBox>
+
+                    <!-- City List -->
+                    <ListView fx:id="cityListView" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+
+                    <!-- Actions -->
+                    <HBox spacing="10">
+                        <Button text="✏️ Edit Selected" onAction="#handleEditCity"
+                                style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                        <Button text="🗑️ Delete Selected" onAction="#handleDeleteCity"
+                                style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    </HBox>
+
+                    <Label fx:id="cityErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
+                </VBox>
+            </Tab>
 
         </TabPane>
     </center>
