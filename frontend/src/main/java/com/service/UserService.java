@@ -1,11 +1,12 @@
 package com.service;
 
-import com.model.Advertisement;
 import com.model.User;
 import com.util.Config;
 import com.util.HttpClientUtil;
+import com.util.SessionManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -107,5 +108,71 @@ public class UserService {
         }
     }
 
-    //TODO: handle "change-photo" too.
+    /**
+     * Updates the profile photo of the current user.
+     * <p>
+     * This method reuses the ImageService to handle the multipart upload,
+     * eliminating code duplication and ensuring consistent behavior.
+     * </p>
+     *
+     * @param file the image file to upload as profile photo
+     * @return a map containing the message and the photo URL
+     * @throws Exception if the upload fails
+     */
+    public static Map<String, Object> updateProfilePhoto(File file) throws Exception {
+        // Build the request for profile photo upload
+        String boundary = "---------------------------" + System.currentTimeMillis();
+        byte[] fileContent = java.nio.file.Files.readAllBytes(file.toPath());
+
+        // Build multipart body
+        String CRLF = "\r\n";
+        StringBuilder body = new StringBuilder();
+        body.append("--").append(boundary).append(CRLF);
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getName()).append("\"").append(CRLF);
+        body.append("Content-Type: ").append(java.nio.file.Files.probeContentType(file.toPath())).append(CRLF);
+        body.append(CRLF);
+
+        // Combine parts
+        byte[] bodyBytes = body.toString().getBytes();
+        byte[] filePart = fileContent;
+        String footer = CRLF + "--" + boundary + "--" + CRLF;
+
+        byte[] finalBody = new byte[bodyBytes.length + filePart.length + footer.getBytes().length];
+        System.arraycopy(bodyBytes, 0, finalBody, 0, bodyBytes.length);
+        System.arraycopy(filePart, 0, finalBody, bodyBytes.length, filePart.length);
+        System.arraycopy(footer.getBytes(), 0, finalBody, bodyBytes.length + filePart.length, footer.getBytes().length);
+
+        // Send request to profile photo endpoint
+        String url = Config.BASE_URL + "/users/me/change-photo";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                .PUT(HttpRequest.BodyPublishers.ofByteArray(finalBody))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Profile photo updated successfully"));
+            result.put("photoUrl", responseBody.get("photoUrl"));
+
+            // Update local session user
+            try {
+                User currentUser = SessionManager.getCurrentUser();
+                if (currentUser != null && result.get("photoUrl") != null) {
+                    currentUser.setProfilePhoto((String) result.get("photoUrl"));
+                    SessionManager.setCurrentUser(currentUser);
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to update session user: " + e.getMessage());
+            }
+
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to update profile photo"));
+        }
+    }
 }
