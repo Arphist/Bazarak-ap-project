@@ -526,6 +526,83 @@ public class AdminDashboard {
         }
     }
 
+
+    @FXML
+    private void handleAddCity() {
+        String name = cityNameField.getText().trim();
+        String province = cityProvinceField.getText().trim();
+
+        if (name.isEmpty()) {
+            cityErrorLabel.setText("City name is required");
+            return;
+        }
+
+        try {
+            City city = new City();
+            city.setName(name);
+            city.setProvince(province.isEmpty() ? null : province);
+
+            CityService.createCity(city);
+            cityNameField.clear();
+            cityProvinceField.clear();
+            loadCities();
+            cityErrorLabel.setText("✅ City added successfully");
+        } catch (Exception e) {
+            cityErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEditCity() {
+        City selected = cityListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            cityErrorLabel.setText("Please select a city to edit");
+            return;
+        }
+
+        String newName = cityNameField.getText().trim();
+        String newProvince = cityProvinceField.getText().trim();
+
+        if (newName.isEmpty()) {
+            cityErrorLabel.setText("City name is required");
+            return;
+        }
+
+        try {
+            selected.setName(newName);
+            selected.setProvince(newProvince.isEmpty() ? null : newProvince);
+            CityService.updateCity(selected.getId(), selected);
+            loadCities();
+            cityErrorLabel.setText("✅ City updated successfully");
+        } catch (Exception e) {
+            cityErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteCity() {
+        City selected = cityListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            cityErrorLabel.setText("Please select a city to delete");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete city?");
+        confirm.setContentText("Are you sure you want to delete '" + selected.getName() + "'?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                CityService.deleteCity(selected.getId());
+                loadCities();
+                cityErrorLabel.setText("✅ City deleted successfully");
+            } catch (Exception e) {
+                cityErrorLabel.setText("Error: " + e.getMessage());
+            }
+        }
+    }
+
     // REFRESH
 
     @FXML
