@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.controller.AdDetailsController"
-      spacing="10" alignment="TOP_CENTER">
+      spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
 
     <!-- Title -->
     <Label fx:id="titleLabel" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
 
     <!-- Navigation Buttons -->
     <HBox spacing="10">
-        <Button text="Back" onAction="#goBack" />      <!-- Links to goBack() -->
-        <Button text="Home" onAction="#goToHome" />   <!-- Links to goToHome() -->
+        <Button text="← Back" onAction="#goBack" />
+        <Button text="🏠 Home" onAction="#goToHome" />
     </HBox>
 
     <!-- Ad Details -->
@@ -22,16 +23,23 @@
     <Label fx:id="cityLabel" />
     <Label fx:id="ownerLabel" />
     <Label fx:id="statusLabel" />
-    <TextArea fx:id="descriptionArea" editable="false" wrapText="true" />
+    <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="100" />
+
+    <!-- Favorite Section -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button fx:id="favoriteButton" text="♡" onAction="#toggleFavorite"
+                style="-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;"/>
+        <Label fx:id="favoriteCountLabel" text="0" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+        <Label text="favorites" style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d;"/>
+    </HBox>
 
     <!-- Action Buttons -->
     <HBox spacing="10">
-        <Button text="Contact Seller" onAction="#goToChat" />
-<!--        <Button text="Add to Favorites" onAction="#addToFavorites" />-->
+        <Button text="💬 Contact Seller" onAction="#goToChat"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        <Button text="⭐ Rate Seller" onAction="#goToRating"
+                style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
     </HBox>
-
-    <Button text="⭐ Rate Seller" onAction="#goToRating"
-            style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
 
     <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
 
