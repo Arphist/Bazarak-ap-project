@@ -5,6 +5,7 @@ import com.model.Conversation;
 import com.model.Message;
 import com.model.User;
 import com.service.ConversationService;
+import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.ConversationCell;
@@ -88,6 +89,30 @@ public class ConversationController {
 
         // Load conversations
         loadConversations();
+
+        // Check if we have a specific conversation to load
+        Long conversationId = DataHolder.getSelectedConversationId();
+        if (conversationId != null) {
+            loadSpecificConversation(conversationId);
+            DataHolder.clearSelectedConversationId(); // Clear after loading
+        }
+    }
+
+    private void loadSpecificConversation(Long conversationId) {
+        try {
+            // Wait for conversations to load, then select the specific one
+            Platform.runLater(() -> {
+                for (Conversation conv : conversations) {
+                    if (conv.getId().equals(conversationId)) {
+                        conversationListView.getSelectionModel().select(conv);
+                        loadConversation(conv);
+                        break;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load conversation: " + e.getMessage());
+        }
     }
 
     // WEBSOCKET CONNECTION
