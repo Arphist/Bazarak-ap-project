@@ -125,8 +125,6 @@ public class ProfileController {
     }
 
     private void setDefaultProfilePhoto() {
-        // TODO: Use default avatar (you can add a default image in resources)
-        //  profileImageView.setImage(new Image(getClass().getResourceAsStream("/images/default-avatar.png")));
         profileImageView.setImage(null);
         profileImageView.setStyle("-fx-background-color: #bdc3c7; -fx-background-radius: 50;");
     }
