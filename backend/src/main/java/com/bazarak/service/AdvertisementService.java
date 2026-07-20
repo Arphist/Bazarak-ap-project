@@ -259,6 +259,18 @@ public class AdvertisementService {
     // ADMIN METHODS
 
     /**
+     * Restore an advertisement (after deleting)
+     */
+    @Transactional
+    public Advertisement restoreAd (Long adId){
+        Advertisement ad = findById(adId);
+        ad.setStatus(AdStatus.PENDING);
+        ad.setUpdatedAt(LocalDateTime.now());
+
+        return adRepository.save(ad);
+    }
+
+    /**
      * Approve an advertisement (admin only)
      */
     @Transactional
