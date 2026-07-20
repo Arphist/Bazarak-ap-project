@@ -12,6 +12,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import com.service.FavoriteService;
+import javafx.scene.control.Button;
+
+import java.util.Map;
 
 import java.util.Map;
 
@@ -54,6 +58,13 @@ public class AdDetailsController {
 
     private Long adId;
 
+    // Favorite UI elements
+    @FXML private Button favoriteButton;
+    @FXML private Label favoriteCountLabel;
+    private Advertisement currentAd;
+    private boolean isFavorited = false;
+    private Long favoriteCount = 0L;
+
     // INITIALIZE
 
     @FXML
@@ -70,6 +81,24 @@ public class AdDetailsController {
         loadAdDetails(adId);
 
         DataHolder.clearSelectedAdId();
+    }
+
+    private void loadFavoriteState(Long adId) {
+        try {
+            // Only if user is logged in
+            User currentUser = SessionManager.getCurrentUser();
+            if (currentUser != null) {
+                isFavorited = FavoriteService.isFavorited(adId);
+                updateFavoriteButton();
+            }
+
+            // Load favorite count
+            favoriteCount = FavoriteService.getFavoriteCount(adId);
+            favoriteCountLabel.setText(String.valueOf(favoriteCount));
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to load favorite status: " + e.getMessage());
+        }
     }
 
     // LOAD AD DETAILS
@@ -89,11 +118,8 @@ public class AdDetailsController {
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
 
-            //TODO: use isFavorited and favoriteCount
-
-            // TODO: load all images
-            // TODO: add addToFavorite button and then implement the logic
-            //  from backend-service
+            // Load favorite status and count
+            loadFavoriteState(adId);
 
             errorLabel.setText("");
 
@@ -102,9 +128,7 @@ public class AdDetailsController {
         }
     }
 
-    // ============================================
     // GO TO RATING
-    // ============================================
 
     @FXML
     private void goToRating() {
