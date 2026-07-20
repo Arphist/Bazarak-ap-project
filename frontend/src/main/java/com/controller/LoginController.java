@@ -11,11 +11,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.stage.Stage;
 
 public class LoginController {
 
     // ======== FXML FIELDS ========
+    @FXML
+    private TextField passwordVisibleField;
+
+    @FXML
+    private ToggleButton passwordToggle;
 
     @FXML
     private TextField usernameField;
@@ -25,6 +31,21 @@ public class LoginController {
 
     @FXML
     private Label errorLabel;
+
+    @FXML
+    private void initialize() {
+        // Sync password fields
+        passwordField.textProperty().addListener((obs, old, newVal) -> {
+            passwordVisibleField.setText(newVal);
+        });
+
+        passwordVisibleField.textProperty().addListener((obs, old, newVal) -> {
+            passwordField.setText(newVal);
+        });
+
+        // Add tooltip to toggle button
+        passwordToggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
+    }
 
     // ======== HANDLE LOGIN ========
 
