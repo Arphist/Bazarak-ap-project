@@ -231,19 +231,14 @@ public class ProfileController {
             return;
         }
 
-        if (newPassword.length() < 6) {
-            errorLabel.setText("New password must be at least 6 characters");
-            return;
-        }
-
         try {
             // Call backend to change password
-            UserService.changePassword(oldPassword, newPassword);
+            String result = UserService.changePassword(oldPassword, newPassword);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Success");
             alert.setHeaderText(null);
-            alert.setContentText("Password changed successfully!");
+            alert.setContentText(result);
             alert.showAndWait();
 
             // Clear password fields
