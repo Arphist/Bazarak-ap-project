@@ -105,6 +105,8 @@
                     <HBox spacing="15" alignment="CENTER_LEFT">
                         <Label fx:id="deletedCountLabel" style="-fx-text-fill: #495057; -fx-font-weight: bold;"/>
                         <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Restore Selected" onAction="#restoreAd"
+                                style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
                         <Button text="Delete Selected" onAction="#deleteAd"
                                 style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 6 18; -fx-background-radius: 4; -fx-cursor: hand;"/>
                     </HBox>
