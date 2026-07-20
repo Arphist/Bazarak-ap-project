@@ -269,19 +269,6 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles cases where a user attempts to create a duplicate conversation.
-     * This exception is thrown when a buyer tries to start a conversation with the same seller
-     * for the same advertisement, which violates the unique constraint.
-     *
-     * @param ex the DuplicateConversationException containing the error message
-     * @return HTTP 409 CONFLICT with error details
-     */
-    @ExceptionHandler(DuplicateConversationException.class)
-    public ResponseEntity<?> handleDuplicateConversation(DuplicateConversationException ex) {
-        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    /**
      * Handles cases where a user is not a participant in a conversation.
      * This exception is thrown when a user tries to access, send messages to, or
      * perform any operation on a conversation they are not part of.
