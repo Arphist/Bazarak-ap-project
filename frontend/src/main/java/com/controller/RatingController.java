@@ -18,9 +18,7 @@ import java.util.Map;
 
 public class RatingController {
 
-    // ============================================
     // FXML FIELDS
-    // ============================================
 
     // Rating display
     @FXML
@@ -48,16 +46,12 @@ public class RatingController {
     @FXML
     private Button submitRatingButton;
 
-    // ============================================
     // DATA
-    // ============================================
 
     private ObservableList<Rating> ratings = FXCollections.observableArrayList();
     private Long sellerId;
     private Long advertisementId;
-    // ============================================
     // INITIALIZE
-    // ============================================
 
     @FXML
     private void initialize() {
@@ -88,9 +82,7 @@ public class RatingController {
         loadRatings();
     }
 
-    // ============================================
     // LOAD SELLER INFO
-    // ============================================
 
     private void loadSellerInfo() {
         try {
@@ -116,9 +108,7 @@ public class RatingController {
         }
     }
 
-    // ============================================
     // LOAD RATINGS
-    // ============================================
 
     private void loadRatings() {
         try {
@@ -138,9 +128,7 @@ public class RatingController {
         }
     }
 
-    // ============================================
     // CREATE RATING
-    // ============================================
 
     @FXML
     private void submitRating() {
@@ -149,18 +137,6 @@ public class RatingController {
 
         if (score == null) {
             errorLabel.setText("Please select a score");
-            return;
-        }
-
-        User currentUser = SessionManager.getCurrentUser();
-        if (currentUser == null) {
-            errorLabel.setText("Please login first");
-            return;
-        }
-
-        // Check if user is rating themselves
-        if (currentUser.getId().equals(sellerId)) {
-            errorLabel.setText("You cannot rate yourself");
             return;
         }
 
@@ -184,7 +160,7 @@ public class RatingController {
             // Clear form
             scoreComboBox.setValue(3);
             commentTextArea.clear();
-            errorLabel.setText("✅ Rating submitted successfully");
+            errorLabel.setText("Rating submitted successfully");
 
             // Reload ratings
             loadRatings();
@@ -195,9 +171,7 @@ public class RatingController {
         }
     }
 
-    // ============================================
     // NAVIGATION
-    // ============================================
 
     @FXML
     private void goBack() {
