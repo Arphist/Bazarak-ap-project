@@ -31,6 +31,7 @@ public class FavoriteController {
     public ResponseEntity<?> addFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
         User user = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(user);
 
         // CHECK METHODS
         advertisementService.checkAdPending(ad);
@@ -59,6 +60,7 @@ public class FavoriteController {
     public ResponseEntity<?> removeFavorite(@PathVariable Long adId, HttpSession session){
         Advertisement ad = advertisementService.findById(adId);
         User user = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(user);
         try{
             favoriteService.removeFromFavorite(user,ad);
 
