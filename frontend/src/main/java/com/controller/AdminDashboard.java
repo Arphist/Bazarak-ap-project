@@ -461,10 +461,10 @@ public class AdminDashboard {
         }
 
         try {
-            AdminService.approveAd(selected);
+            Map<String,Object> result = AdminService.approveAd(selected);
             loadPendingAds();
             loadActiveAds();
-            pendingErrorLabel.setText("Ad approved successfully");
+            pendingErrorLabel.setText((String)result.get("message"));
         } catch (Exception e) {
             String msg = e.getMessage();
             pendingErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to approve ad"));
@@ -487,10 +487,10 @@ public class AdminDashboard {
 
             String reason = dialog.showAndWait().orElse("No reason provided");
             selected.setRejectionReason(reason);
-            AdminService.rejectAd(selected);
+            Map<String,Object> result = AdminService.rejectAd(selected);
             loadPendingAds();
             loadRejectedAds();
-            pendingErrorLabel.setText("Ad rejected successfully");
+            pendingErrorLabel.setText((String)result.get("message"));
         } catch (Exception e) {
             String msg = e.getMessage();
             pendingErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to reject ad"));
@@ -563,9 +563,9 @@ public class AdminDashboard {
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
-                AdminService.blockUser(selected.getId());
+                Map<String, Object> result = AdminService.blockUser(selected.getId());
                 loadUsers();
-                usersErrorLabel.setText("User blocked successfully");
+                usersErrorLabel.setText((String) result.get("message"));
             } catch (Exception e) {
                 String msg = e.getMessage();
                 usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to block user"));
@@ -582,9 +582,9 @@ public class AdminDashboard {
         }
 
         try {
-            AdminService.unblockUser(selected.getId());
+            Map<String, Object> result = AdminService.unblockUser(selected.getId());
             loadUsers();
-            usersErrorLabel.setText("User unblocked successfully");
+            usersErrorLabel.setText((String) result.get("message"));
         } catch (Exception e) {
             String msg = e.getMessage();
             usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to unblock user"));
@@ -659,9 +659,9 @@ public class AdminDashboard {
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
-                CityService.deleteCity(selected.getId());
+                String result = CityService.deleteCity(selected.getId());
                 loadCities();
-                cityErrorLabel.setText("City deleted successfully");
+                cityErrorLabel.setText(result);
             } catch (Exception e) {
                 cityErrorLabel.setText("Error: " + e.getMessage());
             }
@@ -747,9 +747,9 @@ public class AdminDashboard {
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
-                CategoryService.deleteCategory(selected.getId());
+                String result = CategoryService.deleteCategory(selected.getId());
                 loadCategories();
-                categoryErrorLabel.setText("Category deleted successfully");
+                categoryErrorLabel.setText(result);
             } catch (Exception e) {
                 categoryErrorLabel.setText("Error: " + e.getMessage());
             }
