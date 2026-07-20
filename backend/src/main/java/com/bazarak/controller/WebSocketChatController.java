@@ -38,6 +38,7 @@ public class WebSocketChatController {
         try {
             Long conversationId = Long.parseLong(String.valueOf(message.getConversationId()));
             User sender = userService.getUserById(Long.parseLong(message.getSenderId()));
+            userService.isUserBanned(sender);
             conversationService.validateParticipant(conversationId,sender);
             Message savedMessage = conversationService.sendMessageAndBroadcast(
                     conversationId,
