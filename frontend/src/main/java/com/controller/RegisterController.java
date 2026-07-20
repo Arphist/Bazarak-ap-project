@@ -1,20 +1,34 @@
 package com.controller;
 
-import com.BazarakFrontendApplication;
 import com.model.User;
 import com.service.AuthService;
 import com.util.NavigationUtil;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
+import javafx.scene.control.ToggleButton;
 
 public class RegisterController {
 
     // ======== FXML FIELDS ========
+    @FXML
+    private PasswordField passwordField;
+
+    @FXML
+    private TextField passwordVisibleField;
+
+    @FXML
+    private ToggleButton passwordToggle;
+
+    @FXML
+    private PasswordField confirmPasswordField;
+
+    @FXML
+    private TextField confirmPasswordVisibleField;
+
+    @FXML
+    private ToggleButton confirmPasswordToggle;
 
     @FXML
     private TextField fullNameField;
@@ -29,13 +43,8 @@ public class RegisterController {
     private TextField phoneField;
 
     @FXML
-    private PasswordField passwordField;
-
-    @FXML
-    private PasswordField confirmPasswordField;
-
-    @FXML
     private Label errorLabel;
+
 
 
     // ======== HANDLE REGISTER ========
@@ -86,15 +95,48 @@ public class RegisterController {
             errorLabel.setText("");
             goToLogin();
 
+
         } catch (Exception e) {
             errorLabel.setText("Registration failed: " + e.getMessage());
+        }
+    }
+
+    // TOGGLE PASSWORD VISIBILITY
+
+    @FXML
+    private void togglePasswordVisibility() {
+        togglePasswordField(passwordField, passwordVisibleField, passwordToggle);
+    }
+
+    @FXML
+    private void toggleConfirmPasswordVisibility() {
+        togglePasswordField(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
+    }
+
+    private void togglePasswordField(PasswordField passwordField, TextField visibleField, ToggleButton toggle) {
+        if (toggle.isSelected()) {
+            // Show password - hide PasswordField, show TextField
+            visibleField.setText(passwordField.getText());
+            visibleField.setVisible(true);
+            visibleField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            toggle.setText("👁️");
+        } else {
+            // Hide password - show PasswordField, hide TextField
+            passwordField.setText(visibleField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            visibleField.setVisible(false);
+            visibleField.setManaged(false);
+            toggle.setText("👁️");
         }
     }
 
     // ======== NAVIGATION ========
 
     @FXML
-    private void goToLogin(){
+    private void goToLogin() {
         NavigationUtil.goToLogin();
     }
 }
