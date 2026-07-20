@@ -243,6 +243,65 @@
                 </VBox>
             </Tab>
 
+            <!-- TAB: DASHBOARD STATISTICS -->
+            <Tab text="Dashboard" closable="false">
+                <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
+
+                    <Label text="📊 Dashboard Statistics" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+
+                    <!-- Stats Grid -->
+                    <GridPane hgap="20" vgap="15">
+                        <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                        </columnConstraints>
+
+                        <!-- Row 1: Total, Pending, Active -->
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="📦 Total Ads" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="totalAdsLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="⏳ Pending" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="pendingCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="✅ Active" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="activeCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
+                        </VBox>
+
+                        <!-- Row 2: Rejected, Sold, Deleted -->
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="❌ Rejected" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="rejectedCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #dc3545;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="💰 Sold" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="soldCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #17a2b8;"/>
+                        </VBox>
+
+                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                              style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
+                            <Label text="🗑️ Deleted" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
+                            <Label fx:id="deletedCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #6c757d;"/>
+                        </VBox>
+
+                    </GridPane>
+
+                    <Label fx:id="dashboardErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
+                </VBox>
+            </Tab>
+
+
         </TabPane>
     </center>
 
