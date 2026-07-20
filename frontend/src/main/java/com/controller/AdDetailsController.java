@@ -1,9 +1,12 @@
 package com.controller;
 
 import com.model.Advertisement;
+import com.model.User;
 import com.service.AdService;
+import com.service.ConversationService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
+import com.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -113,6 +116,32 @@ public class AdDetailsController {
         }
     }
 
+    @FXML
+    private void goToChat() throws Exception {
+        Map<String, Object> adObj = AdService.getAdById(adId);
+        Advertisement currentAd = (Advertisement) adObj.get("ad");
+        if (currentAd == null || currentAd.getOwner() == null) {
+            errorLabel.setText("Cannot start chat: Ad or owner not found");
+            return;
+        }
+
+        try {
+            // Start conversation with the seller
+            Long sellerId = currentAd.getOwner().getId();
+            Long adId = currentAd.getId();
+
+            Map<String, Object> result = ConversationService.startConversation(sellerId, adId);
+            Long conversationId = (Long) result.get("id");
+
+            // Store conversation ID and navigate to chat
+            DataHolder.setSelectedConversationId(conversationId);
+            NavigationUtil.goToChat();
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to start conversation: " + e.getMessage());
+        }
+    }
+
     // NAVIGATION
 
     @FXML
@@ -123,11 +152,5 @@ public class AdDetailsController {
     @FXML
     private void goToHome() {
         NavigationUtil.goToHome();
-    }
-
-    @FXML
-    private void goToChat() {
-        // TODO: Start conversation with seller
-        // NavigationUtil.goToChat();
     }
 }
