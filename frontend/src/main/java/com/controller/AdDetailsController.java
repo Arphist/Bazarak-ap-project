@@ -18,7 +18,6 @@ import javafx.scene.control.Button;
 
 import java.util.Map;
 
-import java.util.Map;
 
 public class AdDetailsController {
 
@@ -47,9 +46,6 @@ public class AdDetailsController {
 
     @FXML
     private TextArea descriptionArea;
-
-    @FXML
-    private Label errorLabel;
 
     @FXML
     private ImageView imageView;
@@ -115,13 +111,12 @@ public class AdDetailsController {
                 FavoriteService.removeFavorite(currentAd.getId());
                 isFavorited = false;
                 favoriteCount--;
-                errorLabel.setText("Removed from favorites");
+
             } else {
                 // Add to favorites
                 FavoriteService.addToFavorite(currentAd.getId());
                 isFavorited = true;
                 favoriteCount++;
-                errorLabel.setText("Added to favorites");
             }
 
             // Update UI
@@ -224,7 +219,7 @@ public class AdDetailsController {
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
                     "Conversation Error",
-                    "Failed to start conversation: ",
+                    "Failed to start conversation",
                     "There was a problem starting the conversation. Please try again later.",
                     "ERROR"
             );
