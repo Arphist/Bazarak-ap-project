@@ -61,7 +61,7 @@
         <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"
                        style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
 
-        <ToggleButton fx:id="confirmPasswordToggle" text="👁️" onAction="#toggleConfirmPasswordVisibility"
+        <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility"
                       style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
                       StackPane.alignment="CENTER_RIGHT"/>
     </StackPane>
