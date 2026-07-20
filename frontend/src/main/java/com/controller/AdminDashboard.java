@@ -5,6 +5,7 @@ import com.model.City;
 import com.model.User;
 import com.service.AdminService;
 import com.service.AdminService;
+import com.service.CityService;
 import com.util.NavigationUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -152,6 +153,7 @@ public class AdminDashboard {
     private ObservableList<Advertisement> soldAds = FXCollections.observableArrayList();
     private ObservableList<Advertisement> deletedAds = FXCollections.observableArrayList();
     private ObservableList<User> users = FXCollections.observableArrayList();
+    private ObservableList<City> cities = FXCollections.observableArrayList();
 
     // INITIALIZE
 
@@ -342,6 +344,17 @@ public class AdminDashboard {
         } catch (Exception e) {
             String msg = e.getMessage();
             usersErrorLabel.setText("Error: " + (msg != null ? msg : "Failed to load users"));
+        }
+    }
+
+    private void loadCities() {
+        try {
+            List<City> cityList = CityService.getAllCities();
+            cities.setAll(cityList);
+            cityListView.setItems(cities);
+            cityErrorLabel.setText("");
+        } catch (Exception e) {
+            cityErrorLabel.setText("Error: " + e.getMessage());
         }
     }
 
