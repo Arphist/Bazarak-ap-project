@@ -31,9 +31,6 @@ public class HomeController {
     @FXML
     private Label errorLabel;
 
-    @FXML
-    private Button adminButton;
-
     // ===== TEST DATA (TODO: remove after testing) =====
     private boolean useTestData = true;
     private ObservableList<Advertisement> testAds = FXCollections.observableArrayList();
@@ -100,11 +97,6 @@ public class HomeController {
         // Show welcome message if user is logged in
         if (currentUser != null) {
             welcomeLabel.setText("Welcome, " + currentUser.getFullName() + "!");
-        }
-
-        // Show admin button only for admin users
-        if (adminButton != null) {
-            adminButton.setVisible(SessionManager.isAdmin());
         }
 
         // ===== TEST DATA (TODO: remove after testing) =====
