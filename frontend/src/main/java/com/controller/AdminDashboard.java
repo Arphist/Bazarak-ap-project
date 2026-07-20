@@ -130,6 +130,9 @@ public class AdminDashboard {
     @FXML
     private TextField cityProvinceField;
 
+    @FXML
+    private TextField citySearchField;
+
 
     // FXML FIELDS - CATEGORIES
 
@@ -138,6 +141,9 @@ public class AdminDashboard {
 
     @FXML
     private TextField categoryNameField;
+
+    @FXML
+    private TextField categorySearchField;
 
     @FXML
     private TextField categoryDescriptionField;
@@ -425,6 +431,68 @@ public class AdminDashboard {
             ShowErrorDialog.showErrorDialog(
                     "Load Categories Error",
                     "Failed to load categories",
+                    "There was a problem loading categories. Please try again later.",
+                    "ERROR"
+            );
+        }
+    }
+
+    // SEARCH METHODS
+
+    @FXML
+    private void searchCities() {
+        String keyword = citySearchField.getText().trim();
+        try {
+            List<City> results;
+            if (keyword.isEmpty()) {
+                results = CityService.getAllCities();
+            } else {
+                results = CityService.searchCities(keyword);
+            }
+            cityListView.getItems().setAll(results);
+            if (results.isEmpty()) {
+                ShowErrorDialog.showErrorDialog(
+                        "Load City Error",
+                        "No cities found",
+                        "There was a problem loading cities. Please try again later.",
+                        "NONE"
+                );
+            }
+
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Load City Error",
+                    "No cities found",
+                    "There was a problem loading cities. Please try again later.",
+                    "ERROR"
+            );
+        }
+    }
+
+    @FXML
+    private void searchCategories() {
+        String keyword = categorySearchField.getText().trim();
+        try {
+            List<Category> results;
+            if (keyword.isEmpty()) {
+                results = CategoryService.getAllCategories();
+            } else {
+                results = CategoryService.searchCategories(keyword);
+            }
+            categoryListView.getItems().setAll(results);
+            if (results.isEmpty()) {
+                ShowErrorDialog.showErrorDialog(
+                        "Load Category Error",
+                        "No categories found",
+                        "There was a problem loading categories. Please try again later.",
+                        "NONE"
+                );
+            }
+
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Load Category Error",
+                    "No categories found",
                     "There was a problem loading categories. Please try again later.",
                     "ERROR"
             );
