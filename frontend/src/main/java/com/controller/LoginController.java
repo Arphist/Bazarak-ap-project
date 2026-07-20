@@ -78,6 +78,29 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void togglePasswordVisibility() {
+        togglePasswordField(passwordField, passwordVisibleField, passwordToggle);
+    }
+
+    private void togglePasswordField(PasswordField passwordField, TextField visibleField, ToggleButton toggle) {
+        if (toggle.isSelected()) {
+            visibleField.setText(passwordField.getText());
+            visibleField.setVisible(true);
+            visibleField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+            toggle.setText("👁");
+        } else {
+            passwordField.setText(visibleField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            visibleField.setVisible(false);
+            visibleField.setManaged(false);
+            toggle.setText("👁");
+        }
+    }
+
     //todo delete this later
     @FXML
     private void handleSkipLogin() {
