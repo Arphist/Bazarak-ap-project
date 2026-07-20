@@ -57,6 +57,5 @@ public class DataHolder {
         selectedAdId = null;
         selectedConversationId = null;
         selectedUserId = null;
-        resultMessage = null;
     }
 }
