@@ -647,6 +647,94 @@ public class AdminDashboard {
         }
     }
 
+    @FXML
+    private void handleAddCategory() {
+        String name = categoryNameField.getText().trim();
+        String description = categoryDescriptionField.getText().trim();
+        Category parent = categoryParentCombo.getValue();
+
+        if (name.isEmpty()) {
+            categoryErrorLabel.setText("Category name is required");
+            return;
+        }
+
+        try {
+            Category category = new Category();
+            category.setName(name);
+            category.setDescription(description.isEmpty() ? null : description);
+            if (parent != null) {
+                category.setParentId(parent.getId());
+            }
+
+            CategoryService.createCategory(category);
+            categoryNameField.clear();
+            categoryDescriptionField.clear();
+            categoryParentCombo.setValue(null);
+            loadCategories();
+            categoryErrorLabel.setText("✅ Category added successfully");
+        } catch (Exception e) {
+            categoryErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEditCategory() {
+        Category selected = categoryListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            categoryErrorLabel.setText("Please select a category to edit");
+            return;
+        }
+
+        String newName = categoryNameField.getText().trim();
+        String newDescription = categoryDescriptionField.getText().trim();
+        Category newParent = categoryParentCombo.getValue();
+
+        if (newName.isEmpty()) {
+            categoryErrorLabel.setText("Category name is required");
+            return;
+        }
+
+        try {
+            selected.setName(newName);
+            selected.setDescription(newDescription.isEmpty() ? null : newDescription);
+            if (newParent != null) {
+                selected.setParentId(newParent.getId());
+            } else {
+                selected.setParentId(null);
+            }
+
+            CategoryService.updateCategory(selected.getId(), selected);
+            loadCategories();
+            categoryErrorLabel.setText("✅ Category updated successfully");
+        } catch (Exception e) {
+            categoryErrorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteCategory() {
+        Category selected = categoryListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            categoryErrorLabel.setText("Please select a category to delete");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete category?");
+        confirm.setContentText("Are you sure you want to delete '" + selected.getName() + "'?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                CategoryService.deleteCategory(selected.getId());
+                loadCategories();
+                categoryErrorLabel.setText("✅ Category deleted successfully");
+            } catch (Exception e) {
+                categoryErrorLabel.setText("Error: " + e.getMessage());
+            }
+        }
+    }
+
     // REFRESH
 
     @FXML
