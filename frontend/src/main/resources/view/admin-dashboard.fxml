@@ -4,8 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import com.sun.org.apache.xpath.internal.operations.String?>
 <BorderPane style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.AdminDashboard">
@@ -35,25 +33,11 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sort By:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="pendingSortByCombo" prefWidth="120">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="created_at"/>
-                                    <String fx:value="title"/>
-                                    <String fx:value="price"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="pendingSortByCombo" prefWidth="120"/>
 
                         <Label text="Order:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="pendingSortOrderCombo" prefWidth="100">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="asc"/>
-                                    <String fx:value="desc"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="pendingSortOrderCombo" prefWidth="100"/>
+
                         <Button text="Apply" onAction="#applyPendingSort"
                                 style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
                     </HBox>
@@ -74,25 +58,11 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sort By:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="activeSortByCombo" prefWidth="120">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="created_at"/>
-                                    <String fx:value="title"/>
-                                    <String fx:value="price"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="activeSortByCombo" prefWidth="120"/>
 
                         <Label text="Order:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="activeSortOrderCombo" prefWidth="100">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="asc"/>
-                                    <String fx:value="desc"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="activeSortOrderCombo" prefWidth="100"/>
+
                         <Button text="Apply" onAction="#applyActiveSort"
                                 style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
                     </HBox>
@@ -113,25 +83,11 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sort By:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="rejectedSortByCombo" prefWidth="120">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="created_at"/>
-                                    <String fx:value="title"/>
-                                    <String fx:value="price"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="rejectedSortByCombo" prefWidth="120"/>
 
                         <Label text="Order:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="rejectedSortOrderCombo" prefWidth="100">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="asc"/>
-                                    <String fx:value="desc"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="rejectedSortOrderCombo" prefWidth="100"/>
+
                         <Button text="Apply" onAction="#applyRejectedSort"
                                 style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
                     </HBox>
@@ -152,25 +108,11 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sort By:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="soldSortByCombo" prefWidth="120">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="created_at"/>
-                                    <String fx:value="title"/>
-                                    <String fx:value="price"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="soldSortByCombo" prefWidth="120"/>
 
                         <Label text="Order:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="soldSortOrderCombo" prefWidth="100">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="asc"/>
-                                    <String fx:value="desc"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="soldSortOrderCombo" prefWidth="100"/>
+
                         <Button text="Apply" onAction="#applySoldSort"
                                 style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
                     </HBox>
@@ -191,25 +133,11 @@
                         <Region HBox.hgrow="ALWAYS"/>
 
                         <Label text="Sort By:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="deletedSortByCombo" prefWidth="120">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="created_at"/>
-                                    <String fx:value="title"/>
-                                    <String fx:value="price"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="deletedSortByCombo" prefWidth="120"/>
 
                         <Label text="Order:" style="-fx-text-fill: #6c757d; -fx-font-size: 12;"/>
-                        <ComboBox fx:id="deletedSortOrderCombo" prefWidth="100">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="asc"/>
-                                    <String fx:value="desc"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
+                        <ComboBox fx:id="deletedSortOrderCombo" prefWidth="100"/>
+
                         <Button text="Apply" onAction="#applyDeletedSort"
                                 style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 15; -fx-background-radius: 4; -fx-cursor: hand;"/>
 
