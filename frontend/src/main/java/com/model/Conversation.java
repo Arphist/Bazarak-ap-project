@@ -12,7 +12,6 @@ public class Conversation {
     private List<Message> messages = new ArrayList<>();
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private Message latestMessage;
 
     // ============================================
     // CONSTRUCTORS
@@ -93,6 +92,11 @@ public class Conversation {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
-    public Message getLatestMessage() { return latestMessage; }
-    public void setLatestMessage(Message latestMessage) { this.latestMessage = latestMessage; }
+
+    public Message getLatestMessage() {
+        if (messages == null || messages.isEmpty()) {
+            return null;
+        }
+        return messages.get(messages.size() - 1);
+    }
 }
