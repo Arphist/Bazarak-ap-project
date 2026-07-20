@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.Advertisement;
+import com.model.Category;
 import com.model.City;
 import com.model.User;
 import com.service.AdminService;
@@ -145,6 +146,26 @@ public class AdminDashboard {
     @FXML
     private Label cityErrorLabel;
 
+
+    // FXML FIELDS - CATEGORIES
+
+    @FXML
+    private ListView<Category> categoryListView;
+
+    @FXML
+    private TextField categoryNameField;
+
+    @FXML
+    private TextField categoryDescriptionField;
+
+    @FXML
+    private ComboBox<Category> categoryParentCombo;
+
+    @FXML
+    private Label categoryErrorLabel;
+
+
+
     // DATA
 
     private ObservableList<Advertisement> pendingAds = FXCollections.observableArrayList();
@@ -154,6 +175,7 @@ public class AdminDashboard {
     private ObservableList<Advertisement> deletedAds = FXCollections.observableArrayList();
     private ObservableList<User> users = FXCollections.observableArrayList();
     private ObservableList<City> cities = FXCollections.observableArrayList();
+    private ObservableList<Category> categories = FXCollections.observableArrayList();
 
     // INITIALIZE
 
