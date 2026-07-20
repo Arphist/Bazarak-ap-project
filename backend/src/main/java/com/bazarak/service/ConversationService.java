@@ -73,8 +73,6 @@ public class ConversationService {
      */
     public List<Conversation> getUserConversations (Long userId) {
         return conversationRepository.findAllByParticipantId(userId);
-        //TODO: I didn't set the latest message here.
-        // Set the latest message for each conversation
     }
 
     // MESSAGE METHODS
