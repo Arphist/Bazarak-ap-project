@@ -8,6 +8,7 @@ public class DataHolder {
     private static Long selectedAdId;
     private static Long selectedConversationId;
     private static Long selectedUserId;
+    private static String resultMessage;
 
     // AD ID
 
@@ -51,11 +52,20 @@ public class DataHolder {
         selectedUserId = null;
     }
 
+    public static String getResultMessage() {
+        return resultMessage;
+    }
+
+    public static void setResultMessage(String resultMessage) {
+        DataHolder.resultMessage = resultMessage;
+    }
+
     // CLEAR ALL
 
     public static void clearAll() {
         selectedAdId = null;
         selectedConversationId = null;
         selectedUserId = null;
+        resultMessage = null;
     }
 }
