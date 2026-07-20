@@ -104,14 +104,4 @@ public class Conversation {
         messages.remove(message);
         message.setConversation(null);
     }
-
-    public Message getLatestMessage() {
-        if (messages == null || messages.isEmpty()) {
-            return null;
-        }
-        return messages.get(messages.size() - 1);
-    }
-
-
-
 }
