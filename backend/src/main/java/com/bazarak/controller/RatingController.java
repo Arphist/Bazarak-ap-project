@@ -2,6 +2,7 @@ package com.bazarak.controller;
 
 import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.Rating;
+import com.bazarak.entity.User;
 import com.bazarak.service.AdvertisementService;
 import com.bazarak.service.RatingService;
 import com.bazarak.service.UserService;
@@ -98,12 +99,13 @@ public class RatingController {
         advertisementService.checkAdRejected(ad);
         advertisementService.checkAdPending(ad);
 
-        Long buyerId = userService.getCurrentUserOrThrow(session).getId();
+        User buyer = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(buyer);
 
         Rating rating = ratingService.createRating(
                 request.getScore(),
                 request.getComment(),
-                buyerId,
+                buyer.getId(),
                 request.getSellerId(),
                 ad
         );
