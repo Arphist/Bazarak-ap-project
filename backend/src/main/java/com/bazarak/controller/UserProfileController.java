@@ -51,6 +51,7 @@ public class UserProfileController {
     public ResponseEntity<?> updateMyProfile(@Valid @RequestBody UpdateProfileRequest request,
                                              HttpSession session) {
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             // Create update object
@@ -81,6 +82,7 @@ public class UserProfileController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request,
                                             HttpSession session) {
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             // Verify old password
@@ -111,6 +113,7 @@ public class UserProfileController {
                                                 HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             // 2. Validate file
