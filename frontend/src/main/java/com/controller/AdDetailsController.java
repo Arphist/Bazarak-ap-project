@@ -7,6 +7,7 @@ import com.service.ConversationService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ShowErrorDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -70,10 +71,10 @@ public class AdDetailsController {
     @FXML
     private void initialize() {
         // Get ad ID from DataHolder
-        adId = DataHolder.getSelectedAdId();  
+        adId = DataHolder.getSelectedAdId();
 
         if (adId == null) {
-            errorLabel.setText("No ad selected");
+            ShowErrorDialog.showErrorDialog("Failed","No ad selected", "Please select an ad","ERROR");
             return;
         }
 
@@ -97,7 +98,12 @@ public class AdDetailsController {
             favoriteCountLabel.setText(String.valueOf(favoriteCount));
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load favorite status: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Favorite Status Error",
+                    "Unable to load favorite information",
+                    "There was a problem checking if this ad is in your favorites. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -123,7 +129,12 @@ public class AdDetailsController {
             favoriteCountLabel.setText(String.valueOf(favoriteCount));
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to update favorite: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Update Favorite Error",
+                    "Failed to update favorite",
+                    "There was a problem updating favorite. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -156,10 +167,14 @@ public class AdDetailsController {
             // Load favorite status and count
             loadFavoriteState(adId);
 
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load ad details: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Ad Details Error",
+                    "Unable to load ad details",
+                    "There was a problem loading ad details. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
@@ -171,7 +186,12 @@ public class AdDetailsController {
             DataHolder.setSelectedAdId(adId);
             NavigationUtil.goToRating();
         } else {
-            errorLabel.setText("No ad selected");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No ad selected",
+                    "Please select an ad",
+                    "ERROR"
+            );
         }
     }
 
@@ -180,7 +200,12 @@ public class AdDetailsController {
         Map<String, Object> adObj = AdService.getAdById(adId);
         Advertisement currentAd = (Advertisement) adObj.get("ad");
         if (currentAd == null || currentAd.getOwner() == null) {
-            errorLabel.setText("Cannot start chat: Ad or owner not found");
+            ShowErrorDialog.showErrorDialog(
+                    "Chat Error",
+                    "Cannot start chat: Ad or owner not found",
+                    "There was a problem starting the chat. Please try again later.",
+                    "ERROR"
+            );
             return;
         }
 
@@ -197,7 +222,12 @@ public class AdDetailsController {
             NavigationUtil.goToChat();
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to start conversation: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Conversation Error",
+                    "Failed to start conversation: ",
+                    "There was a problem starting the conversation. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
