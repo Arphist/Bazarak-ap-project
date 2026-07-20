@@ -56,6 +56,24 @@ public class AdminAdvertisementController {
             return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+    /**
+     * Restore deleted advertisement
+     */
+    @PutMapping("{id}/restore")
+    public ResponseEntity<?> restoreAd(@PathVariable Long id, HttpSession session){
+        userService.checkAdmin(session);
+        try {
+            Advertisement restoredAd = advertisementService.restoreAd(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ad",restoredAd);
+            response.put("message","Ad restored successfully");
+
+            return ResponseEntity.ok(response);
+        }catch (RuntimeException e){
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        }
+    }
 
     // 2. APPROVE AD
 
