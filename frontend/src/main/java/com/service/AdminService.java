@@ -59,6 +59,36 @@ public class AdminService {
     }
 
     /**
+     * Restores a deleted advertisement by its ID.
+     *
+     * @param id the ID of the advertisement to restore
+     * @return a map containing the restored ad and a success message
+     * @throws Exception if the request fails
+     */
+    public static Map<String, Object> restoreAd (Long id) throws Exception{
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(adsUrl + id + "/restore"))
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", responseBody.getOrDefault("message", "Ad restored successfully"));
+            Object adObj = responseBody.get("ad");
+            if (adObj != null) {
+                String adJson = objectMapper.writeValueAsString(adObj);
+                result.put("ad", objectMapper.readValue(adJson, Advertisement.class));
+            } else {
+                result.put("ad", objectMapper.readValue(response.body(), Advertisement.class));
+            }
+            return result;
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to restore ad"));
+        }
+    }
+    /**
      * Approves a pending advertisement.
      *
      * @param ad the advertisement to approve
