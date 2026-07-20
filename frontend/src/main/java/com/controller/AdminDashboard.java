@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.Advertisement;
+import com.model.City;
 import com.model.User;
 import com.service.AdminService;
 import com.service.AdminService;
@@ -129,6 +130,19 @@ public class AdminDashboard {
 
     @FXML
     private Label usersErrorLabel;
+
+    // FXML FIELDS - CITIES
+    @FXML
+    private ListView<City> cityListView;
+
+    @FXML
+    private TextField cityNameField;
+
+    @FXML
+    private TextField cityProvinceField;
+
+    @FXML
+    private Label cityErrorLabel;
 
     // DATA
 
