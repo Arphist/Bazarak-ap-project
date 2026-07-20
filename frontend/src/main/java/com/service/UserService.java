@@ -90,8 +90,10 @@ public class UserService {
      * @param newPassword the new password
      * @throws Exception if the password change fails
      */
-    public static void changePassword(String oldPassword, String newPassword) throws Exception {
-        Map<String, String> passwords = Map.of("oldPassword", oldPassword, "newPassword", newPassword);
+    public static String changePassword(String oldPassword, String newPassword) throws Exception {
+        Map<String, String> passwords = new HashMap<>();
+        passwords.put("oldPassword", oldPassword);
+        passwords.put("newPassword", newPassword);
         String json = objectMapper.writeValueAsString(passwords);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -102,7 +104,10 @@ public class UserService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
+        if (response.statusCode() == 200) {
+            Map<String,String> result = objectMapper.readValue(response.body(), Map.class);
+            return result.get("message");
+            }else{
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Password change failed"));
         }
