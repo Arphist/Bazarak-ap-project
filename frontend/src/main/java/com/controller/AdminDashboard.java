@@ -592,7 +592,7 @@ public class AdminDashboard {
             cityNameField.clear();
             cityProvinceField.clear();
             loadCities();
-            cityErrorLabel.setText("✅ City added successfully");
+            cityErrorLabel.setText("City added successfully");
         } catch (Exception e) {
             cityErrorLabel.setText("Error: " + e.getMessage());
         }
@@ -619,7 +619,7 @@ public class AdminDashboard {
             selected.setProvince(newProvince.isEmpty() ? null : newProvince);
             CityService.updateCity(selected.getId(), selected);
             loadCities();
-            cityErrorLabel.setText("✅ City updated successfully");
+            cityErrorLabel.setText("City updated successfully");
         } catch (Exception e) {
             cityErrorLabel.setText("Error: " + e.getMessage());
         }
@@ -642,7 +642,7 @@ public class AdminDashboard {
             try {
                 CityService.deleteCity(selected.getId());
                 loadCities();
-                cityErrorLabel.setText("✅ City deleted successfully");
+                cityErrorLabel.setText("City deleted successfully");
             } catch (Exception e) {
                 cityErrorLabel.setText("Error: " + e.getMessage());
             }
@@ -673,7 +673,7 @@ public class AdminDashboard {
             categoryDescriptionField.clear();
             categoryParentCombo.setValue(null);
             loadCategories();
-            categoryErrorLabel.setText("✅ Category added successfully");
+            categoryErrorLabel.setText("Category added successfully");
         } catch (Exception e) {
             categoryErrorLabel.setText("Error: " + e.getMessage());
         }
@@ -707,7 +707,7 @@ public class AdminDashboard {
 
             CategoryService.updateCategory(selected.getId(), selected);
             loadCategories();
-            categoryErrorLabel.setText("✅ Category updated successfully");
+            categoryErrorLabel.setText("Category updated successfully");
         } catch (Exception e) {
             categoryErrorLabel.setText("Error: " + e.getMessage());
         }
@@ -730,7 +730,7 @@ public class AdminDashboard {
             try {
                 CategoryService.deleteCategory(selected.getId());
                 loadCategories();
-                categoryErrorLabel.setText("✅ Category deleted successfully");
+                categoryErrorLabel.setText("Category deleted successfully");
             } catch (Exception e) {
                 categoryErrorLabel.setText("Error: " + e.getMessage());
             }
