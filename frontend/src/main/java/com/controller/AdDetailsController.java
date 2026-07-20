@@ -101,6 +101,41 @@ public class AdDetailsController {
         }
     }
 
+    @FXML
+    private void toggleFavorite() {
+        try {
+            if (isFavorited) {
+                // Remove from favorites
+                FavoriteService.removeFavorite(currentAd.getId());
+                isFavorited = false;
+                favoriteCount--;
+                errorLabel.setText("Removed from favorites");
+            } else {
+                // Add to favorites
+                FavoriteService.addToFavorite(currentAd.getId());
+                isFavorited = true;
+                favoriteCount++;
+                errorLabel.setText("Added to favorites");
+            }
+
+            // Update UI
+            updateFavoriteButton();
+            favoriteCountLabel.setText(String.valueOf(favoriteCount));
+
+        } catch (Exception e) {
+            errorLabel.setText("Failed to update favorite: " + e.getMessage());
+        }
+    }
+
+    private void updateFavoriteButton() {
+        if (isFavorited) {
+            favoriteButton.setText("♥");  // Filled heart
+            favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
+        } else {
+            favoriteButton.setText("♡");  // Empty heart
+            favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
+        }
+    }
     // LOAD AD DETAILS
 
     private void loadAdDetails(Long adId) {
