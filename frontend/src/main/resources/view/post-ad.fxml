@@ -33,6 +33,8 @@
     <ComboBox fx:id="categoryCombo" maxWidth="500" promptText="Select Category"
               style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
 
+    <ComboBox fx:id="subCategoryCombo" maxWidth="400" promptText="Select Sub-Category"
+              style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
     <!-- City -->
     <ComboBox fx:id="cityCombo" maxWidth="500" promptText="Select City"
               style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
