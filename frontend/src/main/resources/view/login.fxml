@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox spacing="15" alignment="CENTER" style="-fx-padding: 40; -fx-background-color: #f5f5f5;"
@@ -18,18 +20,31 @@
     <TextField fx:id="usernameField" promptText="Username" maxWidth="300"
                style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
 
-    <PasswordField fx:id="passwordField" promptText="Password" maxWidth="300"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <!-- Password Field with Show/Hide Toggle -->
+    <StackPane maxWidth="300" style="-fx-padding: 0;">
+        <TextField fx:id="passwordVisibleField" promptText="Password"
+                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
+                   visible="false" managed="false"/>
+
+        <PasswordField fx:id="passwordField" promptText="Password"
+                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+
+        <ToggleButton fx:id="passwordToggle" text="👁" onAction="#togglePasswordVisibility"
+                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
+                      StackPane.alignment="CENTER_RIGHT"/>
+    </StackPane>
 
     <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
 
-    <Button text="Login" onAction="#handleLogin" maxWidth="300" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
+    <Button text="Login" onAction="#handleLogin" maxWidth="300"
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
 
-    <Button text="Don't have an account? Register" onAction="#goToRegister" style="-fx-background-color: transparent; -fx-text-fill: #3498db; -fx-underline: true;"/>
-
+    <Button text="Don't have an account? Register" onAction="#goToRegister"
+            style="-fx-background-color: transparent; -fx-text-fill: #3498db; -fx-underline: true;"/>
 
     <Button text="Skip Login (Test Mode)" onAction="#handleSkipLogin" maxWidth="300"
             style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
+
     <Button text="🚀 Skip to Admin Dashboard (Test)" onAction="#skipToAdmin"
             style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"/>
 
