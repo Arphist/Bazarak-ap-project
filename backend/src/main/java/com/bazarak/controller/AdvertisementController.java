@@ -78,6 +78,7 @@ public class AdvertisementController {
     public ResponseEntity<?> createAd(@Valid @RequestBody AdRequest request, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         // 2. Check if user is blocked
         if (!currentUser.isActive()) {
@@ -120,6 +121,8 @@ public class AdvertisementController {
                                       HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
+
         try {
             // 2. Get existing ad
             Advertisement existingAd = advertisementService.findById(id);
@@ -170,6 +173,7 @@ public class AdvertisementController {
     public ResponseEntity<?> deleteAd(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             Advertisement ad = advertisementService.findById(id);
@@ -197,6 +201,7 @@ public class AdvertisementController {
     public ResponseEntity<?> markAsSold(@PathVariable Long id, HttpSession session) {
         // 1. Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
+        userService.isUserBanned(currentUser);
 
         try {
             Advertisement advertisement = advertisementService.findById(id);
