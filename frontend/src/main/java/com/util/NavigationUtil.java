@@ -19,6 +19,7 @@ public class NavigationUtil {
     public static final String PAGE_CHAT = "CHAT";
     public static final String PAGE_MY_ADS = "MY_ADS";
     public static final String PAGE_RATING = "RATING";
+    public static final String PAGE_CONVERSATION = "CONVERSATION";
 
     // PRIVATE HELPER: Navigate with History
 
@@ -107,6 +108,13 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to conversation page
+     */
+    public static void goToConversation() {
+        navigateTo(PAGE_CONVERSATION, BazarakFrontendApplication::showChatPage);
+    }
+
+    /**
      * Navigate to my ads page
      */
     public static void goToMyAds() {
@@ -158,6 +166,9 @@ public class NavigationUtil {
                 break;
             case PAGE_CHAT:
                 BazarakFrontendApplication.showChatPage();
+                break;
+            case PAGE_CONVERSATION:
+                BazarakFrontendApplication.showConversationPage();
                 break;
             case PAGE_MY_ADS:
                 BazarakFrontendApplication.showMyAdsPage();
