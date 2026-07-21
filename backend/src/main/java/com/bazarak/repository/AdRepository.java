@@ -158,20 +158,6 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     @Query("UPDATE Advertisement a SET a.status = :status WHERE a.id = :adId")
     int restoreAd(@Param("adId") Long adId, @Param("status") AdStatus status);
 
-    // NATIVE SQL QUERIES (Direct SQL)
-
-    /**
-     * Get total number of active ads
-     */
-    @Query(value = "SELECT COUNT(*) FROM ads WHERE status = 'ACCEPTED'", nativeQuery = true)
-    long countActiveAds();
-
-    /**
-     * Get all ads by a specific user with images loaded (native query)
-     */
-    @Query(value = "SELECT a.* FROM ads a WHERE a.owner_id = :ownerId AND a.status != 'DELETED'", nativeQuery = true)
-    List<Advertisement> findUserAdsNative(@Param("ownerId") Long ownerId);
-
     // STATISTICS / DASHBOARD QUERIES
 
     /**
