@@ -522,6 +522,7 @@ public class AdminDashboard {
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
+                com.service.AuthService.logout();
                 NavigationUtil.goToLogin();
             } catch (Exception e) {
                 ShowErrorDialog.showErrorDialog(
