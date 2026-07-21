@@ -6,6 +6,7 @@ import com.service.UserService;
 import com.util.Config;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ShowErrorDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -51,8 +52,7 @@ public class ProfileController {
     @FXML
     private TextField phoneField;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private PasswordField oldPasswordField;
@@ -105,7 +105,12 @@ public class ProfileController {
             loadProfilePhoto(currentUser);
 
         } else {
-            errorLabel.setText("No user logged in");
+            ShowErrorDialog.showErrorDialog(
+                    "Authentication Error",
+                    "No user logged in",
+                    "Please login first.",
+                    "ERROR"
+            );
         }
     }
 
@@ -217,19 +222,24 @@ public class ProfileController {
                 String photoUrl = (String) result.get("photoUrl");
 
                 // Show success message
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText(message);
-                alert.showAndWait();
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        null,
+                        message,
+                        "INFORMATION"
+                );
 
                 // Reload profile to show new photo
                 loadUserProfile();
 
-                errorLabel.setText("");
 
             } catch (Exception e) {
-                errorLabel.setText("Failed to update profile photo: " + e.getMessage());
+                ShowErrorDialog.showErrorDialog(
+                        "Profile Photo Error",
+                        "Failed to update profile photo",
+                        e.getMessage(),
+                        "ERROR"
+                );
             }
         }
     }
@@ -243,14 +253,24 @@ public class ProfileController {
         String phone = phoneField.getText().trim();
 
         if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty()) {
-            errorLabel.setText("Please fill in all fields");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Incomplete information",
+                    "Please fill in all fields.",
+                    "WARNING"
+            );
             return;
         }
 
         try {
             User currentUser = SessionManager.getCurrentUser();
             if (currentUser == null) {
-                errorLabel.setText("No user logged in");
+                ShowErrorDialog.showErrorDialog(
+                        "Authentication Error",
+                        "No user logged in",
+                        "Please login first.",
+                        "ERROR"
+                );
                 return;
             }
 
@@ -265,18 +285,23 @@ public class ProfileController {
             // Update session with new user
             SessionManager.setCurrentUser(updatedUser);
 
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
-            alert.setContentText((String) result.get("message"));
-            alert.showAndWait();
+            ShowErrorDialog.showErrorDialog(
+                    "Success",
+                    null,
+                    (String) result.get("message"),
+                    "INFORMATION"
+            );
 
             // Reload profile to show updated data
             loadUserProfile();
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Update failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Profile Error",
+                    "Update failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -289,12 +314,22 @@ public class ProfileController {
         String confirmPassword = confirmPasswordField.getText().trim();
 
         if (oldPassword.isEmpty() || newPassword.isEmpty() || confirmPassword.isEmpty()) {
-            errorLabel.setText("Please fill in all password fields");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Incomplete information",
+                    "Please fill in all password fields.",
+                    "WARNING"
+            );
             return;
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            errorLabel.setText("New passwords do not match");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Password mismatch",
+                    "New passwords do not match.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -312,10 +347,14 @@ public class ProfileController {
             oldPasswordField.clear();
             newPasswordField.clear();
             confirmPasswordField.clear();
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Password change failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Password Error",
+                    "Password change failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -332,7 +371,12 @@ public class ProfileController {
             AuthService.logout();
             NavigationUtil.goToLogin();
         } catch (Exception e) {
-            errorLabel.setText("Logout failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Logout Error",
+                    "Logout failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 }
