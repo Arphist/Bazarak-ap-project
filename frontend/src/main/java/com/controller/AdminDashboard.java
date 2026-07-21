@@ -771,14 +771,18 @@ public class AdminDashboard {
     private void loadDashboardStats() {
         try {
             Map<String, Object> stats = AdminService.getDashboardStats();
-
             totalAdsLabel.setText("Total: " + stats.get("totalAds"));
             pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
             activeCountLabel.setText("Active: " + stats.get("activeAds"));
             // TODO: use "adsByCategory", "adsByCity", and "recentAds"
 
         } catch (Exception e) {
-            // Optional: log error
+            ShowErrorDialog.showErrorDialog(
+                    "Load Data Error",
+                    "Failed to load statistics data.",
+                    "There was a problem loading statistics data. Please try again later.",
+                    "ERROR"
+            );
         }
     }
 
