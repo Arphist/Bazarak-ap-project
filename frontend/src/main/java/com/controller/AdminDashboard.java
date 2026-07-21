@@ -200,6 +200,46 @@ public class AdminDashboard {
         setupSortComboBoxes();
 
         loadAllData();
+
+        // Load categories for spec management
+        loadSpecCategories();
+
+        // Setup specifications list
+        specificationsListView.setItems(specifications);
+        specificationsListView.setCellFactory(lv -> new ListCell<CategorySpecification>() {
+            @Override
+            protected void updateItem(CategorySpecification spec, boolean empty) {
+                super.updateItem(spec, empty);
+                if (empty || spec == null) {
+                    setText(null);
+                } else {
+                    setText(spec.getName() + " (" + spec.getType() + ")" + (spec.isRequired() ? " *" : ""));
+                }
+            }
+        });
+        specificationsListView.getSelectionModel().selectedItemProperty().addListener((obs, old, newVal) -> {
+            selectedSpecification = newVal;
+            if (newVal != null) {
+                // Populate edit fields
+                specNameField.setText(newVal.getName());
+                specTypeCombo.setValue(newVal.getType());
+                specOptionsField.setText(newVal.getOptions());
+                specRequiredCheck.setSelected(newVal.isRequired());
+            }
+        });
+
+        // Populate type combo
+        specTypeCombo.setItems(FXCollections.observableArrayList("TEXT", "NUMBER", "BOOLEAN", "DROPDOWN"));
+    }
+
+    private void loadSpecCategories() {
+        try {
+            List<Category> categories = CategoryService.getAllCategories();
+            specCategoryCombo.setItems(FXCollections.observableArrayList(categories));
+            specCategoryCombo.setPromptText("Select a category");
+        } catch (Exception e) {
+            specErrorLabel.setText("Failed to load categories: " + e.getMessage());
+        }
     }
 
     private void setupSortComboBoxes() {
