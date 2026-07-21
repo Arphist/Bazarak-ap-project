@@ -229,4 +229,64 @@ public class CategoryService {
     public List<CategorySpecification> getDirectSpecifications(Long categoryId) {
         return categorySpecificationRepository.findByCategoryId(categoryId);
     }
+
+    /**
+     * Update an existing specification (Admin only)
+     */
+    @Transactional
+    public CategorySpecification updateSpecification(
+            Long specId,
+            String name,
+            String type,
+            String options,
+            Boolean required) {
+
+        CategorySpecification spec = categorySpecificationRepository.findById(specId)
+                .orElseThrow(() -> new InvalidInputException("Specification not found with id: " + specId));
+
+        if (name != null && !name.trim().isEmpty()) {
+            spec.setName(name.trim());
+        }
+
+        if (type != null) {
+            try {
+                spec.setType(CategorySpecification.SpecType.valueOf(type.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidInputException("Invalid specification type");
+            }
+        }
+
+        if (options != null) {
+            spec.setOptions(options.trim());
+        }
+
+        if (required != null) {
+            spec.setRequired(required);
+        }
+
+        return categorySpecificationRepository.save(spec);
+    }
+
+    /**
+     * Delete a specification (Admin only)
+     */
+    @Transactional
+    public void deleteSpecification(Long specId) {
+        CategorySpecification spec = categorySpecificationRepository.findById(specId)
+                .orElseThrow(() -> new InvalidInputException("Specification not found with id: " + specId));
+
+        // Check if any ads are using this specification
+        // This will be handled by the repository
+        categorySpecificationRepository.delete(spec);
+    }
+
+    /**
+     * Delete all specifications for a category (Admin only)
+     */
+    @Transactional
+    public void deleteAllSpecificationsForCategory(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+        categorySpecificationRepository.deleteByCategoryId(categoryId);
+        category.getSpecifications().clear();
+    }
 }
