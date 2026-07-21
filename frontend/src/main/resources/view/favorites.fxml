@@ -1,38 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox xmlns:fx="http://javafx.com/fxml"
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.FavoriteController"
-      spacing="10" alignment="TOP_CENTER"
-      style="-fx-background-color: #f5f5f5;">
+      spacing="15" alignment="TOP_CENTER"
+      stylesheets="@styles.css">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
     <!-- Header -->
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="← Back" onAction="#goBack" />
-        <Label text="My Favorites" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="header-bar">
+        <Button text="← Back" onAction="#goBack" styleClass="button-secondary" />
+        <Label text="My Favorites" styleClass="heading-title" />
     </HBox>
 
     <!-- Count Label -->
-    <Label fx:id="countLabel" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+    <Label fx:id="countLabel" styleClass="sub-title" />
 
     <!-- Error Label -->
-    <Label fx:id="errorLabel" style="-fx-text-fill: red;" />
+    <Label fx:id="errorLabel" styleClass="error-label" />
 
     <!-- Favorites List -->
-    <ListView fx:id="favoritesListView" VBox.vgrow="ALWAYS" />
+    <ListView fx:id="favoritesListView" VBox.vgrow="ALWAYS" styleClass="list-view" />
 
     <!-- Action Buttons -->
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Remove Selected" onAction="#removeSelectedFavorite" />
-        <Button text="Refresh" onAction="#loadFavorites" />
-        <Button text="View Ad" onAction="#goToAdDetails" />
+        <Button text="Remove Selected" onAction="#removeSelectedFavorite" styleClass="button-secondary" />
+        <Button text="Refresh" onAction="#loadFavorites" styleClass="button-secondary" />
+        <Button text="View Ad" onAction="#goToAdDetails" styleClass="button-primary" />
     </HBox>
 
 </VBox>
