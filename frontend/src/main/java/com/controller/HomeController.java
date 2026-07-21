@@ -7,6 +7,7 @@ import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.AdCell;
+import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,8 +29,7 @@ public class HomeController {
     @FXML
     private Label welcomeLabel;
 
-    @FXML
-    private Label errorLabel;
+
 
     // ===== TEST DATA (TODO: remove after testing) =====
     private boolean useTestData = true;
@@ -131,7 +131,12 @@ public class HomeController {
             allCategory.setName("All Categories");
             // We'll handle this differently - use null selection
         } catch (Exception e) {
-            errorLabel.setText("Failed to load categories: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Category Error",
+                    "Failed to load categories",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -141,7 +146,12 @@ public class HomeController {
             cityCombo.setItems(FXCollections.observableArrayList(cities));
             cityCombo.setPromptText("All Cities");
         } catch (Exception e) {
-            errorLabel.setText("Failed to load cities: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "City Error",
+                    "Failed to load cities",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -171,7 +181,12 @@ public class HomeController {
             adListView.setItems(FXCollections.observableArrayList(ads));
             adListView.setCellFactory(lv -> new AdCell());
         } catch (Exception e) {
-            errorLabel.setText("Failed to load ads: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Advertisement Error",
+                    "Failed to load ads",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -264,7 +279,12 @@ public class HomeController {
         testAds.add(ad5);
 
         adListView.setItems(testAds);
-        errorLabel.setText("🔧 " + testAds.size() + " test ads loaded");
+        ShowErrorDialog.showErrorDialog(
+                "Test Data",
+                null,
+                testAds.size() + " test ads loaded",
+                "INFORMATION"
+        );
     }
 
     // SEARCH
@@ -304,10 +324,14 @@ public class HomeController {
             }
 
             updateAdListView(results);
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Search failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Search Error",
+                    "Search failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -336,6 +360,28 @@ public class HomeController {
                 filterToggleButton.setText(visible ? "Hide Filters ▲" : "Show Filters ▼");
             }
         }
+    }
+
+    @FXML
+    private void refreshAds() {
+        // 1. Clear search field
+        searchField.clear();
+
+        // 2. Clear all filters
+        clearFilters();
+
+        // 3. Hide filters container if visible
+        if (filterContainer != null && filterContainer.isVisible()) {
+            filterContainer.setVisible(false);
+            filterContainer.setManaged(false);
+            if (filterToggleButton != null) {
+                filterToggleButton.setText("Show Filters ▼");
+            }
+        }
+
+        // 4. Reload ads
+        loadAds();
+
     }
 
     // HELPER METHODS

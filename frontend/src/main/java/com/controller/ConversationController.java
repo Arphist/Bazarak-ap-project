@@ -10,6 +10,7 @@ import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.ConversationCell;
 import com.view.MessageCell;
+import com.view.ShowErrorDialog;
 import com.websocket.ChatWebSocketClient;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -38,8 +39,7 @@ public class ConversationController {
     @FXML
     private TextArea messageInput;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private Label conversationTitleLabel;
@@ -111,7 +111,12 @@ public class ConversationController {
                 }
             });
         } catch (Exception e) {
-            errorLabel.setText("Failed to load conversation: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Conversation Error",
+                    "Failed to load conversation",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -168,17 +173,26 @@ public class ConversationController {
             conversations.addAll(conversationList);
 
             if (conversations.isEmpty()) {
-                errorLabel.setText("No conversations yet.");
+                ShowErrorDialog.showErrorDialog(
+                        "No Conversations",
+                        "No conversations found",
+                        "You don't have any conversations yet.",
+                        "INFORMATION"
+                );
                 conversationTitleLabel.setText("No conversation selected");
             } else {
-                errorLabel.setText("");
                 // Auto-select first conversation
                 conversationListView.getSelectionModel().selectFirst();
                 loadConversation(conversationListView.getSelectionModel().getSelectedItem());
             }
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load conversations: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Conversation Error",
+                    "Failed to load conversations",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -209,10 +223,14 @@ public class ConversationController {
                 }
             }
 
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load messages: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Message Error",
+                    "Failed to load messages",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -236,7 +254,12 @@ public class ConversationController {
             webSocketClient.sendMessage(chatMessage);
             messageInput.clear();
         } else {
-            errorLabel.setText("Connection lost. Please refresh.");
+            ShowErrorDialog.showErrorDialog(
+                    "Connection Error",
+                    "Connection lost",
+                    "Please refresh.",
+                    "ERROR"
+            );
         }
     }
 

@@ -5,6 +5,7 @@ import com.model.User;
 import com.service.AuthService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ShowErrorDialog;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -29,8 +30,6 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
-    @FXML
-    private Label errorLabel;
 
     @FXML
     private void initialize() {
@@ -56,7 +55,12 @@ public class LoginController {
 
         // Check empty fields
         if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Please fill in all fields");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Incomplete information",
+                    "Please fill in all fields.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -64,8 +68,7 @@ public class LoginController {
             // Call AuthService to login
             User user = AuthService.login(username, password);
 
-            // Clear error and go to main page
-            errorLabel.setText("");
+
 
             if (user.isAdmin()){
                 BazarakFrontendApplication.showAdminDashboard();
@@ -74,7 +77,12 @@ public class LoginController {
             }
 
         } catch (Exception e) {
-            errorLabel.setText("Login failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Login Error",
+                    "Login failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 

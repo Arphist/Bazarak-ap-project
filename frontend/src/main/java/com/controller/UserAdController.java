@@ -7,6 +7,7 @@ import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.AdCell;
+import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,8 +29,7 @@ public class UserAdController {
     @FXML
     private Label countLabel;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private ComboBox<String> statusFilterCombo;
@@ -140,10 +140,14 @@ public class UserAdController {
             myAdsListView.setItems(myAds);
 
             countLabel.setText("Total: " + myAds.size());
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load my ads: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Advertisement Error",
+                    "Failed to load my ads",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -164,7 +168,12 @@ public class UserAdController {
             deletedLabel.setText("Deleted: " + getCount(dashboard, "deleted"));
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load stats: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Dashboard Error",
+                    "Failed to load dashboard statistics",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 

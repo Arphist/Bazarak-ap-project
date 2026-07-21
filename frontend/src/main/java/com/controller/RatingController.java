@@ -7,6 +7,7 @@ import com.service.RatingService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,8 +41,7 @@ public class RatingController {
     @FXML
     private TextArea commentTextArea;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private Button submitRatingButton;
@@ -66,7 +66,12 @@ public class RatingController {
         advertisementId = DataHolder.getSelectedAdId();
 
         if (sellerId == null) {
-            errorLabel.setText("No seller selected");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No seller selected",
+                    "Please select a seller first.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -104,7 +109,12 @@ public class RatingController {
             totalRatingsLabel.setText("(" + count + " ratings)");
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load seller info: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Seller Info Error",
+                    "Failed to load seller info",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -121,10 +131,14 @@ public class RatingController {
                 ratingsListView.setPlaceholder(new Label("No ratings yet"));
             }
 
-            errorLabel.setText("");
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load ratings: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Ratings Error",
+                    "Failed to load ratings",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -136,7 +150,12 @@ public class RatingController {
         String comment = commentTextArea.getText().trim();
 
         if (score == null) {
-            errorLabel.setText("Please select a score");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Score not selected",
+                    "Please select a score.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -160,14 +179,23 @@ public class RatingController {
             // Clear form
             scoreComboBox.setValue(3);
             commentTextArea.clear();
-            errorLabel.setText("Rating submitted successfully");
-
+            ShowErrorDialog.showErrorDialog(
+                    "Success",
+                    null,
+                    "Rating submitted successfully.",
+                    "INFORMATION"
+            );
             // Reload ratings
             loadRatings();
             loadSellerInfo();
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to submit rating: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Rating Error",
+                    "Failed to submit rating",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 

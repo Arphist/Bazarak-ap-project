@@ -3,6 +3,7 @@ package com.controller;
 import com.model.User;
 import com.service.AuthService;
 import com.util.NavigationUtil;
+import com.view.ShowErrorDialog;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -42,8 +43,7 @@ public class RegisterController {
     @FXML
     private TextField phoneField;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private void initialize() {
@@ -85,19 +85,34 @@ public class RegisterController {
         // Check empty fields
         if (fullName.isEmpty() || username.isEmpty() || email.isEmpty() ||
                 phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            errorLabel.setText("Please fill in all fields");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Incomplete information",
+                    "Please fill in all fields.",
+                    "WARNING"
+            );
             return;
         }
 
         // Check password match
         if (!password.equals(confirmPassword)) {
-            errorLabel.setText("Passwords do not match");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Password mismatch",
+                    "Passwords do not match.",
+                    "WARNING"
+            );
             return;
         }
 
         // Check password length (minimum 6 characters)
         if (password.length() < 6) {
-            errorLabel.setText("Password must be at least 6 characters");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Weak password",
+                    "Password must be at least 6 characters.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -114,13 +129,17 @@ public class RegisterController {
             User registeredUser = AuthService.register(user);
 
 
-            // Clear error and go to login page
-            errorLabel.setText("");
+
             goToLogin();
 
 
         } catch (Exception e) {
-            errorLabel.setText("Registration failed: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Registration Error",
+                    "Registration failed",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
