@@ -1,8 +1,10 @@
 package com.bazarak.service;
 
 import com.bazarak.entity.Category;
+import com.bazarak.entity.CategorySpecification;
 import com.bazarak.exception.category.*;
 import com.bazarak.repository.CategoryRepository;
+import com.bazarak.repository.CategorySpecificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategorySpecificationRepository categorySpecificationRepository;
 
     // Create a new category
     public Category createCategory(String name, String description, Long parentId) {
@@ -145,5 +150,46 @@ public class CategoryService {
             return getAllCategories();
         }
         return categoryRepository.searchByName(keyword.trim());
+    }
+
+    /**
+     * Add a new specification to a category (Admin only)
+     */
+    @Transactional
+    public CategorySpecification addSpecificationToCategory(
+            Long categoryId,
+            String name,
+            String type,
+            String options,
+            boolean required) {
+
+        Category category = getCategoryById(categoryId);
+
+        // Validate
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidInputException("Specification name is required");
+        }
+
+        CategorySpecification.SpecType specType;
+        try {
+            specType = CategorySpecification.SpecType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidInputException("Invalid specification type. Valid: TEXT, NUMBER, BOOLEAN, DROPDOWN");
+        }
+
+        // Validate options for DROPDOWN type
+        if (specType == CategorySpecification.SpecType.DROPDOWN &&
+                (options == null || options.trim().isEmpty())) {
+            throw new InvalidInputException("Options are required for DROPDOWN type");
+        }
+
+        CategorySpecification spec = new CategorySpecification();
+        spec.setName(name.trim());
+        spec.setType(specType);
+        spec.setOptions(options != null ? options.trim() : null);
+        spec.setRequired(required);
+        spec.setCategory(category);
+
+        return categorySpecificationRepository.save(spec);
     }
 }
