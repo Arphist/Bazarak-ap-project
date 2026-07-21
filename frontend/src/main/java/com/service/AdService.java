@@ -261,6 +261,15 @@ public class AdService {
         }
     }
 
+    // Keeping old method signatures for backward compatibility
+    public static Map<String, Object> createAd(Advertisement ad) throws Exception {
+        return createAd(ad, null);
+    }
+
+    public static Map<String, Object> updateAd(Advertisement ad) throws Exception {
+        return updateAd(ad, null);
+    }
+
     /**
      * Marks an advertisement as sold.
      *
