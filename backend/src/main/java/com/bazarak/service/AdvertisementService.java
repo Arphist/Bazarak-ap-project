@@ -3,9 +3,12 @@ package com.bazarak.service;
 import com.bazarak.entity.*;
 import com.bazarak.entity.Advertisement.AdStatus;
 import com.bazarak.exception.auth.UnauthorizedAccessException;
+import com.bazarak.exception.category.InvalidInputException;
 import com.bazarak.exception.user.*;
 import com.bazarak.exception.advertisement.*;
 import com.bazarak.repository.AdRepository;
+import com.bazarak.repository.AdvertisementSpecificationRepository;
+import com.bazarak.repository.CategorySpecificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,43 +33,78 @@ public class AdvertisementService {
  @Autowired
     private CityService cityService;
 
+    @Autowired
+    private CategorySpecificationRepository categorySpecificationRepository;
+
+    @Autowired
+    private AdvertisementSpecificationRepository advertisementSpecificationRepository;
+
     // CREATE ADVERTISEMENT
 
     /**
-     * Create a new advertisement
-     * Status is set to PENDING (waiting for admin approval)
+     * Create a new advertisement with specification values
      */
     @Transactional
-    public Advertisement createAd(Advertisement ad, Long ownerId,Long cityId, Long categoryId) {
+    public Advertisement createAd(Advertisement ad, Long ownerId, Long cityId,
+                                  Long categoryId, Map<Long, String> specValues) {
         // 1. Get the owner
-        User owner = userService.findById(ownerId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + ownerId));
+        User owner = userService.getUserById(ownerId);
 
-        // 2. Check if user is active
         if (!owner.isActive()) {
             throw new UserBlockedException("Your account is blocked. You cannot post ads.");
         }
 
-
-        // 3. Set owner and default values
+        // 2. Get Category and City
         Category category = categoryService.getCategoryById(categoryId);
         City city = cityService.getCityById(cityId);
 
+        // 3. Validate category has specifications (if specs are provided)
+        if (specValues != null && !specValues.isEmpty()) {
+            categoryService.validateSpecificationValues(categoryId, specValues);
+        }
+
+        // 4. Set all fields
+        ad.setOwner(owner);
         ad.setCategory(category);
         ad.setCity(city);
-        ad.setOwner(owner);
         ad.setStatus(AdStatus.PENDING);
         ad.setCreatedAt(LocalDateTime.now());
         ad.setRatingCount(0);
         ad.setAverageRating(0.0);
+        ad.setFavoriteCount(0);
 
-        // 4. Validate price is positive
         if (ad.getPrice() == null || ad.getPrice() <= 0) {
-            throw new InvalidPriceInputException("Price must be positive");
+            throw new InvalidInputException("Price must be positive");
         }
 
-        // 5. Save and return
-        return adRepository.save(ad);
+        // 5. Save ad first (to get an ID)
+        Advertisement savedAd = adRepository.save(ad);
+
+        // 6. Process specification values
+        if (specValues != null && !specValues.isEmpty()) {
+            List<CategorySpecification> specs = categoryService.getSpecificationsForCategory(categoryId);
+
+            for (CategorySpecification spec : specs) {
+                String value = specValues.get(spec.getId());
+
+                // Skip empty values
+                if (value == null || value.trim().isEmpty()) {
+                    continue;
+                }
+
+                // Create and save specification value
+                AdvertisementSpecification adSpec = new AdvertisementSpecification();
+                adSpec.setAdvertisement(savedAd);
+                adSpec.setSpecification(spec);
+                adSpec.setValue(value.trim());
+                advertisementSpecificationRepository.save(adSpec);
+
+                // Add to ad's collection
+                savedAd.addSpecificationValue(adSpec);
+            }
+        }
+
+        return savedAd;
     }
 
     // FIND METHODS
