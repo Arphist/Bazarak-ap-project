@@ -446,4 +446,26 @@ public class AdminService {
             throw new Exception("Failed to load users: " + response.statusCode());
         }
     }
+
+    /**
+     * Retrieves specifications for an advertisement (Admin only).
+     *
+     * @param adId the ID of the advertisement
+     * @return a map containing the ad and its specifications
+     * @throws Exception if the request fails
+     */
+    public static Map<String, Object> getAdWithSpecifications(Long adId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/admin/ads/" + adId + "/specifications"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), Map.class);
+        } else {
+            throw new Exception("Failed to load ad specifications: " + response.statusCode());
+        }
+    }
 }
