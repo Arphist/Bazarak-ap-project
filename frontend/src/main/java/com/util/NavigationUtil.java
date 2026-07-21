@@ -124,7 +124,9 @@ public class NavigationUtil {
     /**
      * Navigate to rating page
      */
-    public static void goToRating() {navigateTo(PAGE_RATING, BazarakFrontendApplication::showRatingPage);}
+    public static void goToRating(long id) {
+        DataHolder.setSelectedAdId(id);
+        navigateTo(PAGE_RATING, BazarakFrontendApplication::showRatingPage);}
 
     // GO BACK (Using History Stack)
 

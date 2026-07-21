@@ -149,6 +149,10 @@ public class AdDetailsController {
             Map<String, Object> result = AdService.getAdById(adId);
             Advertisement ad = (Advertisement) result.get("ad");
 
+            if (ad.getOwner() != null) {
+                DataHolder.setSelectedUserId(ad.getOwner().getId());
+            }
+
             // Populate UI fields
             titleLabel.setText(ad.getTitle());
             priceLabel.setText(ad.getPrice() + " T");
@@ -179,7 +183,7 @@ public class AdDetailsController {
     private void goToRating() {
         if (adId != null) {
             DataHolder.setSelectedAdId(adId);
-            NavigationUtil.goToRating();
+            NavigationUtil.goToRating(DataHolder.getSelectedUserId());
         } else {
             ShowErrorDialog.showErrorDialog(
                     "Selection Error",
