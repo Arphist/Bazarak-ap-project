@@ -35,6 +35,10 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Advertisement> advertisements = new ArrayList<>();
 
+    // Specifications for this category
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CategorySpecification> specifications = new ArrayList<>();
+
     // Constructors
     public Category() {}
 
@@ -65,6 +69,21 @@ public class Category {
     public List<Advertisement> getAdvertisements() { return advertisements; }
     public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
 
+    // SPECIFICATION HELPER METHODS
+
+    public void addSpecification(CategorySpecification spec) {
+        specifications.add(spec);
+        spec.setCategory(this);
+    }
+
+    public void removeSpecification(CategorySpecification spec) {
+        specifications.remove(spec);
+        spec.setCategory(null);
+    }
+
+    public boolean hasSpecifications() {
+        return specifications != null && !specifications.isEmpty();
+    }
 
 
     // Helper methods
