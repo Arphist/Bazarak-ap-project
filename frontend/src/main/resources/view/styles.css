@@ -1,0 +1,199 @@
+/* ============================================================
+   BAZARAK - DARK THEME STYLESHEET
+   ============================================================ */
+
+/* Root & Backgrounds */
+.root {
+    -fx-background-color: #121212;
+    -fx-font-family: "Segoe UI", "Tahoma", sans-serif;
+}
+
+/* Base Labels */
+.label {
+    -fx-text-fill: #E0E0E0;
+}
+
+.heading-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFFFFF;
+}
+
+.sub-title {
+    -fx-font-size: 13px;
+    -fx-text-fill: #9E9E9E;
+}
+
+/* Text Fields & Password Fields */
+.text-field, .password-field {
+    -fx-background-color: #1E1E1E;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #666666;
+    -fx-border-color: #333333;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #00B8D1FF;
+    -fx-background-color: #252525;
+}
+
+/* Primary Buttons (Main actions) */
+.button-primary {
+    -fx-background-color: #00B8D1FF;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #00B8D1FF;
+}
+
+/* Secondary / Neutral Buttons */
+.button-secondary {
+    -fx-background-color: #2C2C2C;
+    -fx-text-fill: #E0E0E0;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #383838;
+}
+
+/* Link Buttons (Flat style) */
+.button-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #BB86FC;
+    -fx-cursor: hand;
+}
+
+.button-link:hover {
+    -fx-underline: true;
+}
+
+/* Icon / Eye Toggle Buttons */
+.icon-toggle {
+    -fx-background-color: transparent;
+    -fx-text-fill: #888888;
+    -fx-cursor: hand;
+}
+
+.icon-toggle:hover {
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Header Container */
+.header-bar {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: transparent transparent #2A2A2A transparent;
+    -fx-border-width: 1;
+}
+
+/* Filter Box */
+.filter-card {
+    -fx-background-color: #1A1A1A;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+/* ListViews */
+.list-view {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.list-cell {
+    -fx-background-color: #1E1E1E;
+    -fx-text-fill: #E0E0E0;
+    -fx-padding: 8;
+}
+
+.list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: #2A2A2A;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: #333333;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.combo-box .label {
+    -fx-text-fill: #E0E0E0;
+}
+
+/* Admin Dashboard Elements */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #121212;
+}
+
+.tab {
+    -fx-background-color: #1E1E1E;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: #00B8D1FF;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #B0B0B0;
+}
+
+.tab:selected .tab-label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.stat-card {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+/* Tables */
+.table-view {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: #2A2A2A;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #252525;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: #2A2A2A;
+}
+
+.table-cell {
+    -fx-text-fill: #E0E0E0;
+}
+
+.table-row-cell {
+    -fx-background-color: #1E1E1E;
+}
+
+.table-row-cell:hover, .table-row-cell:selected {
+    -fx-background-color: #2A2A2A;
+}
+
+/* Error Labels */
+.error-label {
+    -fx-text-fill: #CF6679;
+    -fx-font-size: 12px;
+}
