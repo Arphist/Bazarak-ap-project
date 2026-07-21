@@ -203,7 +203,8 @@
 
 /* MenuButton (⋯) */
 .menu-button {
-    -fx-font-size: 24px;
+    -fx-background-color: #2A2A2A;
+    -fx-font-size: 34px;
     -fx-font-weight: bold;
     -fx-padding: 2 8;
     -fx-min-height: 30px;
