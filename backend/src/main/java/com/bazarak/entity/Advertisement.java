@@ -60,6 +60,10 @@ public class Advertisement {
     @JoinColumn(name = "city_id", nullable = false)
     private City city;
 
+    // Specification values for this advertisement
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AdvertisementSpecification> specificationValues = new ArrayList<>();
+
     // STATUS & TIMESTAMPS
 
     @Enumerated(EnumType.STRING)
@@ -125,6 +129,22 @@ public class Advertisement {
 
     public boolean isDeleted() {
         return this.status == AdStatus.DELETED;
+    }
+
+    // SPECIFICATION HELPER METHODS
+
+    public void addSpecificationValue(AdvertisementSpecification spec) {
+        specificationValues.add(spec);
+        spec.setAdvertisement(this);
+    }
+
+    public void removeSpecificationValue(AdvertisementSpecification spec) {
+        specificationValues.remove(spec);
+        spec.setAdvertisement(null);
+    }
+
+    public boolean hasSpecificationValues() {
+        return specificationValues != null && !specificationValues.isEmpty();
     }
 
     // GETTERS & SETTERS
