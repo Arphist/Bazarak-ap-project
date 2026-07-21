@@ -108,6 +108,14 @@ public class AdvertisementService {
         return savedAd;
     }
 
+    /**
+     * Create an ad without specifications (for backward compatibility)
+     */
+    @Transactional
+    public Advertisement createAd(Advertisement ad, Long ownerId, Long cityId, Long categoryId) {
+        return createAd(ad, ownerId, cityId, categoryId, null);
+    }
+
     // FIND METHODS
 
     /**
