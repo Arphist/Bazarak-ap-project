@@ -24,6 +24,9 @@
     <Label fx:id="ownerLabel" />
     <Label fx:id="statusLabel" />
     <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="100" />
+    <!-- Specifications Section -->
+    <VBox fx:id="specificationsContainer" spacing="5" style="-fx-padding: 10; -fx-background-color: #f8f9fa; -fx-border-color: #e9ecef; -fx-border-radius: 5;">
+        <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
 
     <!-- Favorite Section -->
     <HBox spacing="15" alignment="CENTER_LEFT">
