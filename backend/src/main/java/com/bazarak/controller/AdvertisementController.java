@@ -149,14 +149,21 @@ public class AdvertisementController {
             City city = cityService.getCityById(request.getCityId());
             Category category = categoryService.getCategoryById(request.getCategoryId());
 
-            //UPDATING FIELDS
             updatedAd.setTitle(request.getTitle());
             updatedAd.setDescription(request.getDescription());
             updatedAd.setPrice(request.getPrice());
             updatedAd.setCity(city);
             updatedAd.setCategory(category);
 
-            Advertisement savedAd = advertisementService.updateAd(id, updatedAd, currentUser.getId());
+            // Pass specifications to service
+            Advertisement savedAd = advertisementService.updateAd(
+                    id,
+                    updatedAd,
+                    currentUser.getId(),
+                    request.getCategoryId(),
+                    request.getCityId(),
+                    request.getSpecifications()
+            );
 
             Map<String, Object> response = new HashMap<>();
             response.put("id", savedAd.getId());
