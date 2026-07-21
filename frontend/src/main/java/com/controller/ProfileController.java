@@ -366,6 +366,11 @@ public class ProfileController {
     }
 
     @FXML
+    private void goBack() {
+        NavigationUtil.goBack();
+    }
+
+    @FXML
     private void handleLogout() {
         try {
             AuthService.logout();
