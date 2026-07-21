@@ -19,7 +19,7 @@
                 <Button text="↻ Refresh" onAction="#refreshAll"
                         style="-fx-background-color: transparent; -fx-text-fill: #4a6fa5; -fx-cursor: hand; -fx-padding: 5 0;"/>
 
-                <!-- ===== منوی سه نقطه ===== -->
+                <!-- Menu Button -->
                 <MenuButton text="⋯" style="-fx-background-color: transparent; -fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #4a6fa5; -fx-cursor: hand;">
                     <items>
                         <MenuItem text="🚪 Sign Out" onAction="#handleLogout"
@@ -37,62 +37,77 @@
             <!-- TAB 1: DASHBOARD -->
             <Tab text="Dashboard" closable="false">
                 <SplitPane dividerPositions="0.65" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+
                     <!-- LEFT: Statistics -->
                     <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
                         <Label text="📊 Statistics" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
+
                         <GridPane hgap="20" vgap="15">
                             <columnConstraints>
                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
                             </columnConstraints>
+
+                            <!-- Row 1 -->
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="📦 Total Ads" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="totalAdsLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
                             </VBox>
+
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="⏳ Pending" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="pendingCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #f39c12;"/>
                             </VBox>
+
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="✅ Active" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="activeCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #28a745;"/>
                             </VBox>
+
+                            <!-- Row 2 -->
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="❌ Rejected" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="rejectedCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #dc3545;"/>
                             </VBox>
+
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="💰 Sold" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="soldCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #17a2b8;"/>
                             </VBox>
+
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1"
                                   style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-radius: 8; -fx-background-radius: 8;">
                                 <Label text="🗑️ Deleted" style="-fx-font-size: 12; -fx-text-fill: #6c757d;"/>
                                 <Label fx:id="deletedCountLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #6c757d;"/>
                             </VBox>
                         </GridPane>
+
                         <Label fx:id="dashboardErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
                     </VBox>
 
-                    <!-- RIGHT: Cities & Categories Sidebar -->
+                    <!-- RIGHT: Sidebar with Cities, Categories & Specifications -->
                     <VBox spacing="15" style="-fx-padding: 15; -fx-background-color: #f8f9fa; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
-                        <!-- CITIES -->
+
+                        <!-- ========== CITIES SECTION ========== -->
                         <VBox spacing="8">
                             <Label text="Cities" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #1a1a2e;"/>
+
                             <HBox spacing="5">
                                 <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS"
                                            style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
                                 <Button text="🔍" onAction="#searchCities"
                                         style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <ListView fx:id="cityListView" prefHeight="150" VBox.vgrow="NEVER"
                                       style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+
                             <HBox spacing="5">
                                 <TextField fx:id="cityNameField" promptText="City Name" prefWidth="100"
                                            style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
@@ -101,28 +116,33 @@
                                 <Button text="Add" onAction="#handleAddCity"
                                         style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <HBox spacing="5">
                                 <Button text="Edit" onAction="#handleEditCity"
                                         style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                                 <Button text="Delete" onAction="#handleDeleteCity"
                                         style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <Label fx:id="cityErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 11;"/>
                         </VBox>
 
                         <Separator/>
 
-                        <!-- CATEGORIES -->
+                        <!-- ========== CATEGORIES SECTION ========== -->
                         <VBox spacing="8">
                             <Label text="Categories" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #1a1a2e;"/>
+
                             <HBox spacing="5">
                                 <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS"
                                            style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
                                 <Button text="🔍" onAction="#searchCategories"
                                         style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <ListView fx:id="categoryListView" prefHeight="150" VBox.vgrow="NEVER"
                                       style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+
                             <HBox spacing="5">
                                 <TextField fx:id="categoryNameField" promptText="Name" prefWidth="80"
                                            style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
@@ -132,14 +152,61 @@
                                 <Button text="Add" onAction="#handleAddCategory"
                                         style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <HBox spacing="5">
                                 <Button text="Edit" onAction="#handleEditCategory"
                                         style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                                 <Button text="Delete" onAction="#handleDeleteCategory"
                                         style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
                             </HBox>
+
                             <Label fx:id="categoryErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 11;"/>
                         </VBox>
+
+                        <Separator/>
+
+                        <!-- ========== SPECIFICATIONS SECTION ========== -->
+                        <VBox spacing="8">
+                            <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #1a1a2e;"/>
+
+                            <!-- Category Selection -->
+                            <ComboBox fx:id="specCategoryCombo" promptText="Select category"
+                                      onAction="#onSpecCategorySelected"
+                                      style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"
+                                      HBox.hgrow="ALWAYS"/>
+
+                            <!-- Specifications List -->
+                            <ListView fx:id="specificationsListView" prefHeight="120" VBox.vgrow="NEVER"
+                                      style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+
+                            <!-- Add Specification -->
+                            <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
+                                <Label text="Add New Spec" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
+                                <HBox spacing="5">
+                                    <TextField fx:id="specNameField" promptText="Name" prefWidth="80"
+                                               style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                                    <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80"/>
+                                    <Button text="Add" onAction="#handleAddSpecification"
+                                            style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                                </HBox>
+                                <HBox spacing="5">
+                                    <TextField fx:id="specOptionsField" promptText="Options (comma)" HBox.hgrow="ALWAYS"
+                                               style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
+                                    <CheckBox fx:id="specRequiredCheck" text="Req"/>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Actions -->
+                            <HBox spacing="5">
+                                <Button text="Edit" onAction="#handleEditSpecification"
+                                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                                <Button text="Delete" onAction="#handleDeleteSpecification"
+                                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                            </HBox>
+
+                            <Label fx:id="specErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 10;"/>
+                        </VBox>
+
                     </VBox>
                 </SplitPane>
             </Tab>
