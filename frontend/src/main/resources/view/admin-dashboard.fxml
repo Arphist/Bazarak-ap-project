@@ -19,7 +19,7 @@
 
                 <Button text="↻ Refresh" onAction="#refreshAll" styleClass="button-secondary"/>
 
-                <MenuButton text="⋯" styleClass="menu-button" style="-fx-font-size: 24px; -fx-font-weight: bold;">
+                <MenuButton text="..." styleClass="menu-button" style="-fx-font-size: 12px; -fx-font-weight: bold;">
                     <items>
                         <MenuItem text="🚪 Sign Out" onAction="#handleLogout"/>
                     </items>
@@ -58,8 +58,8 @@
                                 <!-- Total Ads -->
                                 <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
                                     <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="📦 Total Ads" styleClass="sub-title total-title"/>
-                                    <Label fx:id="totalAdsLabel" styleClass="heading-title"/>
+                                    <Label text="📦 Total Ads" styleClass="sub-title"/>
+                                    <Label fx:id="totalAdsLabel" styleClass="heading-title" style="-fx-text-fill: #ffffff;"/>
                                 </VBox>
 
                                 <!-- Pending -->
@@ -72,7 +72,7 @@
                                 <!-- Active -->
                                 <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
                                     <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Active" style="-fx-font-weight: bold; -fx-text-fill: #2ECC71;"/>
+                                    <Label text="Active" styleClass="sub-title"/>
                                     <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
                                 </VBox>
 
