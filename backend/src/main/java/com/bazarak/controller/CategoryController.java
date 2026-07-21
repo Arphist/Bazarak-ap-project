@@ -1,6 +1,7 @@
 package com.bazarak.controller;
 
 import com.bazarak.entity.Category;
+import com.bazarak.entity.CategorySpecification;
 import com.bazarak.service.CategoryService;
 import com.bazarak.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -140,6 +141,89 @@ public class CategoryController {
         categoryService.deleteCategory(id);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Category deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    // SPECIFICATION MANAGEMENT (Admin Only)
+
+    /**
+     * Get all specifications for a category (including inherited)
+     */
+    @GetMapping("/{categoryId}/specifications")
+    public ResponseEntity<List<CategorySpecification>> getCategorySpecifications(
+            @PathVariable Long categoryId) {
+        List<CategorySpecification> specs = categoryService.getSpecificationsForCategory(categoryId);
+        return ResponseEntity.ok(specs);
+    }
+
+    /**
+     * Get direct specifications for a category (no inheritance)
+     */
+    @GetMapping("/{categoryId}/specifications/direct")
+    public ResponseEntity<List<CategorySpecification>> getDirectSpecifications(
+            @PathVariable Long categoryId) {
+        List<CategorySpecification> specs = categoryService.getDirectSpecifications(categoryId);
+        return ResponseEntity.ok(specs);
+    }
+
+    /**
+     * Add a specification to a category (Admin only)
+     */
+    @PostMapping("/{categoryId}/specifications")
+    public ResponseEntity<CategorySpecification> addSpecificationToCategory(
+            @PathVariable Long categoryId,
+            @Valid @RequestBody SpecificationRequest request,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        CategorySpecification spec = categoryService.addSpecificationToCategory(
+                categoryId,
+                request.getName(),
+                request.getType(),
+                request.getOptions(),
+                request.isRequired()
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(spec);
+    }
+
+    /**
+     * Update a specification (Admin only)
+     */
+    @PutMapping("/specifications/{specId}")
+    public ResponseEntity<CategorySpecification> updateSpecification(
+            @PathVariable Long specId,
+            @Valid @RequestBody SpecificationRequest request,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        CategorySpecification spec = categoryService.updateSpecification(
+                specId,
+                request.getName(),
+                request.getType(),
+                request.getOptions(),
+                request.isRequired()
+        );
+
+        return ResponseEntity.ok(spec);
+    }
+
+    /**
+     * Delete a specification (Admin only)
+     */
+    @DeleteMapping("/specifications/{specId}")
+    public ResponseEntity<?> deleteSpecification(
+            @PathVariable Long specId,
+            HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        categoryService.deleteSpecification(specId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Specification deleted successfully");
         return ResponseEntity.ok(response);
     }
 
