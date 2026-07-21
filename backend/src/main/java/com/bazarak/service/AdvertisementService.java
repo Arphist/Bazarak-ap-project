@@ -516,7 +516,7 @@ public class AdvertisementService {
     // STATISTICS
 
     public long getActiveAdCount() {
-        return adRepository.countActiveAds();
+        return adRepository.countByStatus(AdStatus.ACCEPTED);
     }
 
     public long getPendingAdCount() {
