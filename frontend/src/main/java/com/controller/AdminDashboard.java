@@ -1,9 +1,6 @@
 package com.controller;
 
-import com.model.Advertisement;
-import com.model.Category;
-import com.model.City;
-import com.model.User;
+import com.model.*;
 import com.service.AdminService;
 import com.service.AdminService;
 import com.service.CategoryService;
@@ -20,6 +17,31 @@ import java.util.List;
 import java.util.Map;
 
 public class AdminDashboard {
+    // FXML FIELDS - SPECIFICATIONS
+
+    @FXML
+    private ComboBox<Category> specCategoryCombo;
+
+    @FXML
+    private TextField specNameField;
+
+    @FXML
+    private ComboBox<String> specTypeCombo;
+
+    @FXML
+    private TextField specOptionsField;
+
+    @FXML
+    private CheckBox specRequiredCheck;
+
+    @FXML
+    private ListView<CategorySpecification> specificationsListView;
+
+    @FXML
+    private Label specErrorLabel;
+
+    private ObservableList<CategorySpecification> specifications = FXCollections.observableArrayList();
+    private CategorySpecification selectedSpecification;
 
     // FXML FIELDS - PENDING ADS
 
