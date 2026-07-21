@@ -60,30 +60,31 @@
 
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card">
                                 <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="⏳ Pending" styleClass="sub-title"/>
+                                <Label text="Pending" styleClass="sub-title"/>
                                 <Label fx:id="pendingCountLabel" styleClass="heading-title" style="-fx-text-fill: #F39C12;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
                                 <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="✅ Active" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
-                                <Label fx:id="activeCountLabel" styleClass="heading-title"/>
+                                <Label text="Active" styleClass="sub-title"/>
+                                <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding><Label text="❌ Rejected" styleClass="sub-title"/>
+                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                <Label text="Rejected" styleClass="sub-title"/>
                                 <Label fx:id="rejectedCountLabel" styleClass="heading-title" style="-fx-text-fill: #E74C3C;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="stat-card">
                                 <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="💰 Sold" styleClass="sub-title"/>
+                                <Label text="Sold" styleClass="sub-title"/>
                                 <Label fx:id="soldCountLabel" styleClass="heading-title" style="-fx-text-fill: #3498DB;"/>
                             </VBox>
 
                             <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="stat-card">
                                 <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="🗑️ Deleted" styleClass="sub-title"/>
+                                <Label text="Deleted" styleClass="sub-title"/>
                                 <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
                             </VBox>
                         </GridPane>
@@ -91,7 +92,7 @@
                         <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
                     </VBox>
 
-                    <!-- RIGHT: Cities & Categories Sidebar -->
+                    <!-- RIGHT: Cities, Categories & Specifications Sidebar -->
                     <VBox spacing="15" styleClass="filter-card">
                         <padding>
                             <Insets top="15" right="15" bottom="15" left="15"/>
@@ -99,15 +100,15 @@
 
                         <!-- CITIES -->
                         <VBox spacing="8">
-                            <Label text="Cities" style="-fx-font-weight: bold;"/>
+                            <Label text="Cities" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
-                                <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
                                 <Button text="🔍" onAction="#searchCities" styleClass="button-secondary"/>
                             </HBox>
-                            <ListView fx:id="cityListView" prefHeight="130" VBox.vgrow="NEVER"/>
+                            <ListView fx:id="cityListView" prefHeight="130" VBox.vgrow="NEVER" styleClass="list-view"/>
                             <HBox spacing="5">
-                                <TextField fx:id="cityNameField" promptText="City Name" prefWidth="100"/>
-                                <TextField fx:id="cityProvinceField" promptText="Province" prefWidth="80"/>
+                                <TextField fx:id="cityNameField" promptText="City Name" prefWidth="100" styleClass="text-field"/>
+                                <TextField fx:id="cityProvinceField" promptText="Province" prefWidth="80" styleClass="text-field"/>
                                 <Button text="Add" onAction="#handleAddCity" styleClass="button-primary"/>
                             </HBox>
                             <HBox spacing="5">
@@ -117,20 +118,20 @@
                             <Label fx:id="cityErrorLabel" styleClass="error-label"/>
                         </VBox>
 
-                        <Separator/>
+                        <Separator style="-fx-background-color: #2A2A2A;"/>
 
                         <!-- CATEGORIES -->
                         <VBox spacing="8">
-                            <Label text="Categories" style="-fx-font-weight: bold;"/>
+                            <Label text="Categories" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
-                                <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
                                 <Button text="🔍" onAction="#searchCategories" styleClass="button-secondary"/>
                             </HBox>
-                            <ListView fx:id="categoryListView" prefHeight="130" VBox.vgrow="NEVER"/>
+                            <ListView fx:id="categoryListView" prefHeight="130" VBox.vgrow="NEVER" styleClass="list-view"/>
                             <HBox spacing="5">
-                                <TextField fx:id="categoryNameField" promptText="Name" prefWidth="80"/>
-                                <TextField fx:id="categoryDescriptionField" promptText="Description" prefWidth="80"/>
-                                <ComboBox fx:id="categoryParentCombo" promptText="Parent" prefWidth="100"/>
+                                <TextField fx:id="categoryNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
+                                <TextField fx:id="categoryDescriptionField" promptText="Description" prefWidth="80" styleClass="text-field"/>
+                                <ComboBox fx:id="categoryParentCombo" promptText="Parent" prefWidth="100" styleClass="combo-box"/>
                                 <Button text="Add" onAction="#handleAddCategory" styleClass="button-primary"/>
                             </HBox>
                             <HBox spacing="5">
@@ -140,48 +141,43 @@
                             <Label fx:id="categoryErrorLabel" styleClass="error-label"/>
                         </VBox>
 
-                        <Separator/>
+                        <Separator style="-fx-background-color: #2A2A2A;"/>
 
-                        <!-- ========== SPECIFICATIONS SECTION ========== -->
+                        <!-- ========== SPECIFICATIONS SECTION (UPDATED) ========== -->
                         <VBox spacing="8">
-                            <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #1a1a2e;"/>
+                            <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #E0E0E0;"/>
 
                             <!-- Category Selection -->
                             <ComboBox fx:id="specCategoryCombo" promptText="Select category"
                                       onAction="#onSpecCategorySelected"
-                                      style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"
+                                      styleClass="combo-box"
                                       HBox.hgrow="ALWAYS"/>
 
                             <!-- Specifications List -->
                             <ListView fx:id="specificationsListView" prefHeight="120" VBox.vgrow="NEVER"
-                                      style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+                                      styleClass="list-view"/>
 
                             <!-- Add Specification -->
-                            <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #ffffff; -fx-border-color: #e9ecef; -fx-border-radius: 4;">
-                                <Label text="Add New Spec" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
+                            <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #1E1E1E; -fx-border-color: #2A2A2A; -fx-border-radius: 4;">
+                                <Label text="Add New Spec" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9E9E9E;"/>
                                 <HBox spacing="5">
-                                    <TextField fx:id="specNameField" promptText="Name" prefWidth="80"
-                                               style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
-                                    <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80"/>
-                                    <Button text="Add" onAction="#handleAddSpecification"
-                                            style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-padding: 4 8; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                                    <TextField fx:id="specNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
+                                    <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80" styleClass="combo-box"/>
+                                    <Button text="Add" onAction="#handleAddSpecification" styleClass="button-primary"/>
                                 </HBox>
                                 <HBox spacing="5">
-                                    <TextField fx:id="specOptionsField" promptText="Options (comma)" HBox.hgrow="ALWAYS"
-                                               style="-fx-padding: 4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da;"/>
-                                    <CheckBox fx:id="specRequiredCheck" text="Req"/>
+                                    <TextField fx:id="specOptionsField" promptText="Options (comma)" HBox.hgrow="ALWAYS" styleClass="text-field"/>
+                                    <CheckBox fx:id="specRequiredCheck" text="Req" style="-fx-text-fill: #9E9E9E;"/>
                                 </HBox>
                             </VBox>
 
                             <!-- Actions -->
                             <HBox spacing="5">
-                                <Button text="Edit" onAction="#handleEditSpecification"
-                                        style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
-                                <Button text="Delete" onAction="#handleDeleteSpecification"
-                                        style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                                <Button text="Edit" onAction="#handleEditSpecification" styleClass="button-secondary"/>
+                                <Button text="Delete" onAction="#handleDeleteSpecification" styleClass="button-secondary"/>
                             </HBox>
 
-                            <Label fx:id="specErrorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 10;"/>
+                            <Label fx:id="specErrorLabel" styleClass="error-label"/>
                         </VBox>
 
                     </VBox>
@@ -194,13 +190,13 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Sort By:"/>
-                        <ComboBox fx:id="pendingSortByCombo" prefWidth="120"/>
-                        <Label text="Order:"/>
-                        <ComboBox fx:id="pendingSortOrderCombo" prefWidth="100"/>
+                        <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="pendingSortByCombo" prefWidth="120" styleClass="combo-box"/>
+                        <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="pendingSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyPendingSort" styleClass="button-primary"/>
                     </HBox>
-                    <ListView fx:id="pendingAdsListView" VBox.vgrow="ALWAYS"/>
+                    <ListView fx:id="pendingAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="pendingErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
@@ -211,13 +207,13 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Sort By:"/>
-                        <ComboBox fx:id="activeSortByCombo" prefWidth="120"/>
-                        <Label text="Order:"/>
-                        <ComboBox fx:id="activeSortOrderCombo" prefWidth="100"/>
+                        <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="activeSortByCombo" prefWidth="120" styleClass="combo-box"/>
+                        <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="activeSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyActiveSort" styleClass="button-primary"/>
                     </HBox>
-                    <ListView fx:id="activeAdsListView" VBox.vgrow="ALWAYS"/>
+                    <ListView fx:id="activeAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="activeErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
@@ -228,13 +224,13 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Sort By:"/>
-                        <ComboBox fx:id="rejectedSortByCombo" prefWidth="120"/>
-                        <Label text="Order:"/>
-                        <ComboBox fx:id="rejectedSortOrderCombo" prefWidth="100"/>
+                        <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="rejectedSortByCombo" prefWidth="120" styleClass="combo-box"/>
+                        <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="rejectedSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyRejectedSort" styleClass="button-primary"/>
                     </HBox>
-                    <ListView fx:id="rejectedAdsListView" VBox.vgrow="ALWAYS"/>
+                    <ListView fx:id="rejectedAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="rejectedErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
@@ -245,12 +241,13 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Sort By:"/>
-                        <ComboBox fx:id="soldSortByCombo" prefWidth="120"/>
-                        <Label text="Order:"/><ComboBox fx:id="soldSortOrderCombo" prefWidth="100"/>
+                        <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="soldSortByCombo" prefWidth="120" styleClass="combo-box"/>
+                        <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="soldSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applySoldSort" styleClass="button-primary"/>
                     </HBox>
-                    <ListView fx:id="soldAdsListView" VBox.vgrow="ALWAYS"/>
+                    <ListView fx:id="soldAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="soldErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
@@ -261,15 +258,15 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Label text="Sort By:"/>
-                        <ComboBox fx:id="deletedSortByCombo" prefWidth="120"/>
-                        <Label text="Order:"/>
-                        <ComboBox fx:id="deletedSortOrderCombo" prefWidth="100"/>
+                        <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="deletedSortByCombo" prefWidth="120" styleClass="combo-box"/>
+                        <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
+                        <ComboBox fx:id="deletedSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyDeletedSort" styleClass="button-primary"/>
                         <Button text="Restore Selected" onAction="#restoreAd" styleClass="button-secondary"/>
                         <Button text="Delete Selected" onAction="#deleteAd" styleClass="button-secondary"/>
                     </HBox>
-                    <ListView fx:id="deletedAdsListView" VBox.vgrow="ALWAYS"/>
+                    <ListView fx:id="deletedAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="deletedErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
@@ -279,7 +276,7 @@
                 <VBox spacing="12" styleClass="filter-card">
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                     <HBox spacing="12" alignment="CENTER_LEFT">
-                        <Label fx:id="usersCountLabel" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="usersCountLabel" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button text="Block User" onAction="#blockUser" styleClass="button-secondary"/>
                         <Button text="Unblock User" onAction="#unblockUser" styleClass="button-primary"/>
