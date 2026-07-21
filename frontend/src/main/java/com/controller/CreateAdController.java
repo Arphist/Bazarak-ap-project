@@ -1,10 +1,7 @@
 package com.controller;
 
 import com.BazarakFrontendApplication;
-import com.model.Advertisement;
-import com.model.Category;
-import com.model.City;
-import com.model.User;
+import com.model.*;
 import com.service.AdService;
 import com.service.CategoryService;
 import com.service.CityService;
@@ -14,13 +11,13 @@ import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Alert;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,10 +42,14 @@ public class CreateAdController {
     @FXML
     private ComboBox<City> cityCombo;
 
-
-
     @FXML
     private ComboBox<Category> subCategoryCombo;
+
+    @FXML
+    private VBox specificationsContainer;
+
+    private Map<Long, String> specValues = new HashMap<>();
+    private List<CategorySpecification> currentSpecs = new ArrayList<>();
 
     private ObservableList<Category> rootCategories = FXCollections.observableArrayList();
     private ObservableList<Category> subCategories = FXCollections.observableArrayList();
@@ -61,6 +62,85 @@ public class CreateAdController {
     private void initialize() {
         loadCategories();
         loadCities();
+
+        // Listener for category selection
+        categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                loadSpecificationsForCategory(newVal);
+            } else {
+                specificationsContainer.getChildren().clear();
+                specValues.clear();
+            }
+        });
+
+    }
+
+    // Method to load specifications
+    private void loadSpecificationsForCategory(Category category) {
+        try {
+            specificationsContainer.getChildren().clear();
+            specValues.clear();
+
+            List<CategorySpecification> specs = CategoryService.getCategorySpecifications(category.getId());
+            currentSpecs = specs;
+
+            if (specs.isEmpty()) {
+                Label noSpecLabel = new Label("No specific specifications for this category.");
+                noSpecLabel.setStyle("-fx-text-fill: #6c757d;");
+                specificationsContainer.getChildren().add(noSpecLabel);
+                return;
+            }
+
+            for (CategorySpecification spec : specs) {
+                Label label = new Label(spec.getName() + (spec.isRequired() ? " *" : ""));
+                label.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
+                Node input = createInputForSpec(spec);
+                specificationsContainer.getChildren().addAll(label, input);
+            }
+
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog("Specifications Error", "Failed to load specifications", e.getMessage(), "ERROR");
+        }
+    }
+
+    private Node createInputForSpec(CategorySpecification spec) {
+        switch (spec.getType()) {
+            case "TEXT":
+                TextField textField = new TextField();
+                textField.setPromptText("Enter " + spec.getName());
+                textField.textProperty().addListener((obs, old, newVal) -> {
+                    specValues.put(spec.getId(), newVal);
+                });
+                return textField;
+            case "NUMBER":
+                TextField numberField = new TextField();
+                numberField.setPromptText("Enter " + spec.getName());
+                numberField.textProperty().addListener((obs, old, newVal) -> {
+                    if (!newVal.matches("\\d*(\\.\\d*)?")) {
+                        numberField.setText(newVal.replaceAll("[^\\d.]", ""));
+                    }
+                    specValues.put(spec.getId(), numberField.getText());
+                });
+                return numberField;
+            case "BOOLEAN":
+                CheckBox checkBox = new CheckBox();
+                checkBox.selectedProperty().addListener((obs, old, newVal) -> {
+                    specValues.put(spec.getId(), newVal ? "true" : "false");
+                });
+                return checkBox;
+            case "DROPDOWN":
+                ComboBox<String> combo = new ComboBox<>();
+                if (spec.getOptions() != null && !spec.getOptions().isEmpty()) {
+                    combo.getItems().addAll(spec.getOptions().split(","));
+                }
+                combo.setPromptText("Select " + spec.getName());
+                combo.valueProperty().addListener((obs, old, newVal) -> {
+                    specValues.put(spec.getId(), newVal);
+                });
+                return combo;
+            default:
+                return new Label("Unsupported type");
+        }
     }
 
     // ============================================
@@ -208,7 +288,8 @@ public class CreateAdController {
             ad.setCity(selectedCity);
 
             // Send to backend
-            Map<String, Object> result =  AdService.createAd(ad);
+            // Pass specifications
+            Map<String, Object> result = AdService.createAd(ad, specValues);
 
             // Show success message
             ShowErrorDialog.showErrorDialog(
