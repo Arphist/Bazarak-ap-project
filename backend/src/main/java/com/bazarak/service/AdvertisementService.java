@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -336,6 +337,31 @@ public class AdvertisementService {
         }
 
         return savedAd;
+    }
+
+    /**
+     * Get an advertisement with its specification values
+     */
+    public Advertisement getAdWithSpecifications(Long adId) {
+        Advertisement ad = findById(adId);
+
+        // Force load specification values
+        List<AdvertisementSpecification> specs = advertisementSpecificationRepository.findByAdvertisementId(adId);
+        ad.setSpecificationValues(specs);
+
+        return ad;
+    }
+
+    /**
+     * Get specification values for an ad as a map (specId → value)
+     */
+    public Map<Long, String> getSpecificationValuesMap(Long adId) {
+        List<AdvertisementSpecification> specs = advertisementSpecificationRepository.findByAdvertisementId(adId);
+        Map<Long, String> result = new HashMap<>();
+        for (AdvertisementSpecification spec : specs) {
+            result.put(spec.getSpecification().getId(), spec.getValue());
+        }
+        return result;
     }
 
     // ADMIN METHODS
