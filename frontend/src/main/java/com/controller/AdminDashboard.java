@@ -242,6 +242,151 @@ public class AdminDashboard {
         }
     }
 
+    // SPECIFICATION MANAGEMENT
+
+    @FXML
+    private void onSpecCategorySelected() {
+        Category selected = specCategoryCombo.getValue();
+        if (selected == null) {
+            return;
+        }
+        loadSpecificationsForCategory(selected.getId());
+    }
+
+    private void loadSpecificationsForCategory(Long categoryId) {
+        try {
+            List<CategorySpecification> specs = CategoryService.getCategorySpecifications(categoryId);
+            specifications.setAll(specs);
+            specErrorLabel.setText("");
+        } catch (Exception e) {
+            specErrorLabel.setText("Failed to load specifications: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleAddSpecification() {
+        Category selectedCategory = specCategoryCombo.getValue();
+        if (selectedCategory == null) {
+            specErrorLabel.setText("Please select a category first");
+            return;
+        }
+
+        String name = specNameField.getText().trim();
+        String type = specTypeCombo.getValue();
+        String options = specOptionsField.getText().trim();
+        boolean required = specRequiredCheck.isSelected();
+
+        if (name.isEmpty()) {
+            specErrorLabel.setText("Specification name is required");
+            return;
+        }
+
+        if (type == null || type.isEmpty()) {
+            specErrorLabel.setText("Please select a type");
+            return;
+        }
+
+        try {
+            CategorySpecification spec = new CategorySpecification();
+            spec.setName(name);
+            spec.setType(type);
+            spec.setOptions(options.isEmpty() ? null : options);
+            spec.setRequired(required);
+
+            CategorySpecification created = CategoryService.addSpecificationToCategory(selectedCategory.getId(), spec);
+            loadSpecificationsForCategory(selectedCategory.getId());
+
+            // Clear fields
+            specNameField.clear();
+            specOptionsField.clear();
+            specRequiredCheck.setSelected(false);
+            specTypeCombo.setValue(null);
+
+            specErrorLabel.setText("Specification added successfully");
+
+        } catch (Exception e) {
+            specErrorLabel.setText("Failed to add specification: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleEditSpecification() {
+        if (selectedSpecification == null) {
+            specErrorLabel.setText("Please select a specification to edit");
+            return;
+        }
+
+        Category selectedCategory = specCategoryCombo.getValue();
+        if (selectedCategory == null) {
+            specErrorLabel.setText("Please select a category");
+            return;
+        }
+
+        String name = specNameField.getText().trim();
+        String type = specTypeCombo.getValue();
+        String options = specOptionsField.getText().trim();
+        boolean required = specRequiredCheck.isSelected();
+
+        if (name.isEmpty()) {
+            specErrorLabel.setText("Specification name is required");
+            return;
+        }
+
+        if (type == null || type.isEmpty()) {
+            specErrorLabel.setText("Please select a type");
+            return;
+        }
+
+        try {
+            selectedSpecification.setName(name);
+            selectedSpecification.setType(type);
+            selectedSpecification.setOptions(options.isEmpty() ? null : options);
+            selectedSpecification.setRequired(required);
+
+            CategorySpecification updated = CategoryService.updateSpecification(selectedSpecification.getId(), selectedSpecification);
+            loadSpecificationsForCategory(selectedCategory.getId());
+
+            specErrorLabel.setText("Specification updated successfully");
+
+        } catch (Exception e) {
+            specErrorLabel.setText("Failed to update specification: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteSpecification() {
+        if (selectedSpecification == null) {
+            specErrorLabel.setText("Please select a specification to delete");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete specification?");
+        confirm.setContentText("Are you sure you want to delete '" + selectedSpecification.getName() + "'?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                String result = CategoryService.deleteSpecification(selectedSpecification.getId());
+                Category selectedCategory = specCategoryCombo.getValue();
+                if (selectedCategory != null) {
+                    loadSpecificationsForCategory(selectedCategory.getId());
+                }
+                specErrorLabel.setText(result);
+
+                // Clear selection
+                selectedSpecification = null;
+                specNameField.clear();
+                specOptionsField.clear();
+                specRequiredCheck.setSelected(false);
+                specTypeCombo.setValue(null);
+
+            } catch (Exception e) {
+                specErrorLabel.setText("Failed to delete specification: " + e.getMessage());
+            }
+        }
+    }
+
     private void setupSortComboBoxes() {
         // Pending
         pendingSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
