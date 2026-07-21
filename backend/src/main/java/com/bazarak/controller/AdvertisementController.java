@@ -94,7 +94,14 @@ public class AdvertisementController {
             ad.setDescription(request.getDescription());
             ad.setPrice(request.getPrice());
 
-            Advertisement createdAd = advertisementService.createAd(ad, currentUser.getId(), request.getCityId(),request.getCategoryId());
+            // Pass specifications to service
+            Advertisement createdAd = advertisementService.createAd(
+                    ad,
+                    currentUser.getId(),
+                    request.getCityId(),
+                    request.getCategoryId(),
+                    request.getSpecifications()
+            );
 
             // 4. Return response
             Map<String, Object> response = new HashMap<>();
