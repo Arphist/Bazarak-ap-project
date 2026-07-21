@@ -223,7 +223,7 @@ public class AdminService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200) {
+        if (response.statusCode() == 200 || response.statusCode() == 201) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> result = new HashMap<>();
             result.put("totalAds", ((Number) responseBody.getOrDefault("totalAds", 0)).longValue());
@@ -231,7 +231,7 @@ public class AdminService {
             result.put("activeAds", ((Number) responseBody.getOrDefault("activeAds", 0)).longValue());
             result.put("adsByCategory", responseBody.getOrDefault("adsByCategory", List.of()));
             result.put("adsByCity", responseBody.getOrDefault("adsByCity", List.of()));
-            result.put("recentAds", ((Number) responseBody.getOrDefault("recentAds", 0)).intValue());
+            result.put("recentAds", responseBody.getOrDefault("recentAds", List.of()));
 
             return result;
         } else {
