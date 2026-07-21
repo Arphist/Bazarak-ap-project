@@ -260,5 +260,45 @@ public class CategoryController {
         }
     }
 
+    /**
+     * DTO for specification creation and update requests.
+     */
+    public static class SpecificationRequest {
+        private String name;
+        private String type;  // TEXT, NUMBER, BOOLEAN, DROPDOWN
+        private String options;  // For DROPDOWN: comma-separated values
+        private boolean required;
 
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getOptions() {
+            return options;
+        }
+
+        public void setOptions(String options) {
+            this.options = options;
+        }
+
+        public boolean isRequired() {
+            return required;
+        }
+
+        public void setRequired(boolean required) {
+            this.required = required;
+        }
+    }
 }
