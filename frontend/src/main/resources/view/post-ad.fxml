@@ -55,6 +55,10 @@
             <ComboBox fx:id="cityCombo" maxWidth="500" promptText="Select City"
                       style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
 
+            <!-- Specifications Container -->
+            <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #2c3e50;"/>
+            <VBox fx:id="specificationsContainer" spacing="8" maxWidth="500" style="-fx-padding: 10; -fx-background-color: #f8f9fa; -fx-border-color: #e9ecef; -fx-border-radius: 5;"/>
+
             <!-- Error Label -->
             <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
 
