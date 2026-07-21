@@ -362,6 +362,28 @@ public class HomeController {
         }
     }
 
+    @FXML
+    private void refreshAds() {
+        // 1. Clear search field
+        searchField.clear();
+
+        // 2. Clear all filters
+        clearFilters();
+
+        // 3. Hide filters container if visible
+        if (filterContainer != null && filterContainer.isVisible()) {
+            filterContainer.setVisible(false);
+            filterContainer.setManaged(false);
+            if (filterToggleButton != null) {
+                filterToggleButton.setText("Show Filters ▼");
+            }
+        }
+
+        // 4. Reload ads
+        loadAds();
+
+    }
+
     // HELPER METHODS
 
     private Long parsePrice(String text) {
