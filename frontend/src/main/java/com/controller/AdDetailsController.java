@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.Advertisement;
+import com.model.AdvertisementSpecification;
 import com.model.User;
 import com.service.AdService;
 import com.service.ConversationService;
@@ -27,6 +28,9 @@ public class AdDetailsController {
 
     @FXML
     private Label priceLabel;
+
+    @FXML
+    private VBox specificationsContainer;
 
     @FXML
     private Label categoryLabel;
@@ -161,6 +165,7 @@ public class AdDetailsController {
             statusLabel.setText(ad.getStatus());
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
+            displaySpecifications(ad);
 
             // Load favorite status and count
             loadFavoriteState(adId);
@@ -173,6 +178,21 @@ public class AdDetailsController {
                     "There was a problem loading ad details. Please try again later.",
                     "ERROR"
             );
+        }
+    }
+
+    private void displaySpecifications(Advertisement ad) {
+        specificationsContainer.getChildren().clear();
+        if (ad.getSpecificationDetails() != null && !ad.getSpecificationDetails().isEmpty()) {
+            for (AdvertisementSpecification spec : ad.getSpecificationDetails()) {
+                Label label = new Label(spec.getSpecification().getName() + ": " + spec.getValue());
+                label.setStyle("-fx-font-size: 12;");
+                specificationsContainer.getChildren().add(label);
+            }
+        } else {
+            Label noSpecLabel = new Label("No specifications provided.");
+            noSpecLabel.setStyle("-fx-text-fill: #6c757d; -fx-font-size: 12;");
+            specificationsContainer.getChildren().add(noSpecLabel);
         }
     }
 
