@@ -148,19 +148,26 @@ public class AdService {
     }
 
     /**
-     * Creates a new advertisement.
+     * Creates a new advertisement with specification values.
      *
      * @param ad the advertisement to create
+     * @param specificationValues map of specification ID → value
      * @return a map containing the created advertisement and the server message
      * @throws Exception if the advertisement cannot be created
      */
-    public static Map<String, Object> createAd(Advertisement ad) throws Exception {
+    public static Map<String, Object> createAd(Advertisement ad, Map<Long, String> specificationValues) throws Exception {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", ad.getTitle());
         requestBody.put("description", ad.getDescription());
         requestBody.put("price", ad.getPrice());
         requestBody.put("categoryId", ad.getCategory().getId());
         requestBody.put("cityId", ad.getCity().getId());
+
+        // Add specification values
+        if (specificationValues != null && !specificationValues.isEmpty()) {
+            requestBody.put("specifications", specificationValues);
+        }
+
         String json = objectMapper.writeValueAsString(requestBody);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -175,7 +182,6 @@ public class AdService {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
             Long id = ((Number) result.get("id")).longValue();
 
-            // Get the full ad details + the backend-message
             Map<String, Object> map = new HashMap<>();
             map.put("message", result.get("message"));
             map.put("ad", getAdById(id));
