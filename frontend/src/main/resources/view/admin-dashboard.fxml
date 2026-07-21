@@ -14,8 +14,18 @@
             <HBox spacing="20" alignment="CENTER_LEFT">
                 <Label text="Administration" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
                 <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Refresh Button -->
                 <Button text="↻ Refresh" onAction="#refreshAll"
                         style="-fx-background-color: transparent; -fx-text-fill: #4a6fa5; -fx-cursor: hand; -fx-padding: 5 0;"/>
+
+                <!-- ===== منوی سه نقطه ===== -->
+                <MenuButton text="⋯" style="-fx-background-color: transparent; -fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #4a6fa5; -fx-cursor: hand;">
+                    <items>
+                        <MenuItem text="🚪 Sign Out" onAction="#handleLogout"
+                                  style="-fx-font-size: 14; -fx-text-fill: #dc3545;"/>
+                    </items>
+                </MenuButton>
             </HBox>
         </VBox>
     </top>
