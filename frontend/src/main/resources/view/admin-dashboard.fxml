@@ -19,7 +19,7 @@
 
                 <Button text="↻ Refresh" onAction="#refreshAll" styleClass="button-secondary"/>
 
-                <MenuButton text="⋯" styleClass="button-secondary">
+                <MenuButton text="⋯" styleClass="menu-button" style="-fx-font-size: 24px; -fx-font-weight: bold;">
                     <items>
                         <MenuItem text="🚪 Sign Out" onAction="#handleLogout"/>
                     </items>
@@ -37,69 +37,73 @@
 
             <!-- TAB 1: DASHBOARD -->
             <Tab text="Dashboard" closable="false">
-                <SplitPane dividerPositions="0.65" style="-fx-background-color: transparent;">
-                    <!-- LEFT: Statistics -->
-                    <VBox spacing="15" styleClass="filter-card">
-                        <padding>
-                            <Insets top="20" right="20" bottom="20" left="20"/>
-                        </padding>
-                        <Label text="📊 Statistics" styleClass="heading-title" style="-fx-font-size: 16;"/>
+                <SplitPane dividerPositions="0.70" style="-fx-background-color: transparent;">
+                    <!-- LEFT: StackPane with switchable views -->
+                    <StackPane>
 
-                        <GridPane hgap="15" vgap="15">
-                            <columnConstraints>
-                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                            </columnConstraints>
+                        <!-- Dashboard Stats View -->
+                        <VBox fx:id="dashboardStatsView" spacing="15" styleClass="filter-card">
+                            <padding>
+                                <Insets top="20" right="20" bottom="20" left="20"/>
+                            </padding>
+                            <Label text="📊 Statistics" styleClass="heading-title" style="-fx-font-size: 16;"/>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="📦 Total Ads" styleClass="sub-title"/>
-                                <Label fx:id="totalAdsLabel" styleClass="heading-title"/>
-                            </VBox>
+                            <GridPane hgap="15" vgap="15">
+                                <columnConstraints>
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                </columnConstraints>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="Pending" styleClass="sub-title"/>
-                                <Label fx:id="pendingCountLabel" styleClass="heading-title" style="-fx-text-fill: #F39C12;"/>
-                            </VBox>
+                                <!-- Total Ads -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="📦 Total Ads" style="-fx-font-weight: bold; -fx-text-fill: #2ECC71;"/>
+                                    <Label fx:id="totalAdsLabel" styleClass="heading-title"/>
+                                </VBox>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="Active" styleClass="sub-title"/>
-                                <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
-                            </VBox>
+                                <!-- Pending -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="Pending" styleClass="sub-title"/>
+                                    <Label fx:id="pendingCountLabel" styleClass="heading-title" style="-fx-text-fill: #F39C12;"/>
+                                </VBox>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="Rejected" styleClass="sub-title"/>
-                                <Label fx:id="rejectedCountLabel" styleClass="heading-title" style="-fx-text-fill: #E74C3C;"/>
-                            </VBox>
+                                <!-- Active -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="Active" style="-fx-font-weight: bold; -fx-text-fill: #2ECC71;"/>
+                                    <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
+                                </VBox>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="Sold" styleClass="sub-title"/>
-                                <Label fx:id="soldCountLabel" styleClass="heading-title" style="-fx-text-fill: #3498DB;"/>
-                            </VBox>
+                                <!-- Rejected -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="Rejected" styleClass="sub-title"/>
+                                    <Label fx:id="rejectedCountLabel" styleClass="heading-title" style="-fx-text-fill: #E74C3C;"/>
+                                </VBox>
 
-                            <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="stat-card">
-                                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                <Label text="Deleted" styleClass="sub-title"/>
-                                <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
-                            </VBox>
-                        </GridPane>
+                                <!-- Sold -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="Sold" styleClass="sub-title"/>
+                                    <Label fx:id="soldCountLabel" styleClass="heading-title" style="-fx-text-fill: #3498DB;"/>
+                                </VBox>
 
-                        <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
-                    </VBox>
+                                <!-- Deleted -->
+                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="stat-card">
+                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                    <Label text="Deleted" styleClass="sub-title"/>
+                                    <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
+                                </VBox>
+                            </GridPane>
 
-                    <!-- RIGHT: Cities, Categories & Specifications Sidebar -->
-                    <VBox spacing="15" styleClass="filter-card">
-                        <padding>
-                            <Insets top="15" right="15" bottom="15" left="15"/>
-                        </padding>
+                            <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
+                        </VBox>
 
-                        <!-- CITIES -->
-                        <VBox spacing="8">
+                        <!-- Cities View -->
+                        <VBox fx:id="citiesView" spacing="8" styleClass="filter-card" managed="false" visible="false">
+                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                             <Label text="Cities" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
                                 <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
@@ -112,16 +116,15 @@
                                 <Button text="Add" onAction="#handleAddCity" styleClass="button-primary"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Button text="Edit" onAction="#handleEditCity" styleClass="button-secondary"/>
-                                <Button text="Delete" onAction="#handleDeleteCity" styleClass="button-secondary"/>
+                                <Button text="Edit" onAction="#handleEditCity" styleClass="button-edit"/>
+                                <Button text="Delete" onAction="#handleDeleteCity" styleClass="button-delete"/>
                             </HBox>
                             <Label fx:id="cityErrorLabel" styleClass="error-label"/>
                         </VBox>
 
-                        <Separator style="-fx-background-color: #2A2A2A;"/>
-
-                        <!-- CATEGORIES -->
-                        <VBox spacing="8">
+                        <!-- Categories View -->
+                        <VBox fx:id="categoriesView" spacing="8" styleClass="filter-card" managed="false" visible="false">
+                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                             <Label text="Categories" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
                                 <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
@@ -135,29 +138,25 @@
                                 <Button text="Add" onAction="#handleAddCategory" styleClass="button-primary"/>
                             </HBox>
                             <HBox spacing="5">
-                                <Button text="Edit" onAction="#handleEditCategory" styleClass="button-secondary"/>
-                                <Button text="Delete" onAction="#handleDeleteCategory" styleClass="button-secondary"/>
+                                <Button text="Edit" onAction="#handleEditCategory" styleClass="button-edit"/>
+                                <Button text="Delete" onAction="#handleDeleteCategory" styleClass="button-delete"/>
                             </HBox>
                             <Label fx:id="categoryErrorLabel" styleClass="error-label"/>
                         </VBox>
 
-                        <Separator style="-fx-background-color: #2A2A2A;"/>
-
-                        <!-- ========== SPECIFICATIONS SECTION (UPDATED) ========== -->
-                        <VBox spacing="8">
+                        <!-- Specifications View -->
+                        <VBox fx:id="specificationsView" spacing="8" styleClass="filter-card" managed="false" visible="false">
+                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
                             <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #E0E0E0;"/>
 
-                            <!-- Category Selection -->
                             <ComboBox fx:id="specCategoryCombo" promptText="Select category"
                                       onAction="#onSpecCategorySelected"
                                       styleClass="combo-box"
                                       HBox.hgrow="ALWAYS"/>
 
-                            <!-- Specifications List -->
                             <ListView fx:id="specificationsListView" prefHeight="120" VBox.vgrow="NEVER"
                                       styleClass="list-view"/>
 
-                            <!-- Add Specification -->
                             <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #1E1E1E; -fx-border-color: #2A2A2A; -fx-border-radius: 4;">
                                 <Label text="Add New Spec" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9E9E9E;"/>
                                 <HBox spacing="5">
@@ -171,15 +170,23 @@
                                 </HBox>
                             </VBox>
 
-                            <!-- Actions -->
                             <HBox spacing="5">
-                                <Button text="Edit" onAction="#handleEditSpecification" styleClass="button-secondary"/>
-                                <Button text="Delete" onAction="#handleDeleteSpecification" styleClass="button-secondary"/>
+                                <Button text="Edit" onAction="#handleEditSpecification" styleClass="button-edit"/>
+                                <Button text="Delete" onAction="#handleDeleteSpecification" styleClass="button-delete"/>
                             </HBox>
 
                             <Label fx:id="specErrorLabel" styleClass="error-label"/>
                         </VBox>
 
+                    </StackPane>
+
+                    <!-- RIGHT: Navigation buttons -->
+                    <VBox spacing="15" styleClass="filter-card">
+                        <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <Button text="Dashboard" onAction="#showDashboard" styleClass="nav-button" maxWidth="Infinity"/>
+                        <Button text="Cities" onAction="#showCities" styleClass="nav-button" maxWidth="Infinity"/>
+                        <Button text="Categories" onAction="#showCategories" styleClass="nav-button" maxWidth="Infinity"/>
+                        <Button text="Specifications" onAction="#showSpecifications" styleClass="nav-button" maxWidth="Infinity"/>
                     </VBox>
                 </SplitPane>
             </Tab>
