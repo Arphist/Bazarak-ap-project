@@ -254,7 +254,7 @@ public class AdminAdvertisementController {
 
             // Get recent ads
             List<Advertisement> recentAds = advertisementService.getRecentAds(7); // Last 7 days
-            stats.put("recentAds", recentAds.size());
+            stats.put("recentAds", recentAds);
 
             return ResponseEntity.ok(stats);
 
