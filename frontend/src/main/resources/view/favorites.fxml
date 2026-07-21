@@ -15,7 +15,7 @@
 
     <!-- Header -->
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button text="← Back" onAction="#goToHome" />
+        <Button text="← Back" onAction="#goBack" />
         <Label text="My Favorites" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
     </HBox>
 

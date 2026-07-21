@@ -146,8 +146,8 @@ public class FavoriteController {
     // NAVIGATION
 
     @FXML
-    private void goToHome() {
-        NavigationUtil.goToHome();
+    private void goBack() {
+        NavigationUtil.goBack();
     }
 
     @FXML
