@@ -239,5 +239,9 @@ public class CreateAdController {
     private void cancel() {
         NavigationUtil.goBack();
     }
+    @FXML
+    private void goBack() {
+        NavigationUtil.goBack();
+    }
 
 }
