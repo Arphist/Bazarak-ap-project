@@ -12,13 +12,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 import java.util.Map;
 
 public class AdminDashboard {
-    // FXML FIELDS - SPECIFICATIONS
 
+    @FXML private VBox dashboardStatsView;
+    @FXML private VBox citiesView;
+    @FXML private VBox categoriesView;
+    @FXML private VBox specificationsView;
+
+    // FXML FIELDS - SPECIFICATIONS
     @FXML
     private ComboBox<Category> specCategoryCombo;
 
@@ -188,6 +194,9 @@ public class AdminDashboard {
 
     @FXML
     private void initialize() {
+        // Show only the dashboard stats by default
+        showDashboard();
+
         setupAdListView(pendingAdsListView);
         setupAdListView(activeAdsListView);
         setupAdListView(rejectedAdsListView);
@@ -234,6 +243,51 @@ public class AdminDashboard {
 
         // Populate type combo
         specTypeCombo.setItems(FXCollections.observableArrayList("TEXT", "NUMBER", "BOOLEAN", "DROPDOWN"));
+    }
+
+    @FXML
+    private void showDashboard() {
+        setVisibleView(dashboardStatsView);
+    }
+
+    @FXML
+    private void showCities() {
+        setVisibleView(citiesView);
+        // Refresh city list if needed
+        loadCities();
+    }
+
+    @FXML
+    private void showCategories() {
+        setVisibleView(categoriesView);
+        // Refresh category list if needed
+        loadCategories();
+    }
+
+    @FXML
+    private void showSpecifications() {
+        setVisibleView(specificationsView);
+        // Load categories for the spec dropdown
+        loadSpecCategories();
+        // Optionally clear previous selection
+        specCategoryCombo.setValue(null);
+        specifications.clear();
+    }
+
+    private void setVisibleView(VBox viewToShow) {
+        // Hide all views
+        dashboardStatsView.setVisible(false);
+        dashboardStatsView.setManaged(false);
+        citiesView.setVisible(false);
+        citiesView.setManaged(false);
+        categoriesView.setVisible(false);
+        categoriesView.setManaged(false);
+        specificationsView.setVisible(false);
+        specificationsView.setManaged(false);
+
+        // Show the selected one
+        viewToShow.setVisible(true);
+        viewToShow.setManaged(true);
     }
 
     private void loadSpecCategories() {
