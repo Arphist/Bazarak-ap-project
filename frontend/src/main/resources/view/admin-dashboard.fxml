@@ -58,7 +58,7 @@
                                 <!-- Total Ads -->
                                 <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
                                     <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="📦 Total Ads" style="-fx-font-weight: bold; -fx-text-fill: #2ECC71;"/>
+                                    <Label text="📦 Total Ads" styleClass="sub-title total-title"/>
                                     <Label fx:id="totalAdsLabel" styleClass="heading-title"/>
                                 </VBox>
 
@@ -102,20 +102,21 @@
                         </VBox>
 
                         <!-- Cities View -->
-                        <VBox fx:id="citiesView" spacing="8" styleClass="filter-card" managed="false" visible="false">
-                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <VBox fx:id="citiesView" spacing="8" styleClass="filter-card">
                             <Label text="Cities" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
                                 <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
                                 <Button text="🔍" onAction="#searchCities" styleClass="button-secondary"/>
                             </HBox>
-                            <ListView fx:id="cityListView" prefHeight="130" VBox.vgrow="NEVER" styleClass="list-view"/>
+                            <ListView fx:id="cityListView" prefHeight="600" VBox.vgrow="NEVER" styleClass="list-view"/>
+                            <!-- Input row -->
                             <HBox spacing="5">
                                 <TextField fx:id="cityNameField" promptText="City Name" prefWidth="100" styleClass="text-field"/>
                                 <TextField fx:id="cityProvinceField" promptText="Province" prefWidth="80" styleClass="text-field"/>
-                                <Button text="Add" onAction="#handleAddCity" styleClass="button-primary"/>
                             </HBox>
+                            <!-- Buttons row -->
                             <HBox spacing="5">
+                                <Button text="Add" onAction="#handleAddCity" styleClass="button-primary"/>
                                 <Button text="Edit" onAction="#handleEditCity" styleClass="button-edit"/>
                                 <Button text="Delete" onAction="#handleDeleteCity" styleClass="button-delete"/>
                             </HBox>
@@ -123,21 +124,20 @@
                         </VBox>
 
                         <!-- Categories View -->
-                        <VBox fx:id="categoriesView" spacing="8" styleClass="filter-card" managed="false" visible="false">
-                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <VBox fx:id="categoriesView" spacing="8" styleClass="filter-card">
                             <Label text="Categories" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                             <HBox spacing="5">
                                 <TextField fx:id="categorySearchField" promptText="Search categories..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
                                 <Button text="🔍" onAction="#searchCategories" styleClass="button-secondary"/>
                             </HBox>
-                            <ListView fx:id="categoryListView" prefHeight="130" VBox.vgrow="NEVER" styleClass="list-view"/>
+                            <ListView fx:id="categoryListView" prefHeight="600" VBox.vgrow="NEVER" styleClass="list-view"/>
                             <HBox spacing="5">
                                 <TextField fx:id="categoryNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
                                 <TextField fx:id="categoryDescriptionField" promptText="Description" prefWidth="80" styleClass="text-field"/>
                                 <ComboBox fx:id="categoryParentCombo" promptText="Parent" prefWidth="100" styleClass="combo-box"/>
-                                <Button text="Add" onAction="#handleAddCategory" styleClass="button-primary"/>
                             </HBox>
                             <HBox spacing="5">
+                                <Button text="Add" onAction="#handleAddCategory" styleClass="button-primary"/>
                                 <Button text="Edit" onAction="#handleEditCategory" styleClass="button-edit"/>
                                 <Button text="Delete" onAction="#handleDeleteCategory" styleClass="button-delete"/>
                             </HBox>
@@ -145,8 +145,7 @@
                         </VBox>
 
                         <!-- Specifications View -->
-                        <VBox fx:id="specificationsView" spacing="8" styleClass="filter-card" managed="false" visible="false">
-                            <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                        <VBox fx:id="specificationsView" spacing="8" styleClass="filter-card">
                             <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #E0E0E0;"/>
 
                             <ComboBox fx:id="specCategoryCombo" promptText="Select category"
@@ -154,7 +153,7 @@
                                       styleClass="combo-box"
                                       HBox.hgrow="ALWAYS"/>
 
-                            <ListView fx:id="specificationsListView" prefHeight="120" VBox.vgrow="NEVER"
+                            <ListView fx:id="specificationsListView" prefHeight="600" VBox.vgrow="NEVER"
                                       styleClass="list-view"/>
 
                             <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #1E1E1E; -fx-border-color: #2A2A2A; -fx-border-radius: 4;">
@@ -162,7 +161,6 @@
                                 <HBox spacing="5">
                                     <TextField fx:id="specNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
                                     <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80" styleClass="combo-box"/>
-                                    <Button text="Add" onAction="#handleAddSpecification" styleClass="button-primary"/>
                                 </HBox>
                                 <HBox spacing="5">
                                     <TextField fx:id="specOptionsField" promptText="Options (comma)" HBox.hgrow="ALWAYS" styleClass="text-field"/>
@@ -171,6 +169,7 @@
                             </VBox>
 
                             <HBox spacing="5">
+                                <Button text="Add" onAction="#handleAddSpecification" styleClass="button-primary"/>
                                 <Button text="Edit" onAction="#handleEditSpecification" styleClass="button-edit"/>
                                 <Button text="Delete" onAction="#handleDeleteSpecification" styleClass="button-delete"/>
                             </HBox>
