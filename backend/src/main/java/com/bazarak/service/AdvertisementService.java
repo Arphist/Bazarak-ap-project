@@ -260,11 +260,11 @@ public class AdvertisementService {
     // UPDATE METHODS
 
     /**
-     * Update advertisement (owner only)
-     * Only allowed if ad is PENDING or ACCEPTED
+     * Update an existing advertisement with specification values
      */
     @Transactional
-    public Advertisement updateAd(Long adId, Advertisement updatedAd, Long ownerId) {
+    public Advertisement updateAd(Long adId, Advertisement updatedAd, Long ownerId,
+                                  Long categoryId, Long cityId, Map<Long, String> specValues) {
         // 1. Find existing ad
         Advertisement existingAd = findById(adId);
 
@@ -273,7 +273,7 @@ public class AdvertisementService {
             throw new UnauthorizedAccessException("You don't own this advertisement");
         }
 
-        // 4. Update fields
+        // 4. Update basic fields
         if (updatedAd.getTitle() != null) {
             existingAd.setTitle(updatedAd.getTitle());
         }
@@ -283,16 +283,59 @@ public class AdvertisementService {
         if (updatedAd.getPrice() != null && updatedAd.getPrice() > 0) {
             existingAd.setPrice(updatedAd.getPrice());
         }
-        if (updatedAd.getCategory() != null) {
-            existingAd.setCategory(updatedAd.getCategory());
+
+        // 5. Update Category and City if provided
+        if (categoryId != null) {
+            Category category = categoryService.getCategoryById(categoryId);
+            existingAd.setCategory(category);
+
+            // Validate specifications for new category
+            if (specValues != null && !specValues.isEmpty()) {
+                categoryService.validateSpecificationValues(categoryId, specValues);
+            }
         }
-        if (updatedAd.getCity() != null) {
-            existingAd.setCity(updatedAd.getCity());
+
+        if (cityId != null) {
+            City city = cityService.getCityById(cityId);
+            existingAd.setCity(city);
         }
 
         existingAd.setUpdatedAt(LocalDateTime.now());
 
-        return adRepository.save(existingAd);
+        // 6. Save basic ad first
+        Advertisement savedAd = adRepository.save(existingAd);
+
+        // 7. Update specification values
+        if (specValues != null) {
+            // Delete existing specification values
+            advertisementSpecificationRepository.deleteByAdvertisementId(adId);
+            savedAd.getSpecificationValues().clear();
+
+            // Get specs for the category
+            Long actualCategoryId = categoryId != null ? categoryId : existingAd.getCategory().getId();
+            List<CategorySpecification> specs = categoryService.getSpecificationsForCategory(actualCategoryId);
+
+            // Add new specification values
+            for (CategorySpecification spec : specs) {
+                String value = specValues.get(spec.getId());
+
+                // Skip empty values
+                if (value == null || value.trim().isEmpty()) {
+                    continue;
+                }
+
+                // Create and save specification value
+                AdvertisementSpecification adSpec = new AdvertisementSpecification();
+                adSpec.setAdvertisement(savedAd);
+                adSpec.setSpecification(spec);
+                adSpec.setValue(value.trim());
+                advertisementSpecificationRepository.save(adSpec);
+
+                savedAd.addSpecificationValue(adSpec);
+            }
+        }
+
+        return savedAd;
     }
 
     // ADMIN METHODS
