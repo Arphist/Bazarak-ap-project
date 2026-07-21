@@ -70,7 +70,7 @@ public class HomeController {
             protected void updateItem(Advertisement ad, boolean empty) {
                 super.updateItem(ad, empty);
                 if (empty || ad == null) {
-                    setText("No ads found");
+                    setText("");
                 } else {
                     // Display ad title and price
                     setText(ad.getTitle() + " - " + ad.getPrice() + " T");
