@@ -1,13 +1,17 @@
 package com.bazarak.service;
 
 import com.bazarak.entity.Category;
+import com.bazarak.entity.CategorySpecification;
 import com.bazarak.exception.category.*;
 import com.bazarak.repository.CategoryRepository;
+import com.bazarak.repository.CategorySpecificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -15,6 +19,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategorySpecificationRepository categorySpecificationRepository;
 
     // Create a new category
     public Category createCategory(String name, String description, Long parentId) {
@@ -145,5 +152,217 @@ public class CategoryService {
             return getAllCategories();
         }
         return categoryRepository.searchByName(keyword.trim());
+    }
+
+    /**
+     * Add a new specification to a category (Admin only)
+     */
+    @Transactional
+    public CategorySpecification addSpecificationToCategory(
+            Long categoryId,
+            String name,
+            String type,
+            String options,
+            boolean required) {
+
+        Category category = getCategoryById(categoryId);
+
+        // Validate
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidInputException("Specification name is required");
+        }
+
+        CategorySpecification.SpecType specType;
+        try {
+            specType = CategorySpecification.SpecType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidInputException("Invalid specification type. Valid: TEXT, NUMBER, BOOLEAN, DROPDOWN");
+        }
+
+        // Validate options for DROPDOWN type
+        if (specType == CategorySpecification.SpecType.DROPDOWN &&
+                (options == null || options.trim().isEmpty())) {
+            throw new InvalidInputException("Options are required for DROPDOWN type");
+        }
+
+        CategorySpecification spec = new CategorySpecification();
+        spec.setName(name.trim());
+        spec.setType(specType);
+        spec.setOptions(options != null ? options.trim() : null);
+        spec.setRequired(required);
+        spec.setCategory(category);
+
+        return categorySpecificationRepository.save(spec);
+    }
+
+    /**
+     * Get all specifications for a category (including inherited from parent)
+     * This implements the Divar-style: Layer 2 holds specs, Layer 3 inherits
+     */
+    public List<CategorySpecification> getSpecificationsForCategory(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+
+        // If this category has its own specs → use them
+        if (category.hasSpecifications()) {
+            return category.getSpecifications();
+        }
+
+        // If not, check if parent has specs (Layer 2)
+        if (category.getParentCategory() != null &&
+                category.getParentCategory().hasSpecifications()) {
+            return category.getParentCategory().getSpecifications();
+        }
+
+        // If still not, check grandparent (Layer 1)
+        if (category.getParentCategory() != null &&
+                category.getParentCategory().getParentCategory() != null &&
+                category.getParentCategory().getParentCategory().hasSpecifications()) {
+            return category.getParentCategory().getParentCategory().getSpecifications();
+        }
+
+        // No specifications found
+        return new ArrayList<>();
+    }
+
+    /**
+     * Get specifications directly attached to a category (no inheritance)
+     */
+    public List<CategorySpecification> getDirectSpecifications(Long categoryId) {
+        return categorySpecificationRepository.findByCategoryId(categoryId);
+    }
+
+    /**
+     * Update an existing specification (Admin only)
+     */
+    @Transactional
+    public CategorySpecification updateSpecification(
+            Long specId,
+            String name,
+            String type,
+            String options,
+            Boolean required) {
+
+        CategorySpecification spec = categorySpecificationRepository.findById(specId)
+                .orElseThrow(() -> new InvalidInputException("Specification not found with id: " + specId));
+
+        if (name != null && !name.trim().isEmpty()) {
+            spec.setName(name.trim());
+        }
+
+        if (type != null) {
+            try {
+                spec.setType(CategorySpecification.SpecType.valueOf(type.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new InvalidInputException("Invalid specification type");
+            }
+        }
+
+        if (options != null) {
+            spec.setOptions(options.trim());
+        }
+
+        if (required != null) {
+            spec.setRequired(required);
+        }
+
+        return categorySpecificationRepository.save(spec);
+    }
+
+    /**
+     * Delete a specification (Admin only)
+     */
+    @Transactional
+    public void deleteSpecification(Long specId) {
+        CategorySpecification spec = categorySpecificationRepository.findById(specId)
+                .orElseThrow(() -> new InvalidInputException("Specification not found with id: " + specId));
+
+        // Check if any ads are using this specification
+        // This will be handled by the repository
+        categorySpecificationRepository.delete(spec);
+    }
+
+    /**
+     * Delete all specifications for a category (Admin only)
+     */
+    @Transactional
+    public void deleteAllSpecificationsForCategory(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+        categorySpecificationRepository.deleteByCategoryId(categoryId);
+        category.getSpecifications().clear();
+    }
+
+    /**
+     * Validate specification values against the category's specifications
+     */
+    public void validateSpecificationValues(Long categoryId, Map<Long, String> specValues) {
+        List<CategorySpecification> specs = getSpecificationsForCategory(categoryId);
+
+        // Check if required specs are provided
+        for (CategorySpecification spec : specs) {
+            if (spec.isRequired()) {
+                String value = specValues.get(spec.getId());
+                if (value == null || value.trim().isEmpty()) {
+                    throw new InvalidInputException("Specification '" + spec.getName() + "' is required");
+                }
+            }
+        }
+
+        // Validate values against spec types
+        for (Map.Entry<Long, String> entry : specValues.entrySet()) {
+            Long specId = entry.getKey();
+            String value = entry.getValue();
+
+            if (value == null || value.trim().isEmpty()) {
+                continue; // Skip empty values (they will be ignored)
+            }
+
+            // Find the spec
+            CategorySpecification spec = specs.stream()
+                    .filter(s -> s.getId().equals(specId))
+                    .findFirst()
+                    .orElseThrow(() -> new InvalidInputException("Invalid specification ID: " + specId));
+
+            // Validate based on type
+            switch (spec.getType()) {
+                case NUMBER:
+                    try {
+                        Double.parseDouble(value);
+                    } catch (NumberFormatException e) {
+                        throw new InvalidInputException("Specification '" + spec.getName() + "' must be a number");
+                    }
+                    break;
+                case BOOLEAN:
+                    if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+                        throw new InvalidInputException("Specification '" + spec.getName() + "' must be true or false");
+                    }
+                    break;
+                case DROPDOWN:
+                    if (spec.getOptions() != null) {
+                        String[] options = spec.getOptions().split(",");
+                        boolean valid = false;
+                        for (String opt : options) {
+                            if (opt.trim().equalsIgnoreCase(value.trim())) {
+                                valid = true;
+                                break;
+                            }
+                        }
+                        if (!valid) {
+                            throw new InvalidInputException("Invalid option for specification '" + spec.getName() + "'");
+                        }
+                    }
+                    break;
+                case TEXT:
+                default:
+                    // TEXT accepts anything
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Get all specifications with category information (for admin panel)
+     */
+    public List<CategorySpecification> getAllSpecifications() {
+        return categorySpecificationRepository.findAll();
     }
 }

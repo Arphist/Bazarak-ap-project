@@ -69,6 +69,10 @@ public class Category {
     public List<Advertisement> getAdvertisements() { return advertisements; }
     public void setAdvertisements(List<Advertisement> advertisements) { this.advertisements = advertisements; }
 
+    public List<CategorySpecification> getSpecifications() {
+        return specifications;
+    }
+
     // SPECIFICATION HELPER METHODS
 
     public void addSpecification(CategorySpecification spec) {
