@@ -475,6 +475,22 @@ public class HomeController {
     // LOGOUT
     @FXML
     private void handleLogout() {
-        NavigationUtil.logout();  // Handles logout + navigation
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Sign Out");
+        confirm.setHeaderText("Are you sure you want to sign out?");
+        confirm.setContentText("You will be redirected to the login page.");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                NavigationUtil.goToLogin();
+            } catch (Exception e) {
+                ShowErrorDialog.showErrorDialog(
+                        "Logout Error",
+                        "Failed to sign out",
+                        "There was a problem signing out. Please try again.",
+                        "ERROR"
+                );
+            }
+        }
     }
 }
