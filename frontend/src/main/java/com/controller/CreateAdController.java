@@ -10,6 +10,7 @@ import com.service.CategoryService;
 import com.service.CityService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
+import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -44,8 +45,7 @@ public class CreateAdController {
     @FXML
     private ComboBox<City> cityCombo;
 
-    @FXML
-    private Label errorLabel;
+
 
     @FXML
     private ComboBox<Category> subCategoryCombo;
@@ -89,13 +89,23 @@ public class CreateAdController {
                         subCategories.setAll(subs);
                         // You could show sub-categories in another combo or list
                     } catch (Exception ex) {
-                        errorLabel.setText("Failed to load sub-categories: " + ex.getMessage());
+                        ShowErrorDialog.showErrorDialog(
+                                "Category Error",
+                                "Failed to load sub-categories",
+                                ex.getMessage(),
+                                "ERROR"
+                        );
                     }
                 }
             });
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load categories: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Category Error",
+                    "Failed to load categories",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -105,7 +115,12 @@ public class CreateAdController {
             cityCombo.setItems(FXCollections.observableArrayList(cities));
             cityCombo.setPromptText("Select City");
         } catch (Exception e) {
-            errorLabel.setText("Failed to load cities: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "City Error",
+                    "Failed to load cities",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -124,17 +139,32 @@ public class CreateAdController {
 
         // Validate fields
         if (title.isEmpty() || description.isEmpty() || priceText.isEmpty()) {
-            errorLabel.setText("Please fill in all required fields");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Incomplete information",
+                    "Please fill in all required fields.",
+                    "WARNING"
+            );
             return;
         }
 
         if (selectedCategory == null) {
-            errorLabel.setText("Please select a category");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Category not selected",
+                    "Please select a category.",
+                    "WARNING"
+            );
             return;
         }
 
         if (selectedCity == null) {
-            errorLabel.setText("Please select a city");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "City not selected",
+                    "Please select a city.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -147,7 +177,12 @@ public class CreateAdController {
                 throw new NumberFormatException();
             }
         } catch (NumberFormatException e) {
-            errorLabel.setText("Price must be a positive number");
+            ShowErrorDialog.showErrorDialog(
+                    "Validation Error",
+                    "Invalid price",
+                    "Price must be a positive number.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -155,7 +190,12 @@ public class CreateAdController {
             // Get current user
             User currentUser = SessionManager.getCurrentUser();
             if (currentUser == null) {
-                errorLabel.setText("You must be logged in to create an ad");
+                ShowErrorDialog.showErrorDialog(
+                        "Authentication Error",
+                        "Login required",
+                        "You must be logged in to create an ad.",
+                        "ERROR"
+                );
                 return;
             }
 
@@ -171,17 +211,23 @@ public class CreateAdController {
             Map<String, Object> result =  AdService.createAd(ad);
 
             // Show success message
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Success");
-            alert.setHeaderText(null);
-            alert.setContentText((String)result.get("message"));
-            alert.showAndWait();
+            ShowErrorDialog.showErrorDialog(
+                    "Success",
+                    null,
+                    (String) result.get("message"),
+                    "INFORMATION"
+            );
 
             // Go back to home page
             BazarakFrontendApplication.showHomePage();
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to create ad: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Create Advertisement Error",
+                    "Failed to create advertisement",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
