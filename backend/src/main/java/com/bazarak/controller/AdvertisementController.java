@@ -301,6 +301,7 @@ public class AdvertisementController {
         private Long price;
         private Long categoryId;
         private Long cityId;
+        private Map<Long, String> specifications; // specId -> value
 
         // Getters and Setters
         public String getTitle() { return title; }
@@ -313,6 +314,13 @@ public class AdvertisementController {
         public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
         public Long getCityId() { return cityId; }
         public void setCityId(Long cityId) { this.cityId = cityId; }
+        public Map<Long, String> getSpecifications() {
+            return specifications;
+        }
+
+        public void setSpecifications(Map<Long, String> specifications) {
+            this.specifications = specifications;
+        }
     }
 
 }
