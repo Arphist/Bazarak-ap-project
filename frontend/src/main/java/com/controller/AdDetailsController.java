@@ -59,7 +59,6 @@ public class AdDetailsController {
     private Button favoriteButton;
     @FXML
     private Label favoriteCountLabel;
-    private Advertisement currentAd;
     private boolean isFavorited = false;
     private Long favoriteCount = 0L;
 
@@ -109,12 +108,12 @@ public class AdDetailsController {
         try {
             if (isFavorited) {
                 // Remove from favorites
-                FavoriteService.removeFavorite(currentAd.getId());
+                FavoriteService.removeFavorite(adId);
                 isFavorited = false;
                 favoriteCount--;
             } else {
                 // Add to favorites
-                FavoriteService.addToFavorite(currentAd.getId());
+                FavoriteService.addToFavorite(adId);
                 isFavorited = true;
                 favoriteCount++;
             }
@@ -180,10 +179,27 @@ public class AdDetailsController {
     // GO TO RATING
 
     @FXML
-    private void goToRating() {
+    private void goToRating() throws Exception {
         if (adId != null) {
-            DataHolder.setSelectedAdId(adId);
-            NavigationUtil.goToRating(DataHolder.getSelectedUserId());
+            try {
+                Map<String,Object> result = AdService.getAdById(adId);
+                Advertisement currentAd= (Advertisement) result.get("ad");
+
+                Long sellerId = currentAd.getOwner().getId();
+                Long adId = currentAd.getId();
+                DataHolder.setSelectedAdId(adId);
+                DataHolder.setSelectedUserId(sellerId);
+                NavigationUtil.goToRating();
+
+            }catch (Exception e){
+                ShowErrorDialog.showErrorDialog(
+                        "Rating Error",
+                        "Failed to rate seller",
+                        "There was a problem rating the seller. Please try again later.",
+                        "ERROR"
+                );
+            }
+
         } else {
             ShowErrorDialog.showErrorDialog(
                     "Selection Error",
