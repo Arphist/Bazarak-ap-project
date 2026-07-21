@@ -2,6 +2,7 @@ package com.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.model.Category;
+import com.model.CategorySpecification;
 import com.util.Config;
 import com.util.HttpClientUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -206,6 +207,140 @@ public class CategoryService {
         }else{
             Map<String,String> error = objectMapper.readValue(response.body(),Map.class);
             throw new Exception(error.getOrDefault("error","Failed to delete category"));
+        }
+    }
+
+    // SPECIFICATION METHODS
+
+    /**
+     * Retrieves all specifications for a category (including inherited from parent).
+     *
+     * @param categoryId the ID of the category
+     * @return list of specifications for the category
+     * @throws Exception if the request fails
+     */
+    public static List<CategorySpecification> getCategorySpecifications(Long categoryId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/categories/" + categoryId + "/specifications"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CategorySpecification>>() {});
+        } else {
+            throw new Exception("Failed to load specifications: " + response.statusCode());
+        }
+    }
+
+    /**
+     * Retrieves direct specifications for a category (no inheritance).
+     *
+     * @param categoryId the ID of the category
+     * @return list of direct specifications
+     * @throws Exception if the request fails
+     */
+    public static List<CategorySpecification> getDirectSpecifications(Long categoryId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/categories/" + categoryId + "/specifications/direct"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), new TypeReference<List<CategorySpecification>>() {});
+        } else {
+            throw new Exception("Failed to load direct specifications: " + response.statusCode());
+        }
+    }
+
+    /**
+     * Adds a new specification to a category (Admin only).
+     *
+     * @param categoryId the ID of the category
+     * @param spec the specification to add
+     * @return the created specification
+     * @throws Exception if the request fails
+     */
+    public static CategorySpecification addSpecificationToCategory(Long categoryId, CategorySpecification spec) throws Exception {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name", spec.getName());
+        requestBody.put("type", spec.getType());
+        requestBody.put("options", spec.getOptions());
+        requestBody.put("required", spec.isRequired());
+        String json = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/categories/" + categoryId + "/specifications"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200 || response.statusCode() == 201) {
+            return objectMapper.readValue(response.body(), CategorySpecification.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to add specification"));
+        }
+    }
+
+    /**
+     * Updates an existing specification (Admin only).
+     *
+     * @param specId the ID of the specification to update
+     * @param spec the updated specification
+     * @return the updated specification
+     * @throws Exception if the request fails
+     */
+    public static CategorySpecification updateSpecification(Long specId, CategorySpecification spec) throws Exception {
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("name", spec.getName());
+        requestBody.put("type", spec.getType());
+        requestBody.put("options", spec.getOptions());
+        requestBody.put("required", spec.isRequired());
+        String json = objectMapper.writeValueAsString(requestBody);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/categories/specifications/" + specId))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            return objectMapper.readValue(response.body(), CategorySpecification.class);
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to update specification"));
+        }
+    }
+
+    /**
+     * Deletes a specification (Admin only).
+     *
+     * @param specId the ID of the specification to delete
+     * @return success message
+     * @throws Exception if the request fails
+     */
+    public static String deleteSpecification(Long specId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(Config.BASE_URL + "/categories/specifications/" + specId))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+            Map<String, String> result = objectMapper.readValue(response.body(), Map.class);
+            return result.get("message");
+        } else {
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to delete specification"));
         }
     }
 }
