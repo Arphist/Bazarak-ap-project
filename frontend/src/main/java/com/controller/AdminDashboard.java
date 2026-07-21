@@ -771,7 +771,7 @@ public class AdminDashboard {
             totalAdsLabel.setText("Total: " + stats.get("totalAds"));
             pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
             activeCountLabel.setText("Active: " + stats.get("activeAds"));
-            // You can add more stats here
+            // TODO: use "adsByCategory", "adsByCity", and "recentAds"
 
         } catch (Exception e) {
             // Optional: log error
