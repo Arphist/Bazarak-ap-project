@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -288,5 +289,80 @@ public class CategoryService {
         Category category = getCategoryById(categoryId);
         categorySpecificationRepository.deleteByCategoryId(categoryId);
         category.getSpecifications().clear();
+    }
+
+    /**
+     * Validate specification values against the category's specifications
+     */
+    public void validateSpecificationValues(Long categoryId, Map<Long, String> specValues) {
+        List<CategorySpecification> specs = getSpecificationsForCategory(categoryId);
+
+        // Check if required specs are provided
+        for (CategorySpecification spec : specs) {
+            if (spec.isRequired()) {
+                String value = specValues.get(spec.getId());
+                if (value == null || value.trim().isEmpty()) {
+                    throw new InvalidInputException("Specification '" + spec.getName() + "' is required");
+                }
+            }
+        }
+
+        // Validate values against spec types
+        for (Map.Entry<Long, String> entry : specValues.entrySet()) {
+            Long specId = entry.getKey();
+            String value = entry.getValue();
+
+            if (value == null || value.trim().isEmpty()) {
+                continue; // Skip empty values (they will be ignored)
+            }
+
+            // Find the spec
+            CategorySpecification spec = specs.stream()
+                    .filter(s -> s.getId().equals(specId))
+                    .findFirst()
+                    .orElseThrow(() -> new InvalidInputException("Invalid specification ID: " + specId));
+
+            // Validate based on type
+            switch (spec.getType()) {
+                case NUMBER:
+                    try {
+                        Double.parseDouble(value);
+                    } catch (NumberFormatException e) {
+                        throw new InvalidInputException("Specification '" + spec.getName() + "' must be a number");
+                    }
+                    break;
+                case BOOLEAN:
+                    if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+                        throw new InvalidInputException("Specification '" + spec.getName() + "' must be true or false");
+                    }
+                    break;
+                case DROPDOWN:
+                    if (spec.getOptions() != null) {
+                        String[] options = spec.getOptions().split(",");
+                        boolean valid = false;
+                        for (String opt : options) {
+                            if (opt.trim().equalsIgnoreCase(value.trim())) {
+                                valid = true;
+                                break;
+                            }
+                        }
+                        if (!valid) {
+                            throw new InvalidInputException("Invalid option for specification '" + spec.getName() + "'");
+                        }
+                    }
+                    break;
+                case TEXT:
+                default:
+                    // TEXT accepts anything
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Get all specifications with category information (for admin panel)
+     */
+    public List<CategorySpecification> getAllSpecifications() {
+        return categorySpecificationRepository.findAll();
     }
 }
