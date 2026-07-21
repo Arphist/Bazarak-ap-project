@@ -9,63 +9,60 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Pane?>
-<BorderPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.controller.HomeController">
+<BorderPane stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.HomeController">
 
     <!-- TOP: Header -->
     <top>
-        <VBox spacing="10" style="-fx-padding: 15; -fx-background-color: #2c3e50;">
+        <VBox spacing="12" styleClass="header-bar">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
             <HBox spacing="15" alignment="CENTER_LEFT">
-                <Label text="Bazarak" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                <Label fx:id="welcomeLabel" style="-fx-text-fill: #bdc3c7; -fx-font-size: 14;"/>
+                <Label text="Bazarak" styleClass="heading-title"/>
+                <Label fx:id="welcomeLabel" styleClass="sub-title"/>
 
                 <Pane HBox.hgrow="ALWAYS"/>
 
-                <Button text="↻ Refresh" onAction="#refreshAds"
-                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 16; -fx-padding: 5 10; -fx-cursor: hand;"/>
+                <Button text="↻ Refresh" onAction="#refreshAds" styleClass="button-secondary"/>
             </HBox>
 
             <!-- Search Bar + Filter Toggle -->
             <HBox spacing="10" alignment="CENTER">
-                <TextField fx:id="searchField" promptText="Search ads..." HBox.hgrow="ALWAYS"
-                           style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5;"/>
-                <Button text="Search" onAction="#handleSearch"
-                        style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20;"/>
-                <ToggleButton fx:id="filterToggleButton" text="Show Filters ▼" onAction="#toggleFilters"
-                              style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-padding: 10 15;"/>
+                <TextField fx:id="searchField" promptText="Search ads..." HBox.hgrow="ALWAYS"/>
+                <Button text="Search" onAction="#handleSearch" styleClass="button-primary"/>
+                <ToggleButton fx:id="filterToggleButton" text="Show Filters ▼" onAction="#toggleFilters" styleClass="button-secondary"/>
             </HBox>
 
-            <!-- Advanced Filters (Hidden by default) -->
-            <VBox fx:id="filterContainer" spacing="10" visible="false" managed="false"
-                  style="-fx-padding: 10; -fx-background-color: #34495e; -fx-background-radius: 5;">
-                <Label text="Advanced Filters" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+            <!-- Advanced Filters Container -->
+            <VBox fx:id="filterContainer" spacing="12" visible="false" managed="false" styleClass="filter-card">
+                <padding>
+                    <Insets top="12" right="15" bottom="12" left="15"/>
+                </padding>
+                <Label text="Advanced Filters" style="-fx-font-weight: bold;"/>
 
-                <!-- Row 1: Category & City -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Category:" style="-fx-text-fill: white;"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Category:"/>
                     <ComboBox fx:id="categoryCombo" promptText="All Categories" HBox.hgrow="ALWAYS"/>
-                    <Label text="City:" style="-fx-text-fill: white;"/>
+                    <Label text="City:"/>
                     <ComboBox fx:id="cityCombo" promptText="All Cities" HBox.hgrow="ALWAYS"/>
                 </HBox>
 
-                <!-- Row 2: Price Range -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Price Range:" style="-fx-text-fill: white;"/>
-                    <TextField fx:id="minPriceField" promptText="Min" prefWidth="80"/>
-                    <Label text="to" style="-fx-text-fill: white;"/>
-                    <TextField fx:id="maxPriceField" promptText="Max" prefWidth="80"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Price Range:"/>
+                    <TextField fx:id="minPriceField" promptText="Min" prefWidth="100"/>
+                    <Label text="to"/>
+                    <TextField fx:id="maxPriceField" promptText="Max" prefWidth="100"/>
                 </HBox>
 
-                <!-- Row 3: Sort Options -->
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Sort By:" style="-fx-text-fill: white;"/>
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Sort By:"/>
                     <ComboBox fx:id="sortByCombo" prefWidth="200"/>
-                    <Button fx:id="clearFiltersButton" text="Clear Filters" onAction="#clearFilters"
-                            style="-fx-background-color: #e67e22; -fx-text-fill: white; -fx-padding: 5 15;"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearFiltersButton" text="Clear Filters" onAction="#clearFilters" styleClass="button-secondary"/>
                 </HBox>
             </VBox>
         </VBox>
@@ -73,27 +70,26 @@
 
     <!-- CENTER: Ad List -->
     <center>
-        <VBox spacing="10" style="-fx-padding: 20;">
-            <Label text="Active Ads" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
-            <ListView fx:id="adListView" VBox.vgrow="ALWAYS"
-                      style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5;"/>
-            <Label fx:id="errorLabel" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
+        <VBox spacing="12">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Label text="Active Ads" styleClass="heading-title" style="-fx-font-size: 18;"/>
+            <ListView fx:id="adListView" VBox.vgrow="ALWAYS"/>
+            <Label fx:id="errorLabel" styleClass="error-label"/>
         </VBox>
     </center>
 
-    <!-- BOTTOM: Navigation -->
+    <!-- BOTTOM: Navigation Bar -->
     <bottom>
-        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #ecf0f1;">
-            <Button text="Create Ad" onAction="#goToCreateAd"
-                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-padding: 8 15;"/>
-            <Button text="Favorites" onAction="#goToFavorites"
-                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-padding: 8 15;"/>
-            <Button text="My Ads" onAction="#goToMyAds"
-                    style="-fx-background-color: #1abc9c; -fx-text-fill: white; -fx-padding: 8 15;"/>
-            <Button text="Profile" onAction="#goToProfile"
-                    style="-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-padding: 8 15;"/>
-            <Button text="Logout" onAction="#handleLogout"
-                    style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-padding: 8 15;"/>
+        <HBox spacing="12" alignment="CENTER" styleClass="header-bar">
+            <padding>
+                <Insets top="12" right="20" bottom="12" left="20"/>
+            </padding>
+            <Button text="Create Ad" onAction="#goToCreateAd" styleClass="button-primary"/>
+            <Button text="Favorites" onAction="#goToFavorites" styleClass="button-secondary"/>
+            <Button text="My Ads" onAction="#goToMyAds" styleClass="button-secondary"/><Button text="Profile" onAction="#goToProfile" styleClass="button-secondary"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="button-secondary"/>
         </HBox>
     </bottom>
 

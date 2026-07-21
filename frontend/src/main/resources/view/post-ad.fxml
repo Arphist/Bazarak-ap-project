@@ -6,69 +6,59 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/21"
+<BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.controller.CreateAdController">
+            fx:controller="com.controller.CreateAdController"
+            stylesheets="@styles.css">
 
-    <!-- TOP:  Back Button -->
+    <!-- TOP: Back Button -->
     <top>
-        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 15 20; -fx-background-color: #2c3e50;">
-            <Button text="← Back" onAction="#goBack"
-                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-cursor: hand;"/>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 15 20;">
+            <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
             <Region HBox.hgrow="ALWAYS"/>
         </HBox>
     </top>
 
     <!-- CENTER: Content -->
     <center>
-        <VBox spacing="15" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #f5f5f5;">
+        <VBox spacing="15" alignment="CENTER" style="-fx-padding: 30;">
 
-            <Label text="Create New Ad" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
-
-            <Label text="Fill in the details below" style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+            <Label text="Create New Ad" styleClass="heading-title"/>
+            <Label text="Fill in the details below" styleClass="sub-title"/>
 
             <!-- Title -->
-            <TextField fx:id="titleField" promptText="Title *" maxWidth="500"
-                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <TextField fx:id="titleField" promptText="Title *" maxWidth="500" styleClass="text-field"/>
 
             <!-- Description -->
-            <TextArea fx:id="descriptionArea" promptText="Description *" maxWidth="500" prefHeight="120"
-                      style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <TextArea fx:id="descriptionArea" promptText="Description *" maxWidth="500" prefHeight="120" styleClass="text-field"/>
 
             <!-- Price -->
-            <TextField fx:id="priceField" promptText="Price (Toman) *" maxWidth="500"
-                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <TextField fx:id="priceField" promptText="Price (Toman) *" maxWidth="500" styleClass="text-field"/>
 
             <!-- Category -->
-            <ComboBox fx:id="categoryCombo" maxWidth="500" promptText="Select Category"
-                      style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <ComboBox fx:id="categoryCombo" maxWidth="500" promptText="Select Category" styleClass="combo-box"/>
 
-            <ComboBox fx:id="subCategoryCombo" maxWidth="500" promptText="Select Sub-Category"
-                      style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <ComboBox fx:id="subCategoryCombo" maxWidth="500" promptText="Select Sub-Category" styleClass="combo-box"/>
 
             <!-- City -->
-            <ComboBox fx:id="cityCombo" maxWidth="500" promptText="Select City"
-                      style="-fx-padding: 5; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+            <ComboBox fx:id="cityCombo" maxWidth="500" promptText="Select City" styleClass="combo-box"/>
 
             <!-- Specifications Container -->
-            <Label text="Specifications" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #2c3e50;"/>
-            <VBox fx:id="specificationsContainer" spacing="8" maxWidth="500" style="-fx-padding: 10; -fx-background-color: #f8f9fa; -fx-border-color: #e9ecef; -fx-border-radius: 5;"/>
+            <Label text="Specifications" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+            <VBox fx:id="specificationsContainer" spacing="8" maxWidth="500" styleClass="filter-card" style="-fx-padding: 10;"/>
 
             <!-- Error Label -->
-            <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
+            <Label fx:id="errorLabel" text="" styleClass="error-label"/>
 
             <!-- Buttons -->
             <HBox spacing="15" alignment="CENTER">
-                <Button text="Create Ad" onAction="#handleCreateAd"
-                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 5;"/>
-
-                <Button text="Cancel" onAction="#cancel"
-                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30; -fx-background-radius: 5;"/>
+                <Button text="Create Ad" onAction="#handleCreateAd" styleClass="button-primary"/>
+                <Button text="Cancel" onAction="#cancel" styleClass="button-secondary"/>
             </HBox>
 
         </VBox>

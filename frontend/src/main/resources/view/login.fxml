@@ -9,43 +9,39 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="15" alignment="CENTER" style="-fx-padding: 40; -fx-background-color: #f5f5f5;"
+<VBox spacing="15" alignment="CENTER" stylesheets="@styles.css"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.LoginController">
 
-    <Label text="Bazarak" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
 
-    <Label text="Login to your account" style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+    <Label text="Bazarak" styleClass="heading-title"/>
+    <Label text="Login to your account" styleClass="sub-title"/>
 
-    <TextField fx:id="usernameField" promptText="Username" maxWidth="300"
-               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <VBox spacing="10" alignment="CENTER" maxWidth="320">
+        <TextField fx:id="usernameField" promptText="Username" maxWidth="Infinity"/>
 
-    <!-- Password Field with Show/Hide Toggle -->
-    <StackPane maxWidth="300" style="-fx-padding: 0;">
-        <TextField fx:id="passwordVisibleField" promptText="Password"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
-                   visible="false" managed="false"/>
+        <StackPane maxWidth="Infinity">
+            <TextField fx:id="passwordVisibleField" promptText="Password" visible="false" managed="false"/>
+            <PasswordField fx:id="passwordField" promptText="Password"/>
+            <ToggleButton fx:id="passwordToggle" text="👁" onAction="#togglePasswordVisibility"
+                          styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT">
+                <StackPane.margin>
+                    <Insets right="5"/>
+                </StackPane.margin>
+            </ToggleButton>
+        </StackPane>
+    </VBox>
 
-        <PasswordField fx:id="passwordField" promptText="Password"
-                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <Label fx:id="errorLabel" text="" styleClass="error-label"/>
 
-        <ToggleButton fx:id="passwordToggle" text="👁" onAction="#togglePasswordVisibility"
-                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                      StackPane.alignment="CENTER_RIGHT"/>
-    </StackPane>
-
-    <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
-
-    <Button text="Login" onAction="#handleLogin" maxWidth="300"
-            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
-
-    <Button text="Don't have an account? Register" onAction="#goToRegister"
-            style="-fx-background-color: transparent; -fx-text-fill: #3498db; -fx-underline: true;"/>
-
-    <Button text="Skip Login (Test Mode)" onAction="#handleSkipLogin" maxWidth="300"
-            style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
-
-    <Button text="🚀 Skip to Admin Dashboard (Test)" onAction="#skipToAdmin"
-            style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 15;"/>
+    <VBox spacing="10" alignment="CENTER" maxWidth="320">
+        <Button text="Login" onAction="#handleLogin" maxWidth="Infinity" styleClass="button-primary"/>
+        <Button text="Don't have an account? Register" onAction="#goToRegister" styleClass="button-link"/>
+        <Button text="Skip Login (Test Mode)" onAction="#handleSkipLogin" maxWidth="Infinity" styleClass="button-secondary"/>
+        <Button text="🚀 Skip to Admin Dashboard (Test)" onAction="#skipToAdmin" maxWidth="Infinity" styleClass="button-secondary"/>
+    </VBox>
 
 </VBox>

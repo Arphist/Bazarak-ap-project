@@ -6,72 +6,56 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="12" alignment="CENTER" style="-fx-padding: 30; -fx-background-color: #f5f5f5;"
+<VBox spacing="12" alignment="CENTER" stylesheets="@styles.css"
       xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.RegisterController">
 
-    <Label text="Create Account" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
 
-    <Label text="Join Bazarak marketplace" style="-fx-font-size: 14; -fx-text-fill: #7f8c8d;"/>
+    <Label text="Bazarak" styleClass="heading-title"/>
+    <Label text="Join Bazarak marketplace" styleClass="sub-title"/>
 
-    <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="300"
-               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <VBox spacing="10" alignment="CENTER" maxWidth="320">
+        <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="Infinity"/>
+        <TextField fx:id="usernameField" promptText="Username" maxWidth="Infinity"/>
+        <TextField fx:id="emailField" promptText="Email" maxWidth="Infinity"/>
+        <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="Infinity"/>
 
-    <TextField fx:id="usernameField" promptText="Username" maxWidth="300"
-               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+        <!-- Password Field -->
+        <StackPane maxWidth="Infinity">
+            <TextField fx:id="passwordVisibleField" promptText="Password" visible="false" managed="false"/>
+            <PasswordField fx:id="passwordField" promptText="Password"/>
+            <ToggleButton fx:id="passwordToggle" text="👁" onAction="#togglePasswordVisibility"
+                          styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT">
+                <StackPane.margin>
+                    <Insets right="5"/>
+                </StackPane.margin>
+            </ToggleButton>
+        </StackPane>
 
-    <TextField fx:id="emailField" promptText="Email" maxWidth="300"
-               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+        <!-- Confirm Password Field -->
+        <StackPane maxWidth="Infinity">
+            <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm Password" visible="false" managed="false"/>
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"/>
+            <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility"
+                          styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT">
+                <StackPane.margin>
+                    <Insets right="5"/>
+                </StackPane.margin>
+            </ToggleButton>
+        </StackPane>
+    </VBox>
 
-    <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="300"
-               style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
+    <Label fx:id="errorLabel" text="" styleClass="error-label"/>
 
-    <!-- ========================================== -->
-    <!-- PASSWORD FIELD WITH SHOW/HIDE TOGGLE      -->
-    <!-- ========================================== -->
-    <StackPane maxWidth="300" style="-fx-padding: 0;">
-
-        <!-- Hidden TextField (shown when toggled) -->
-        <TextField fx:id="passwordVisibleField" promptText="Password"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
-                   visible="false" managed="false"/>
-
-        <!-- PasswordField (shown by default) -->
-        <PasswordField fx:id="passwordField" promptText="Password"
-                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
-
-        <!-- Toggle Button on the RIGHT side (not inside mouseTransparent container) -->
-        <ToggleButton fx:id="passwordToggle" text="👁️" onAction="#togglePasswordVisibility"
-                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                      StackPane.alignment="CENTER_RIGHT"/>
-    </StackPane>
-
-    <!-- ========================================== -->
-    <!-- CONFIRM PASSWORD FIELD                     -->
-    <!-- ========================================== -->
-    <StackPane maxWidth="300" style="-fx-padding: 0;">
-        <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm Password"
-                   style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"
-                   visible="false" managed="false"/>
-
-        <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"
-                       style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #bdc3c7;"/>
-
-        <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility"
-                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                      StackPane.alignment="CENTER_RIGHT"/>
-    </StackPane>
-
-    <Label fx:id="errorLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 12;"/>
-
-    <Button text="Register" onAction="#handleRegister" maxWidth="300"
-            style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 5;"/>
-
-    <Button text="Already have an account? Login" onAction="#goToLogin"
-            style="-fx-background-color: transparent; -fx-text-fill: #3498db; -fx-underline: true;"/>
+    <VBox spacing="8" alignment="CENTER" maxWidth="320">
+        <Button text="Register" onAction="#handleRegister" maxWidth="Infinity" styleClass="button-primary"/>
+        <Button text="Already have an account? Login" onAction="#goToLogin" styleClass="button-link"/>
+    </VBox>
 
 </VBox>

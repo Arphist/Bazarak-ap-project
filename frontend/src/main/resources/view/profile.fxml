@@ -4,139 +4,113 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane style="-fx-background-color: #f8f9fa;" xmlns="http://javafx.com/javafx/21"
+<BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.controller.ProfileController">
+            fx:controller="com.controller.ProfileController"
+            stylesheets="@styles.css">
 
     <!-- TOP: Fixed Back Button -->
     <top>
-        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 15 20; -fx-background-color: #2c3e50;">
-            <Button text="← Back" onAction="#goBack"
-                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14; -fx-cursor: hand;"/>
-            <Label text="Profile" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 15 20;">
+            <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
+            <Label text="Profile" styleClass="heading-title"/>
         </HBox>
     </top>
 
     <!-- CENTER: Scrollable Content -->
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
-            <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 30 40 40 40; -fx-background-color: #f8f9fa;">
+            <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 30 40 40 40;">
 
                 <!-- Profile Header -->
                 <VBox spacing="8" alignment="CENTER" style="-fx-padding: 10 0 15 0;">
 
                     <!-- Profile Photo - Circular -->
                     <StackPane>
-                        <ImageView fx:id="profileImageView" fitWidth="80" fitHeight="80" preserveRatio="true"
-                                   style="-fx-background-color: #e9ecef; -fx-background-radius: 50; -fx-border-color: #ced4da; -fx-border-width: 2; -fx-border-radius: 50;">
+                        <ImageView fx:id="profileImageView" fitWidth="80" fitHeight="80" preserveRatio="true">
                             <clip>
                                 <Circle centerX="40" centerY="40" radius="40"/>
                             </clip>
                         </ImageView>
-                        <!-- Default avatar placeholder (shown when no photo) -->
-                        <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 40; -fx-text-fill: #adb5bd;"/>
+                        <!-- Default avatar placeholder -->
+                        <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 40; -fx-text-fill: #888888;"/>
                     </StackPane>
 
                     <!-- Change Photo Button -->
-                    <Button fx:id="changePhotoButton" text="Change Photo" onAction="#handleChangeProfilePhoto"
-                            style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-font-size: 12; -fx-padding: 2 10; -fx-border-color: #ced4da; -fx-border-radius: 15; -fx-cursor: hand;"/>
+                    <Button fx:id="changePhotoButton" text="Change Photo" onAction="#handleChangeProfilePhoto" styleClass="button-secondary"/>
 
-                    <Label fx:id="usernameLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 5 0 0 0;"/>
+                    <Label fx:id="usernameLabel" styleClass="heading-title" style="-fx-padding: 5 0 0 0;"/>
 
                     <!-- Time Information -->
                     <VBox spacing="2" alignment="CENTER" style="-fx-padding: 5 0;">
-                        <Label fx:id="createdAtLabel" style="-fx-text-fill: #868e96; -fx-font-size: 11px;" />
-                        <Label fx:id="updatedAtLabel" style="-fx-text-fill: #868e96; -fx-font-size: 11px;" />
-                        <Label fx:id="lastLoginLabel" style="-fx-text-fill: #868e96; -fx-font-size: 11px;" />
+                        <Label fx:id="createdAtLabel" styleClass="sub-title"/>
+                        <Label fx:id="updatedAtLabel" styleClass="sub-title"/>
+                        <Label fx:id="lastLoginLabel" styleClass="sub-title"/>
                     </VBox>
                 </VBox>
 
-                <Separator style="-fx-background-color: #e9ecef;"/>
+                <Separator style="-fx-opacity: 0.2;"/>
 
                 <!-- Personal Information -->
                 <VBox spacing="8" alignment="CENTER" style="-fx-padding: 5 0;">
-                    <Label text="Personal Information" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
+                    <Label text="Personal Information" styleClass="sub-title" style="-fx-font-weight: bold;"/>
 
-                    <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="360"
-                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
+                    <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="360" styleClass="text-field"/>
+                    <TextField fx:id="emailField" promptText="Email" maxWidth="360" styleClass="text-field"/>
+                    <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="360" styleClass="text-field"/>
 
-                    <TextField fx:id="emailField" promptText="Email" maxWidth="360"
-                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-
-                    <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="360"
-                               style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-
-                    <Button text="Save Changes" onAction="#handleUpdateProfile" maxWidth="360"
-                            style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    <Button text="Save Changes" onAction="#handleUpdateProfile" maxWidth="360" styleClass="button-primary"/>
                 </VBox>
 
-                <Separator style="-fx-background-color: #e9ecef;"/>
+                <Separator style="-fx-opacity: 0.2;"/>
 
                 <!-- Change Password -->
                 <VBox spacing="8" alignment="CENTER" style="-fx-padding: 5 0;">
-                    <Label text="Change Password" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #495057;"/>
+                    <Label text="Change Password" styleClass="sub-title" style="-fx-font-weight: bold;"/>
 
                     <!-- Old Password -->
-                    <StackPane maxWidth="360" style="-fx-padding: 0;">
-                        <TextField fx:id="oldPasswordVisibleField" promptText="Current Password"
-                                   style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
-                                   visible="false" managed="false"/>
-                        <PasswordField fx:id="oldPasswordField" promptText="Current Password"
-                                       style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-                        <ToggleButton fx:id="oldPasswordToggle" text="👁" onAction="#toggleOldPasswordVisibility"
-                                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                                      StackPane.alignment="CENTER_RIGHT"/>
+                    <StackPane maxWidth="360">
+                        <TextField fx:id="oldPasswordVisibleField" promptText="Current Password" styleClass="text-field" visible="false" managed="false"/>
+                        <PasswordField fx:id="oldPasswordField" promptText="Current Password" styleClass="password-field"/>
+                        <ToggleButton fx:id="oldPasswordToggle" text="👁" onAction="#toggleOldPasswordVisibility" styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT"/>
                     </StackPane>
 
                     <!-- New Password -->
-                    <StackPane maxWidth="360" style="-fx-padding: 0;">
-                        <TextField fx:id="newPasswordVisibleField" promptText="New Password"
-                                   style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
-                                   visible="false" managed="false"/>
-                        <PasswordField fx:id="newPasswordField" promptText="New Password"
-                                       style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-                        <ToggleButton fx:id="newPasswordToggle" text="👁" onAction="#toggleNewPasswordVisibility"
-                                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                                      StackPane.alignment="CENTER_RIGHT"/>
+                    <StackPane maxWidth="360">
+                        <TextField fx:id="newPasswordVisibleField" promptText="New Password" styleClass="text-field" visible="false" managed="false"/>
+                        <PasswordField fx:id="newPasswordField" promptText="New Password" styleClass="password-field"/>
+                        <ToggleButton fx:id="newPasswordToggle" text="👁" onAction="#toggleNewPasswordVisibility" styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT"/>
                     </StackPane>
 
                     <!-- Confirm Password -->
-                    <StackPane maxWidth="360" style="-fx-padding: 0;">
-                        <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm New Password"
-                                   style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"
-                                   visible="false" managed="false"/>
-                        <PasswordField fx:id="confirmPasswordField" promptText="Confirm New Password"
-                                       style="-fx-padding: 10 12; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-                        <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility"
-                                      style="-fx-background-color: transparent; -fx-font-size: 16; -fx-cursor: hand; -fx-padding: 5 10;"
-                                      StackPane.alignment="CENTER_RIGHT"/>
+                    <StackPane maxWidth="360">
+                        <TextField fx:id="confirmPasswordVisibleField" promptText="Confirm New Password" styleClass="text-field" visible="false" managed="false"/>
+                        <PasswordField fx:id="confirmPasswordField" promptText="Confirm New Password" styleClass="password-field"/>
+                        <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility" styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT"/>
                     </StackPane>
 
-                    <Button text="Update Password" onAction="#handleChangePassword" maxWidth="360"
-                            style="-fx-background-color: #6c757d; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                    <Button text="Update Password" onAction="#handleChangePassword" maxWidth="360" styleClass="button-secondary"/>
                 </VBox>
 
                 <!-- Error Label -->
-                <Label fx:id="errorLabel" text="" style="-fx-text-fill: #dc3545; -fx-font-size: 12; -fx-padding: 5 0;"/>
+                <Label fx:id="errorLabel" text="" styleClass="error-label"/>
 
-                <!-- Spacer -->
                 <Region prefHeight="10"/>
 
                 <!-- Logout Button -->
-                <Button text="Sign Out" onAction="#handleLogout" maxWidth="360"
-                        style="-fx-background-color: transparent; -fx-text-fill: #dc3545; -fx-font-weight: bold; -fx-padding: 8; -fx-border-color: #dc3545; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand;"/>
+                <Button text="Sign Out" onAction="#handleLogout" maxWidth="360" styleClass="button-secondary" style="-fx-border-color: #CF6679; -fx-text-fill: #CF6679;"/>
 
             </VBox>
         </ScrollPane>
