@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -191,5 +192,41 @@ public class CategoryService {
         spec.setCategory(category);
 
         return categorySpecificationRepository.save(spec);
+    }
+
+    /**
+     * Get all specifications for a category (including inherited from parent)
+     * This implements the Divar-style: Layer 2 holds specs, Layer 3 inherits
+     */
+    public List<CategorySpecification> getSpecificationsForCategory(Long categoryId) {
+        Category category = getCategoryById(categoryId);
+
+        // If this category has its own specs → use them
+        if (category.hasSpecifications()) {
+            return category.getSpecifications();
+        }
+
+        // If not, check if parent has specs (Layer 2)
+        if (category.getParentCategory() != null &&
+                category.getParentCategory().hasSpecifications()) {
+            return category.getParentCategory().getSpecifications();
+        }
+
+        // If still not, check grandparent (Layer 1)
+        if (category.getParentCategory() != null &&
+                category.getParentCategory().getParentCategory() != null &&
+                category.getParentCategory().getParentCategory().hasSpecifications()) {
+            return category.getParentCategory().getParentCategory().getSpecifications();
+        }
+
+        // No specifications found
+        return new ArrayList<>();
+    }
+
+    /**
+     * Get specifications directly attached to a category (no inheritance)
+     */
+    public List<CategorySpecification> getDirectSpecifications(Long categoryId) {
+        return categorySpecificationRepository.findByCategoryId(categoryId);
     }
 }
