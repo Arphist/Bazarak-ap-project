@@ -19,10 +19,14 @@ import java.util.Map;
 
 public class AdminDashboard {
 
-    @FXML private VBox dashboardStatsView;
-    @FXML private VBox citiesView;
-    @FXML private VBox categoriesView;
-    @FXML private VBox specificationsView;
+    @FXML
+    private VBox dashboardStatsView;
+    @FXML
+    private VBox citiesView;
+    @FXML
+    private VBox categoriesView;
+    @FXML
+    private VBox specificationsView;
 
     // FXML FIELDS - SPECIFICATIONS
     @FXML
@@ -556,7 +560,7 @@ public class AdminDashboard {
         try {
             String sortBy = activeSortByCombo.getValue();
             String sortOrder = activeSortOrderCombo.getValue();
-            List<Advertisement> ads = AdminService.getAdsByStatus("ACTIVE", sortBy, sortOrder);
+            List<Advertisement> ads = AdminService.getAdsByStatus("ACCEPTED", sortBy, sortOrder);
             activeAds.setAll(ads);
             activeAdsListView.setItems(activeAds);
             activeCountLabel.setText("Active: " + activeAds.size());
