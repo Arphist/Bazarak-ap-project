@@ -288,7 +288,8 @@ public class CreateAdController {
             ad.setCity(selectedCity);
 
             // Send to backend
-            Map<String, Object> result =  AdService.createAd(ad);
+            // Pass specifications
+            Map<String, Object> result = AdService.createAd(ad, specValues);
 
             // Show success message
             ShowErrorDialog.showErrorDialog(
