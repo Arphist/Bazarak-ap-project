@@ -24,7 +24,26 @@ public class AdminAdvertisementController {
     @Autowired
     private UserService userService;
 
-    // HELPER METHOD: Check Admin Access
+    /**
+     * Get ad with specifications (for admin review)
+     */
+    @GetMapping("/{id}/specifications")
+    public ResponseEntity<?> getAdWithSpecifications(@PathVariable Long id, HttpSession session) {
+        userService.checkAdmin(session);
+
+        try {
+            Advertisement ad = advertisementService.getAdWithSpecifications(id);
+            Map<Long, String> specs = advertisementService.getSpecificationValuesMap(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ad", ad);
+            response.put("specifications", specs);
+
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 
     // 1. GET ALL PENDING ADS (with sorting)
 
