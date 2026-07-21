@@ -395,6 +395,15 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    /**
+     * Check if input is valid.
+     * @param ex spring class to handle errors
+     * @return HTTP-status -> BAD_REQUEST
+     */
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<?> handleFileIsEmptyException(InvalidInputException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 
     // HELPER METHOD
     /**
