@@ -204,6 +204,10 @@ public class AdminDashboard {
         // Load categories for spec management
         loadSpecCategories();
 
+        // Populate type combo for specifications
+        specTypeCombo.setItems(FXCollections.observableArrayList("TEXT", "NUMBER", "BOOLEAN", "DROPDOWN"));
+        specTypeCombo.setPromptText("Type");
+
         // Setup specifications list
         specificationsListView.setItems(specifications);
         specificationsListView.setCellFactory(lv -> new ListCell<CategorySpecification>() {
