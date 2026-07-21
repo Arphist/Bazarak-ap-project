@@ -67,6 +67,32 @@
     -fx-background-color: #383838;
 }
 
+/* Edit Button */
+.button-edit {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.button-edit:hover {
+    -fx-background-color: #2980B9;
+}
+
+/* Delete Button */
+.button-delete {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.button-delete:hover {
+    -fx-background-color: #C0392B;
+}
+
 /* Link Buttons (Flat style) */
 .button-link {
     -fx-background-color: transparent;
@@ -135,7 +161,13 @@
     -fx-text-fill: #E0E0E0;
 }
 
-/* Admin Dashboard Elements */
+/* Admin Dashboard Elements - Tabs equal width */
+.tab-pane .tab {
+    -fx-pref-width: 90px;
+    -fx-min-width: 90px;
+    -fx-max-width: 90px;
+}
+
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: #121212;
 }
@@ -196,4 +228,96 @@
 .error-label {
     -fx-text-fill: #CF6679;
     -fx-font-size: 12px;
+}
+
+/* MenuButton (⋯) popup styling */
+.menu-button .context-menu {
+    -fx-background-color: #1E1E1E;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.menu-button .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E0E0E0;
+    -fx-padding: 8 20;
+}
+
+.menu-button .menu-item:hover {
+    -fx-background-color: #00B8D1FF;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Navigation Buttons in right sidebar */
+.nav-button {
+    -fx-background-color: #2C2C2C;
+    -fx-text-fill: #E0E0E0;
+    -fx-background-radius: 6;
+    -fx-padding: 12 16;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 6;
+}
+.nav-button:hover {
+    -fx-background-color: #383838;
+    -fx-border-color: #00B8D1FF;
+}
+.nav-button:pressed {
+    -fx-background-color: #00B8D1FF;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Center tab labels */
+.tab .tab-label {
+    -fx-alignment: CENTER;
+}
+
+/* Total Ads title – white, distinct from green */
+.total-title {
+    -fx-text-fill: #FFFFFF;
+}
+
+/* Menu button – large bold text, keep button size */
+.menu-button {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 8;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+}
+.menu-button .menu-item {
+    -fx-font-size: inherit;   /* default size for menu items */
+}
+
+/* Edit button – orange */
+.button-edit {
+    -fx-background-color: #F39C12;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.button-edit:hover {
+    -fx-background-color: #E67E22;
+}
+
+/* Delete button – red (already defined, keep as is) */
+.button-delete {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.button-delete:hover {
+    -fx-background-color: #C0392B;
+}
+
+/* Ensure stats cards have proper spacing */
+.stat-card .label:first-child {
+    -fx-font-size: 13px; /* sub-title size */
 }
