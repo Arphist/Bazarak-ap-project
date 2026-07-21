@@ -2,13 +2,11 @@
    BAZARAK - DARK THEME STYLESHEET
    ============================================================ */
 
-/* Root & Backgrounds */
 .root {
     -fx-background-color: #121212;
     -fx-font-family: "Segoe UI", "Tahoma", sans-serif;
 }
 
-/* Base Labels */
 .label {
     -fx-text-fill: #E0E0E0;
 }
@@ -24,7 +22,6 @@
     -fx-text-fill: #9E9E9E;
 }
 
-/* Text Fields & Password Fields */
 .text-field, .password-field {
     -fx-background-color: #1E1E1E;
     -fx-text-fill: #FFFFFF;
@@ -34,13 +31,11 @@
     -fx-background-radius: 6;
     -fx-padding: 8 12;
 }
-
 .text-field:focused, .password-field:focused {
     -fx-border-color: #00B8D1FF;
     -fx-background-color: #252525;
 }
 
-/* Primary Buttons (Main actions) */
 .button-primary {
     -fx-background-color: #00B8D1FF;
     -fx-text-fill: #FFFFFF;
@@ -49,12 +44,10 @@
     -fx-padding: 8 16;
     -fx-cursor: hand;
 }
-
 .button-primary:hover {
     -fx-background-color: #00B8D1FF;
 }
 
-/* Secondary / Neutral Buttons */
 .button-secondary {
     -fx-background-color: #2C2C2C;
     -fx-text-fill: #E0E0E0;
@@ -62,14 +55,13 @@
     -fx-padding: 8 16;
     -fx-cursor: hand;
 }
-
 .button-secondary:hover {
     -fx-background-color: #383838;
 }
 
-/* Edit Button */
+/* Edit button – orange */
 .button-edit {
-    -fx-background-color: #3498DB;
+    -fx-background-color: #F39C12;
     -fx-text-fill: #FFFFFF;
     -fx-background-radius: 6;
     -fx-padding: 8 16;
@@ -77,10 +69,10 @@
     -fx-font-weight: bold;
 }
 .button-edit:hover {
-    -fx-background-color: #2980B9;
+    -fx-background-color: #E67E22;
 }
 
-/* Delete Button */
+/* Delete button – red */
 .button-delete {
     -fx-background-color: #E74C3C;
     -fx-text-fill: #FFFFFF;
@@ -93,36 +85,30 @@
     -fx-background-color: #C0392B;
 }
 
-/* Link Buttons (Flat style) */
 .button-link {
     -fx-background-color: transparent;
     -fx-text-fill: #BB86FC;
     -fx-cursor: hand;
 }
-
 .button-link:hover {
     -fx-underline: true;
 }
 
-/* Icon / Eye Toggle Buttons */
 .icon-toggle {
     -fx-background-color: transparent;
     -fx-text-fill: #888888;
     -fx-cursor: hand;
 }
-
 .icon-toggle:hover {
     -fx-text-fill: #FFFFFF;
 }
 
-/* Header Container */
 .header-bar {
     -fx-background-color: #1E1E1E;
     -fx-border-color: transparent transparent #2A2A2A transparent;
     -fx-border-width: 1;
 }
 
-/* Filter Box */
 .filter-card {
     -fx-background-color: #1A1A1A;
     -fx-border-color: #2A2A2A;
@@ -130,61 +116,52 @@
     -fx-background-radius: 8;
 }
 
-/* ListViews */
 .list-view {
     -fx-background-color: #1E1E1E;
     -fx-border-color: #2A2A2A;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
 }
-
 .list-cell {
     -fx-background-color: #1E1E1E;
     -fx-text-fill: #E0E0E0;
     -fx-padding: 8;
 }
-
 .list-cell:filled:selected, .list-cell:filled:hover {
     -fx-background-color: #2A2A2A;
     -fx-text-fill: #FFFFFF;
 }
 
-/* ComboBox */
 .combo-box {
     -fx-background-color: #1E1E1E;
     -fx-border-color: #333333;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
 }
-
 .combo-box .label {
     -fx-text-fill: #E0E0E0;
 }
 
-/* Admin Dashboard Elements - Tabs equal width */
+/* Tabs – equal width and centered labels */
 .tab-pane .tab {
     -fx-pref-width: 90px;
     -fx-min-width: 90px;
     -fx-max-width: 90px;
 }
-
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: #121212;
 }
-
 .tab {
     -fx-background-color: #1E1E1E;
     -fx-background-radius: 6 6 0 0;
 }
-
 .tab:selected {
     -fx-background-color: #00B8D1FF;
 }
-
 .tab .tab-label {
     -fx-text-fill: #B0B0B0;
+    -fx-alignment: CENTER;
 }
-
 .tab:selected .tab-label {
     -fx-text-fill: #FFFFFF;
     -fx-font-weight: bold;
@@ -202,54 +179,53 @@
     -fx-background-color: #1E1E1E;
     -fx-border-color: #2A2A2A;
 }
-
 .table-view .column-header-background {
     -fx-background-color: #252525;
 }
-
 .table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
     -fx-border-color: #2A2A2A;
 }
-
 .table-cell {
     -fx-text-fill: #E0E0E0;
 }
-
 .table-row-cell {
     -fx-background-color: #1E1E1E;
 }
-
 .table-row-cell:hover, .table-row-cell:selected {
     -fx-background-color: #2A2A2A;
 }
 
-/* Error Labels */
 .error-label {
     -fx-text-fill: #CF6679;
     -fx-font-size: 12px;
 }
 
-/* MenuButton (⋯) popup styling */
+/* MenuButton (⋯) */
+.menu-button {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 8;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+}
 .menu-button .context-menu {
     -fx-background-color: #1E1E1E;
     -fx-border-color: #2A2A2A;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
 }
-
 .menu-button .menu-item {
     -fx-background-color: transparent;
     -fx-text-fill: #E0E0E0;
     -fx-padding: 8 20;
 }
-
 .menu-button .menu-item:hover {
     -fx-background-color: #00B8D1FF;
     -fx-text-fill: #FFFFFF;
 }
 
-/* Navigation Buttons in right sidebar */
+/* Navigation Buttons */
 .nav-button {
     -fx-background-color: #2C2C2C;
     -fx-text-fill: #E0E0E0;
@@ -269,55 +245,7 @@
     -fx-text-fill: #FFFFFF;
 }
 
-/* Center tab labels */
-.tab .tab-label {
-    -fx-alignment: CENTER;
-}
-
-/* Total Ads title – white, distinct from green */
+/* Total Ads title – white */
 .total-title {
     -fx-text-fill: #FFFFFF;
-}
-
-/* Menu button – large bold text, keep button size */
-.menu-button {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-padding: 2 8;
-    -fx-min-height: 30px;
-    -fx-max-height: 30px;
-}
-.menu-button .menu-item {
-    -fx-font-size: inherit;   /* default size for menu items */
-}
-
-/* Edit button – orange */
-.button-edit {
-    -fx-background-color: #F39C12;
-    -fx-text-fill: #FFFFFF;
-    -fx-background-radius: 6;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
-}
-.button-edit:hover {
-    -fx-background-color: #E67E22;
-}
-
-/* Delete button – red (already defined, keep as is) */
-.button-delete {
-    -fx-background-color: #E74C3C;
-    -fx-text-fill: #FFFFFF;
-    -fx-background-radius: 6;
-    -fx-padding: 8 16;
-    -fx-cursor: hand;
-    -fx-font-weight: bold;
-}
-.button-delete:hover {
-    -fx-background-color: #C0392B;
-}
-
-/* Ensure stats cards have proper spacing */
-.stat-card .label:first-child {
-    -fx-font-size: 13px; /* sub-title size */
 }
