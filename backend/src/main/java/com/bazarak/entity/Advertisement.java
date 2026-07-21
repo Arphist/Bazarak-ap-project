@@ -284,6 +284,14 @@ public class Advertisement {
         this.rejectionReason=reason;
     }
 
+    public List<AdvertisementSpecification> getSpecificationValues() {
+        return specificationValues;
+    }
+
+    public void setSpecificationValues(List<AdvertisementSpecification> specificationValues) {
+        this.specificationValues = specificationValues;
+    }
+
     // HELPER METHODS FOR IMAGES
 
     public void addImage(Image image) {
