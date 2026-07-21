@@ -193,20 +193,28 @@ public class AdService {
     }
 
     /**
-     * Updates an existing advertisement.
+     * Updates an existing advertisement with specification values.
      *
      * @param ad the advertisement with updated information
+     * @param specificationValues map of specification ID → value
      * @return a map containing the updated advertisement and the server message
      * @throws Exception if the update operation fails
      */
-    public static Map<String, Object> updateAd(Advertisement ad) throws Exception {
+    public static Map<String, Object> updateAd(Advertisement ad, Map<Long, String> specificationValues) throws Exception {
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("title", ad.getTitle());
         requestBody.put("description", ad.getDescription());
         requestBody.put("price", ad.getPrice());
         requestBody.put("categoryId", ad.getCategory().getId());
         requestBody.put("cityId", ad.getCity().getId());
+
+        // Add specification values
+        if (specificationValues != null && !specificationValues.isEmpty()) {
+            requestBody.put("specifications", specificationValues);
+        }
+
         String json = objectMapper.writeValueAsString(requestBody);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/" + ad.getId()))
                 .header("Content-Type", "application/json")
@@ -214,6 +222,7 @@ public class AdService {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> result = new HashMap<>();
