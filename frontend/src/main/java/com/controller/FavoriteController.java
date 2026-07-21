@@ -4,6 +4,7 @@ import com.model.Advertisement;
 import com.model.Favorite;
 import com.service.FavoriteService;
 import com.util.NavigationUtil;
+import com.view.ShowErrorDialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -24,8 +25,6 @@ public class FavoriteController {
     @FXML
     private ListView<Advertisement> favoritesListView;
 
-    @FXML
-    private Label errorLabel;
 
     @FXML
     private Label countLabel;
@@ -89,10 +88,15 @@ public class FavoriteController {
             // Update count label
             countLabel.setText("You have " + favorites.size() + " favorite ad(s)");
 
-            errorLabel.setText("");
+
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to load favorites: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Favorites Error",
+                    "Failed to load favorites",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -103,7 +107,12 @@ public class FavoriteController {
         Advertisement selected = favoritesListView.getSelectionModel().getSelectedItem();
 
         if (selected == null) {
-            errorLabel.setText("Please select an ad to remove");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No advertisement selected",
+                    "Please select an ad to remove.",
+                    "WARNING"
+            );
             return;
         }
 
@@ -117,10 +126,20 @@ public class FavoriteController {
             // Update count label
             countLabel.setText("You have " + favorites.size() + " favorite ad(s)");
 
-            errorLabel.setText("Ad removed from favorites successfully");
+            ShowErrorDialog.showErrorDialog(
+                    "Success",
+                    null,
+                    "Advertisement removed from favorites successfully.",
+                    "INFORMATION"
+            );
 
         } catch (Exception e) {
-            errorLabel.setText("Failed to remove favorite: " + e.getMessage());
+            ShowErrorDialog.showErrorDialog(
+                    "Favorite Error",
+                    "Failed to remove favorite",
+                    e.getMessage(),
+                    "ERROR"
+            );
         }
     }
 
@@ -137,7 +156,12 @@ public class FavoriteController {
         if (selected != null) {
             NavigationUtil.goToAdDetails(selected.getId());
         } else {
-            errorLabel.setText("Please select an ad to view");
+            ShowErrorDialog.showErrorDialog(
+                    "Selection Error",
+                    "No advertisement selected",
+                    "Please select an ad to view.",
+                    "WARNING"
+            );
         }
     }
 
@@ -173,12 +197,22 @@ public class FavoriteController {
                         Platform.runLater(() -> {
                             favorites.remove(ad);
                             countLabel.setText("You have " + favorites.size() + " favorite ad(s)");
-                            errorLabel.setText("Ad removed from favorites successfully");
+                            ShowErrorDialog.showErrorDialog(
+                                    "Success",
+                                    null,
+                                    "Advertisement removed from favorites successfully.",
+                                    "INFORMATION"
+                            );
                         });
 
                     } catch (Exception e) {
                         Platform.runLater(() -> {
-                            errorLabel.setText("Failed to remove favorite: " + e.getMessage());
+                            ShowErrorDialog.showErrorDialog(
+                                    "Favorite Error",
+                                    "Failed to remove favorite",
+                                    e.getMessage(),
+                                    "ERROR"
+                            );
                         });
                     }
                 }
