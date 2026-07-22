@@ -1378,6 +1378,56 @@ public class AdminDashboard {
         }
     }
 
+    // In AdminDashboard.java
+
+    /**
+     * Loads all users (default view).
+     */
+    @FXML
+    private void showAllUsers() {
+        loadUsers(); // reuses existing method that loads all users
+    }
+
+    /**
+     * Loads only blocked users.
+     */
+    @FXML
+    private void showBlockedUsers() {
+        try {
+            List<User> blockedUsers = AdminService.getBlockedUsers();
+            users.setAll(blockedUsers);
+            usersTable.setItems(users);
+            usersCountLabel.setText("Blocked Users: " + users.size());
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Load Users Error",
+                    "Failed to load blocked users",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
+    /**
+     * Loads only active users.
+     */
+    @FXML
+    private void showActiveUsers() {
+        try {
+            List<User> activeUsers = AdminService.getActiveUsers();
+            users.setAll(activeUsers);
+            usersTable.setItems(users);
+            usersCountLabel.setText("Active Users: " + users.size());
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Load Users Error",
+                    "Failed to load active users",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
     // REFRESH
 
     @FXML
