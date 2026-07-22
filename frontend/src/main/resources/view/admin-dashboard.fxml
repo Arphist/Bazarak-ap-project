@@ -30,7 +30,7 @@
 
     <!-- CENTER: TabPane -->
     <center>
-        <TabPane style="-fx-tab-min-height: 35;">
+        <TabPane styleClass="centered-tabs" style="-fx-tab-min-height: 35;">
             <padding>
                 <Insets top="15" right="20" bottom="20" left="20"/>
             </padding>
