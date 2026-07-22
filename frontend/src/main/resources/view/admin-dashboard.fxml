@@ -138,7 +138,7 @@
                             </ScrollPane>
                         </VBox>
 
-                        <!-- Cities View -->
+                        <!-- ==================== UPDATED CITIES VIEW ==================== -->
                         <VBox fx:id="citiesView" spacing="8" styleClass="filter-card">
                             <padding>
                                 <Insets top="15" right="15" bottom="15" left="15"/>
@@ -146,10 +146,17 @@
 
                             <Label text="Cities" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0; -fx-font-size: 14px;"/>
 
-                            <!-- Search Bar -->
+                            <!-- Search by City Name -->
                             <HBox spacing="5">
                                 <TextField fx:id="citySearchField" promptText="Search cities..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
                                 <Button text="🔍" onAction="#searchCities" styleClass="button-secondary"/>
+                            </HBox>
+
+                            <!-- NEW: Filter by Province -->
+                            <HBox spacing="5">
+                                <TextField fx:id="cityProvinceFilterField" promptText="Filter by province..." HBox.hgrow="ALWAYS" styleClass="text-field"/>
+                                <Button text="📍 Filter by Province" onAction="#filterCitiesByProvince" styleClass="button-secondary"/>
+                                <Button text="Show All" onAction="#resetCityFilter" styleClass="button-secondary"/>
                             </HBox>
 
                             <!-- List View -->
