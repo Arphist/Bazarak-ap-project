@@ -362,8 +362,36 @@ public class AdminDashboard {
     private void loadSpecCategories() {
         try {
             List<Category> categories = CategoryService.getAllCategories();
-            specCategoryCombo.setItems(FXCollections.observableArrayList(categories));
+            ObservableList<Category> categoryList = FXCollections.observableArrayList(categories);
+            specCategoryCombo.setItems(categoryList);
             specCategoryCombo.setPromptText("Select a category");
+
+            // Set cell factory to show category name
+            specCategoryCombo.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category category, boolean empty) {
+                    super.updateItem(category, empty);
+                    if (empty || category == null) {
+                        setText(null);
+                    } else {
+                        setText(category.getName());
+                    }
+                }
+            });
+
+            //  Set button cell to show category name when selected
+            specCategoryCombo.setButtonCell(new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category category, boolean empty) {
+                    super.updateItem(category, empty);
+                    if (empty || category == null) {
+                        setText(null);
+                    } else {
+                        setText(category.getName());
+                    }
+                }
+            });
+
         } catch (Exception e) {
             specErrorLabel.setText("Failed to load categories: " + e.getMessage());
         }
