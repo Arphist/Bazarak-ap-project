@@ -19,6 +19,9 @@ import java.util.Map;
 
 public class AdminDashboard {
     @FXML
+    private TextField cityProvinceFilterField;
+
+    @FXML
     private ListView<Advertisement> recentAdsListView;
     @FXML
     private ListView<String> adsByCategoryListView;
@@ -239,7 +242,6 @@ public class AdminDashboard {
         } else {
             deletedAdsListView.setPlaceholder(null);
         }
-
 
 
         setupUserTable();
@@ -815,6 +817,50 @@ public class AdminDashboard {
             );
         }
     }
+
+    /**
+     * Filters cities by the province entered in the province filter field.
+     */
+    @FXML
+    private void filterCitiesByProvince() {
+        String province = cityProvinceFilterField.getText().trim();
+        if (province.isEmpty()) {
+            ShowErrorDialog.showErrorDialog(
+                    "Filter Error",
+                    "Province is empty",
+                    "Please enter a province name to filter.",
+                    "WARNING"
+            );
+            return;
+        }
+
+        try {
+            List<City> filteredCities = CityService.getCitiesByProvince(province);
+            cityListView.getItems().setAll(filteredCities);
+            if (filteredCities.isEmpty()) {
+                cityListView.setPlaceholder(new Label("No cities found for province: " + province));
+            } else {
+                cityListView.setPlaceholder(null);
+            }
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Filter Error",
+                    "Failed to filter cities by province",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
+    /**
+     * Resets the city list to show all cities (clears any filter).
+     */
+    @FXML
+    private void resetCityFilter() {
+        cityProvinceFilterField.clear();
+        loadCities(); // reloads all cities
+    }
+
     // SEARCH METHODS
 
     @FXML
@@ -1411,6 +1457,7 @@ public class AdminDashboard {
             );
         }
     }
+
     @FXML
     private void handleEditCategory() {
         Category selected = categoryListView.getSelectionModel().getSelectedItem();
