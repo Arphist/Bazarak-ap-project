@@ -8,8 +8,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.layout.Pane?>
+
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.UserAdController"
@@ -57,6 +57,14 @@
 
             <!-- Ad List -->
             <ListView fx:id="myAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+
+            <!-- ===== NEW: Action Buttons (Update / Delete) ===== -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button fx:id="updateAdButton" text="✏ Update Ad" onAction="#handleUpdateAd"
+                        styleClass="button-edit" disable="true"/>
+                <Button fx:id="deleteAdButton" text="🗑 Delete Ad" onAction="#handleDeleteAd"
+                        styleClass="button-delete" disable="true"/>
+            </HBox>
 
             <!-- Error Label -->
             <Label fx:id="errorLabel" styleClass="error-label"/>
