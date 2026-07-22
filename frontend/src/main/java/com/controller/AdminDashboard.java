@@ -18,6 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 public class AdminDashboard {
+    @FXML
+    private ListView<Advertisement> recentAdsListView;
+    @FXML
+    private ListView<String> adsByCategoryListView;
+    @FXML
+    private ListView<String> adsByCityListView;
 
     @FXML
     private VBox dashboardStatsView;
@@ -281,6 +287,31 @@ public class AdminDashboard {
 
         // Populate type combo
         specTypeCombo.setItems(FXCollections.observableArrayList("TEXT", "NUMBER", "BOOLEAN", "DROPDOWN"));
+
+        // Setup recent ads list view
+        setupAdListView(recentAdsListView);  // reuse the same cell factory
+        recentAdsListView.setPlaceholder(new Label("No recent ads"));
+
+        // Setup category and city list views
+        setupSimpleListView(adsByCategoryListView);
+        setupSimpleListView(adsByCityListView);
+    }
+
+    /**
+     * Helper to set a simple string list view.
+     */
+    private void setupSimpleListView(ListView<String> listView) {
+        listView.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item);
+                }
+            }
+        });
     }
 
     @FXML
@@ -815,16 +846,55 @@ public class AdminDashboard {
     private void loadDashboardStats() {
         try {
             Map<String, Object> stats = AdminService.getDashboardStats();
+
+            // Update labels (already there)
             totalAdsLabel.setText("Total: " + stats.get("totalAds"));
             pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
             activeCountLabel.setText("Active: " + stats.get("activeAds"));
-            // TODO: use "adsByCategory", "adsByCity", and "recentAds"
+
+            // --- 1. Recent Ads ---
+            List<Advertisement> recentAds = (List<Advertisement>) stats.get("recentAds");
+            if (recentAds != null && !recentAds.isEmpty()) {
+                ObservableList<Advertisement> recentObs = FXCollections.observableArrayList(recentAds);
+                recentAdsListView.setItems(recentObs);
+            } else {
+                recentAdsListView.setPlaceholder(new Label("No recent ads"));
+            }
+
+            // --- 2. Ads by Category ---
+            List<Map<String, Object>> categoryData = (List<Map<String, Object>>) stats.get("adsByCategory");
+            if (categoryData != null && !categoryData.isEmpty()) {
+                ObservableList<String> categoryItems = FXCollections.observableArrayList();
+                for (Map<String, Object> entry : categoryData) {
+                    // Assuming each map has "category" and "count" keys
+                    String category = (String) entry.get("category");
+                    Number count = (Number) entry.get("count");
+                    categoryItems.add(category + ": " + count);
+                }
+                adsByCategoryListView.setItems(categoryItems);
+            } else {
+                adsByCategoryListView.setPlaceholder(new Label("No category data"));
+            }
+
+            // --- 3. Ads by City ---
+            List<Map<String, Object>> cityData = (List<Map<String, Object>>) stats.get("adsByCity");
+            if (cityData != null && !cityData.isEmpty()) {
+                ObservableList<String> cityItems = FXCollections.observableArrayList();
+                for (Map<String, Object> entry : cityData) {
+                    String city = (String) entry.get("city");
+                    Number count = (Number) entry.get("count");
+                    cityItems.add(city + ": " + count);
+                }
+                adsByCityListView.setItems(cityItems);
+            } else {
+                adsByCityListView.setPlaceholder(new Label("No city data"));
+            }
 
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
                     "Load Data Error",
                     "Failed to load statistics data.",
-                    "There was a problem loading statistics data. Please try again later.",
+                    e.getMessage(),
                     "ERROR"
             );
         }
