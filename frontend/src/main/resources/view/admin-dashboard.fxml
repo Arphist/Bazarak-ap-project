@@ -184,9 +184,12 @@
                                     <TextField fx:id="specNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
                                     <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80" styleClass="combo-box"/>
                                 </HBox>
-                                <HBox spacing="5">
-                                    <TextField fx:id="specOptionsField" promptText="Options (comma)" HBox.hgrow="ALWAYS" styleClass="text-field"/>
-                                    <CheckBox fx:id="specRequiredCheck" text="Req" style="-fx-text-fill: #9E9E9E;"/>
+                                <HBox spacing="5" alignment="CENTER_LEFT">
+                                    <TextField fx:id="specOptionsField" promptText="Options (comma)"
+                                               HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                               prefWidth="200" styleClass="text-field"/>
+                                    <CheckBox fx:id="specRequiredCheck" text="Required"
+                                              style="-fx-text-fill: #9E9E9E; -fx-padding: 0 0 0 5;"/>
                                 </HBox>
                             </VBox>
 
