@@ -34,7 +34,7 @@
                 <!-- ===== setting menu ===== -->
                 <MenuButton text="⋯" styleClass="menu-button" style="-fx-font-size: 12px; -fx-font-weight: bold;">
                     <items>
-                        <MenuItem text="🚪 Sign Out" onAction="#handleLogout"/>
+                        <MenuItem text="🚪 Sign Out" style="-fx-text-fill: #E74C3C;" onAction="#handleLogout" />
                     </items>
                 </MenuButton>
             </HBox>
