@@ -67,11 +67,7 @@ public class MyRatingsController {
 
             countLabel.setText("Total: " + ratings.size());
 
-            if (ratings.isEmpty()) {
-                ratingsListView.setPlaceholder(new Label("You haven't rated any sellers yet."));
-            } else {
-                ratingsListView.setPlaceholder(null);
-            }
+
 
             errorLabel.setText("");
 
