@@ -10,12 +10,14 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
+<?import javafx.scene.layout.ColumnConstraints?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.ProfileController"
@@ -34,11 +36,14 @@
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
             <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 30 40 40 40;">
 
-                <!-- Profile Header -->
-                <VBox spacing="8" alignment="CENTER" style="-fx-padding: 10 0 15 0;">
+                <!-- Profile Header - Using GridPane for precise control -->
+                <GridPane alignment="CENTER" hgap="0" vgap="8" style="-fx-padding: 10 0 30 0;">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
+                    </columnConstraints>
 
-                    <!-- Profile Photo - Circular (BIGGER) -->
-                    <StackPane>
+                    <!-- Row 0: Profile Photo -->
+                    <StackPane GridPane.rowIndex="0" style="-fx-padding: 5;">
                         <ImageView fx:id="profileImageView" fitWidth="150" fitHeight="150" preserveRatio="true">
                             <clip>
                                 <Circle centerX="75" centerY="75" radius="75"/>
@@ -48,37 +53,66 @@
                         <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 100; -fx-text-fill: #888888;"/>
                     </StackPane>
 
-                    <!-- Change Photo Button -->
-                    <Button fx:id="changePhotoButton" text="Change Photo" onAction="#handleChangeProfilePhoto" styleClass="button-secondary"/>
+                    <!-- Row 1: Spacer (20px) -->
+                    <Region prefHeight="20" GridPane.rowIndex="1"/>
 
-                    <Label fx:id="usernameLabel" styleClass="heading-title" style="-fx-padding: 5 0 0 0;"/>
+                    <!-- Row 2: Change Photo Button -->
+                    <Button fx:id="changePhotoButton" text="Change Photo" onAction="#handleChangeProfilePhoto"
+                            styleClass="button-secondary" GridPane.rowIndex="2">
+                        <padding>
+                            <Insets top="8" right="20" bottom="8" left="20"/>
+                        </padding>
+                    </Button>
 
-                    <!-- Time Information -->
-                    <VBox spacing="2" alignment="CENTER" style="-fx-padding: 5 0;">
+                    <!-- Row 3: Username -->
+                    <Label fx:id="usernameLabel" styleClass="heading-title" style="-fx-padding: 8 0 0 0;" GridPane.rowIndex="3"/>
+
+                    <!-- Row 4: Time Information -->
+                    <VBox spacing="2" alignment="CENTER" style="-fx-padding: 5 0;" GridPane.rowIndex="4">
                         <Label fx:id="createdAtLabel" styleClass="sub-title"/>
                         <Label fx:id="updatedAtLabel" styleClass="sub-title"/>
                         <Label fx:id="lastLoginLabel" styleClass="sub-title"/>
                     </VBox>
-                </VBox>
+                </GridPane>
 
-                <Separator style="-fx-opacity: 0.2;"/>
+                <Separator style="-fx-opacity: 0.2;">
+                    <padding>
+                        <Insets top="5" bottom="5"/>
+                    </padding>
+                </Separator>
 
                 <!-- Personal Information -->
-                <VBox spacing="8" alignment="CENTER" style="-fx-padding: 5 0;">
-                    <Label text="Personal Information" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+                <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 5 0;">
+                    <Label text="Personal Information" styleClass="sub-title" style="-fx-font-weight: bold;">
+                        <padding>
+                            <Insets bottom="5"/>
+                        </padding>
+                    </Label>
 
                     <TextField fx:id="fullNameField" promptText="Full Name" maxWidth="360" styleClass="text-field"/>
                     <TextField fx:id="emailField" promptText="Email" maxWidth="360" styleClass="text-field"/>
                     <TextField fx:id="phoneField" promptText="Phone Number" maxWidth="360" styleClass="text-field"/>
 
-                    <Button text="Save Changes" onAction="#handleUpdateProfile" maxWidth="360" styleClass="button-primary"/>
+                    <Button text="Save Changes" onAction="#handleUpdateProfile" maxWidth="360" styleClass="button-primary">
+                        <padding>
+                            <Insets top="10" right="20" bottom="10" left="20"/>
+                        </padding>
+                    </Button>
                 </VBox>
 
-                <Separator style="-fx-opacity: 0.2;"/>
+                <Separator style="-fx-opacity: 0.2;">
+                    <padding>
+                        <Insets top="5" bottom="5"/>
+                    </padding>
+                </Separator>
 
                 <!-- Change Password -->
-                <VBox spacing="8" alignment="CENTER" style="-fx-padding: 5 0;">
-                    <Label text="Change Password" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+                <VBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 5 0;">
+                    <Label text="Change Password" styleClass="sub-title" style="-fx-font-weight: bold;">
+                        <padding>
+                            <Insets bottom="5"/>
+                        </padding>
+                    </Label>
 
                     <!-- Old Password -->
                     <StackPane maxWidth="360">
@@ -101,16 +135,28 @@
                         <ToggleButton fx:id="confirmPasswordToggle" text="👁" onAction="#toggleConfirmPasswordVisibility" styleClass="icon-toggle" StackPane.alignment="CENTER_RIGHT"/>
                     </StackPane>
 
-                    <Button text="Update Password" onAction="#handleChangePassword" maxWidth="360" styleClass="button-secondary"/>
+                    <Button text="Update Password" onAction="#handleChangePassword" maxWidth="360" styleClass="button-secondary">
+                        <padding>
+                            <Insets top="10" right="20" bottom="10" left="20"/>
+                        </padding>
+                    </Button>
                 </VBox>
 
                 <!-- Error Label -->
-                <Label fx:id="errorLabel" text="" styleClass="error-label"/>
+                <Label fx:id="errorLabel" text="" styleClass="error-label">
+                    <padding>
+                        <Insets top="5" bottom="5"/>
+                    </padding>
+                </Label>
 
-                <Region prefHeight="10"/>
+                <Region prefHeight="15"/>
 
                 <!-- Logout Button -->
-                <Button text="Sign Out" onAction="#handleLogout" maxWidth="360" styleClass="button-secondary" style="-fx-border-color: #CF6679; -fx-text-fill: #CF6679;"/>
+                <Button text="Sign Out" onAction="#handleLogout" maxWidth="360" styleClass="button-secondary" style="-fx-border-color: #CF6679; -fx-text-fill: #CF6679;">
+                    <padding>
+                        <Insets top="10" right="20" bottom="10" left="20"/>
+                    </padding>
+                </Button>
 
             </VBox>
         </ScrollPane>
