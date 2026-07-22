@@ -24,7 +24,7 @@ public class UserAdController {
 
     @FXML
     private Label headerLabel;
-    private Long targetUserId;  // if null, load current user's ads
+    private User targetUser;  // if null, load current user's ads
     private String targetUsername;
 
     // ============================================
@@ -613,8 +613,8 @@ public class UserAdController {
     // ============================================
     // HELPER METHODS
     // ============================================
-    public void setTargetUserId(Long userId) {
-        this.targetUserId = userId;
+    public void setTargetUser(User user) {
+        this.targetUser = user;
     }
 
     public void setUsername(String username) {

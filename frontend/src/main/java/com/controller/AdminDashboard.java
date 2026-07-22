@@ -320,7 +320,7 @@ public class AdminDashboard {
             UserAdController controller = loader.getController();
 
             DataHolder.setSelectedUser(user);
-            controller.setTargetUserId(user.getId());
+            controller.setTargetUser(user);
             controller.setHeaderText("Ads of " + user.getUsername());  // Set header immediately
             controller.loadAdsForUser();
 
