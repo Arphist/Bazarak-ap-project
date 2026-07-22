@@ -245,3 +245,57 @@
     -fx-background-color: #00B8D1FF;
     -fx-text-fill: #FFFFFF;
 }
+
+.centered-tabs .tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+}
+
+.centered-tabs .tab {
+    -fx-pref-width: 90px;
+    -fx-min-width: 90px;
+    -fx-max-width: 90px;
+}
+
+.centered-tabs .tab-header-area {
+    -fx-alignment: CENTER;
+}
+
+/* Center the tab header area */
+.tab-pane .tab-header-area {
+    -fx-alignment: CENTER;
+}
+
+/* Make tabs take full width and center their content */
+.tab-pane .tab {
+    -fx-pref-width: 90px;
+    -fx-min-width: 90px;
+    -fx-max-width: 90px;
+    -fx-alignment: CENTER;
+}
+
+/* Center the label inside each tab */
+.tab-pane .tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-text-fill: #B0B0B0;
+}
+
+/* Keep selected tab text white */
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+/* Fix for the tab header background */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #121212;
+}
+
+/* Remove extra padding that might misalign tabs */
+.tab-pane .tab-header-area {
+    -fx-padding: 0 0 0 0;
+}
+

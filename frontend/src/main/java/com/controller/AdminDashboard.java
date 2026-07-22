@@ -273,6 +273,11 @@ public class AdminDashboard {
                 specRequiredCheck.setSelected(newVal.isRequired());
             }
         });
+        if (specifications.isEmpty()) {
+            specificationsListView.setPlaceholder(new Label("No specification found"));
+        } else {
+            specificationsListView.setPlaceholder(null);
+        }
 
         // Populate type combo
         specTypeCombo.setItems(FXCollections.observableArrayList("TEXT", "NUMBER", "BOOLEAN", "DROPDOWN"));
@@ -677,6 +682,11 @@ public class AdminDashboard {
         try {
             List<City> cities = CityService.getAllCities();
             cityListView.getItems().setAll(cities);
+            if (cities.isEmpty()) {
+                cityListView.setPlaceholder(new Label("No city found"));
+            } else {
+                cityListView.setPlaceholder(null);
+            }
             cityListView.setCellFactory(lv -> new ListCell<City>() {
                 @Override
                 protected void updateItem(City city, boolean empty) {
@@ -706,6 +716,11 @@ public class AdminDashboard {
         try {
             List<Category> categories = CategoryService.getAllCategories();
             categoryListView.getItems().setAll(categories);
+            if (categories.isEmpty()) {
+                categoryListView.setPlaceholder(new Label("No category found"));
+            } else {
+                categoryListView.setPlaceholder(null);
+            }
             categoryListView.setCellFactory(lv -> new ListCell<Category>() {
                 @Override
                 protected void updateItem(Category cat, boolean empty) {
