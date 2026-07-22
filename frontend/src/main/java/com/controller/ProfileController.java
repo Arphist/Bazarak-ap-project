@@ -158,17 +158,18 @@ public class ProfileController {
                     photoPath = photoPath.substring(1);
                 }
 
-                String photoUrl = Config.BASE_IMAGE_URL + "/" + photoPath;
+                // ✅ ADD CACHE BUSTER TO FORCE REFRESH
+                String photoUrl = Config.BASE_IMAGE_URL + "/" + photoPath + "?t=" + System.currentTimeMillis();
                 System.out.println("📸 Loading photo from URL: " + photoUrl);
 
                 Image image = new Image(photoUrl, 150, 150, true, true, true);
 
-                // Set the image - NO viewport, let the clip handle it
+                // Clear the image first to force refresh
+                profileImageView.setImage(null);
                 profileImageView.setImage(image);
-                profileImageView.setPreserveRatio(false); // ✅ Set to false to fill the circle
+                profileImageView.setPreserveRatio(true);
                 profileImageView.setFitWidth(150);
                 profileImageView.setFitHeight(150);
-                profileImageView.setViewport(null); // ✅ Clear any viewport
                 profileImageView.setStyle("");
 
                 defaultAvatarLabel.setVisible(false);
@@ -185,7 +186,6 @@ public class ProfileController {
 
     private void setDefaultProfilePhoto() {
         profileImageView.setImage(null);
-        profileImageView.setViewport(null);
         defaultAvatarLabel.setVisible(true);
         defaultAvatarLabel.setManaged(true);
         profileImageView.setStyle("-fx-background-color: #bdc3c7; -fx-background-radius: 75; -fx-opacity: 0.3;");
@@ -209,48 +209,21 @@ public class ProfileController {
                 String photoUrl = (String) result.get("photoUrl");
 
                 if (photoUrl != null && !photoUrl.isEmpty()) {
-                    String cleanedPath = photoUrl.startsWith("/") ? photoUrl.substring(1) : photoUrl;
-                    String fullUrl = Config.BASE_IMAGE_URL + "/" + cleanedPath;
-                    System.out.println("📸 New photo URL: " + fullUrl);
-
-                    Image image = new Image(fullUrl, 150, 150, true, true, true);
-
-                    // Set the image - NO viewport
-                    profileImageView.setImage(image);
-                    profileImageView.setPreserveRatio(false);
-                    profileImageView.setFitWidth(150);
-                    profileImageView.setFitHeight(150);
-                    profileImageView.setViewport(null);
-                    profileImageView.setStyle("");
-
-                    defaultAvatarLabel.setVisible(false);
-                    defaultAvatarLabel.setManaged(false);
-
-                    // ✅ Update the session user
+                    // ✅ UPDATE SESSION USER IMMEDIATELY
                     User currentUser = SessionManager.getCurrentUser();
                     if (currentUser != null) {
-                        // Make sure the photoUrl is stored correctly (without leading slash)
+                        // Store with leading slash for consistency
                         String storePath = photoUrl.startsWith("/") ? photoUrl : "/" + photoUrl;
                         currentUser.setProfilePhoto(storePath);
                         SessionManager.setCurrentUser(currentUser);
                         System.out.println("✅ Updated session user with new photo: " + storePath);
+
+                        // ✅ RELOAD THE PHOTO IMMEDIATELY using the updated user
+                        loadProfilePhoto(currentUser);
                     }
                 }
 
                 ShowErrorDialog.showErrorDialog("Success", null, message, "INFORMATION");
-
-                // ✅ Force reload from backend
-                try {
-                    User updatedUser = UserService.getMyProfile();
-                    if (updatedUser != null) {
-                        SessionManager.setCurrentUser(updatedUser);
-                        // Reload the photo directly
-                        loadProfilePhoto(updatedUser);
-                        System.out.println("✅ Reloaded profile from backend");
-                    }
-                } catch (Exception e) {
-                    System.err.println("⚠️ Could not reload profile: " + e.getMessage());
-                }
 
             } catch (Exception e) {
                 e.printStackTrace();
