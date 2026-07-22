@@ -84,31 +84,31 @@ public class ProfileController {
         loadUserProfile();
     }
 
-    private void loadUserProfile() {
-        User currentUser = SessionManager.getCurrentUser();
+    private void loadUserProfile(){
+        try{
+            User currentUser = UserService.getMyProfile();
+            if (currentUser != null) {
+                usernameLabel.setText(currentUser.getUsername());
+                fullNameField.setText(currentUser.getFullName());
+                emailField.setText(currentUser.getEmail());
+                phoneField.setText(currentUser.getPhoneNumber());
 
-        if (currentUser != null) {
-            usernameLabel.setText("Username: " + currentUser.getUsername());
-            fullNameField.setText(currentUser.getFullName());
-            emailField.setText(currentUser.getEmail());
-            phoneField.setText(currentUser.getPhoneNumber());
+                // Display time information
+                displayTimeInfo(currentUser);
 
-            // Display time information
-            displayTimeInfo(currentUser);
+                // Setup password toggles
+                setupPasswordToggle(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
+                setupPasswordToggle(newPasswordField, newPasswordVisibleField, newPasswordToggle);
+                setupPasswordToggle(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
 
-            // Setup password toggles
-            setupPasswordToggle(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
-            setupPasswordToggle(newPasswordField, newPasswordVisibleField, newPasswordToggle);
-            setupPasswordToggle(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
-
-            // Display profile photo
-            loadProfilePhoto(currentUser);
-
-        } else {
+                // Display profile photo
+                loadProfilePhoto(currentUser);
+            }
+        } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
-                    "Authentication Error",
-                    "No user logged in",
-                    "Please login first.",
+                    "Load User Profile Error",
+                    "Failed to load your profile",
+                    "There was a problem loading your profile. Please try again later.",
                     "ERROR"
             );
         }
