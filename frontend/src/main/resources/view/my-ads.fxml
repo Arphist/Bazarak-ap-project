@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.Pane?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.UserAdController"
@@ -23,6 +24,7 @@
                 <Button text="➕ New Ad" onAction="#goToCreateAd" styleClass="button-primary"/>
                 <Button text="❤ Favorites" onAction="#goToFavorites" styleClass="button-secondary"/>
                 <Button text="👤 Profile" onAction="#goToProfile" styleClass="button-secondary"/>
+                <Pane HBox.hgrow="ALWAYS"/>
                 <Button text="↻ Refresh" onAction="#refreshAll" styleClass="button-secondary"/>
             </HBox>
         </VBox>

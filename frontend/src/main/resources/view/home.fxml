@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
@@ -28,6 +30,13 @@
                 <Pane HBox.hgrow="ALWAYS"/>
 
                 <Button text="↻ Refresh" onAction="#refreshAds" styleClass="button-secondary"/>
+
+                <!-- ===== setting menu ===== -->
+                <MenuButton text="⋯" styleClass="menu-button" style="-fx-font-size: 12px; -fx-font-weight: bold;">
+                    <items>
+                        <MenuItem text="🚪 Sign Out" onAction="#handleLogout"/>
+                    </items>
+                </MenuButton>
             </HBox>
 
             <!-- Search Bar + Filter Toggle -->
@@ -42,25 +51,25 @@
                 <padding>
                     <Insets top="12" right="15" bottom="12" left="15"/>
                 </padding>
-                <Label text="Advanced Filters" style="-fx-font-weight: bold;"/>
+                <Label text="Advanced Filters" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
 
                 <HBox spacing="15" alignment="CENTER_LEFT">
-                    <Label text="Category:"/>
-                    <ComboBox fx:id="categoryCombo" promptText="All Categories" HBox.hgrow="ALWAYS"/>
-                    <Label text="City:"/>
-                    <ComboBox fx:id="cityCombo" promptText="All Cities" HBox.hgrow="ALWAYS"/>
+                    <Label text="Category:" style="-fx-text-fill: #E0E0E0;"/>
+                    <ComboBox fx:id="categoryCombo" promptText="All Categories" HBox.hgrow="ALWAYS" styleClass="combo-box"/>
+                    <Label text="City:" style="-fx-text-fill: #E0E0E0;"/>
+                    <ComboBox fx:id="cityCombo" promptText="All Cities" HBox.hgrow="ALWAYS" styleClass="combo-box"/>
                 </HBox>
 
                 <HBox spacing="15" alignment="CENTER_LEFT">
-                    <Label text="Price Range:"/>
+                    <Label text="Price Range:" style="-fx-text-fill: #E0E0E0;"/>
                     <TextField fx:id="minPriceField" promptText="Min" prefWidth="100"/>
-                    <Label text="to"/>
+                    <Label text="to" style="-fx-text-fill: #E0E0E0;"/>
                     <TextField fx:id="maxPriceField" promptText="Max" prefWidth="100"/>
                 </HBox>
 
                 <HBox spacing="15" alignment="CENTER_LEFT">
-                    <Label text="Sort By:"/>
-                    <ComboBox fx:id="sortByCombo" prefWidth="200"/>
+                    <Label text="Sort By:" style="-fx-text-fill: #E0E0E0;"/>
+                    <ComboBox fx:id="sortByCombo" prefWidth="200" styleClass="combo-box"/>
                     <Pane HBox.hgrow="ALWAYS"/>
                     <Button fx:id="clearFiltersButton" text="Clear Filters" onAction="#clearFilters" styleClass="button-secondary"/>
                 </HBox>
@@ -75,7 +84,7 @@
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
             <Label text="Active Ads" styleClass="heading-title" style="-fx-font-size: 18;"/>
-            <ListView fx:id="adListView" VBox.vgrow="ALWAYS"/>
+            <ListView fx:id="adListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
             <Label fx:id="errorLabel" styleClass="error-label"/>
         </VBox>
     </center>
@@ -88,8 +97,8 @@
             </padding>
             <Button text="Create Ad" onAction="#goToCreateAd" styleClass="button-primary"/>
             <Button text="Favorites" onAction="#goToFavorites" styleClass="button-secondary"/>
-            <Button text="My Ads" onAction="#goToMyAds" styleClass="button-secondary"/><Button text="Profile" onAction="#goToProfile" styleClass="button-secondary"/>
-            <Button text="Logout" onAction="#handleLogout" styleClass="button-secondary"/>
+            <Button text="My Ads" onAction="#goToMyAds" styleClass="button-secondary"/>
+            <Button text="Profile" onAction="#goToProfile" styleClass="button-secondary"/>
         </HBox>
     </bottom>
 
