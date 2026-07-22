@@ -122,6 +122,12 @@ public class AdDetailsController {
         loadAdDetails(adId);
 
         DataHolder.clearSelectedAdId();
+
+        if (ratings.isEmpty()) {
+            ratingsListView.setPlaceholder(new Label("No ratings yet for this ad."));
+        } else {
+            ratingsListView.setPlaceholder(null);
+        }
     }
 
     private void loadFavoriteState(Long adId) {
@@ -231,11 +237,7 @@ public class AdDetailsController {
             ratings.addAll(ratingList);
             ratingsListView.setItems(ratings);
 
-            if (ratings.isEmpty()) {
-                ratingsListView.setPlaceholder(new Label("No ratings yet for this ad."));
-            } else {
-                ratingsListView.setPlaceholder(null);
-            }
+
 
             ratingsErrorLabel.setText("");
 
