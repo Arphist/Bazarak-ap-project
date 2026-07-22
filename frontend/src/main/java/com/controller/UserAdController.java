@@ -123,7 +123,7 @@ public class UserAdController {
 
             if (isSelected) {
                 updateAdButton.setStyle(null);
-                markAsSoldButton.setStyle(null);
+                markAsSoldButton.setStyle("-fx-background-color:#3498DBFF; -fx-text-fill:#FFFFFF; -fx-font-weight: bold;");
                 deleteAdButton.setStyle(null);
             } else {
                 updateAdButton.setStyle("-fx-background-color: #555;");
