@@ -436,10 +436,7 @@ public class UserAdController {
         NavigationUtil.goToCreateAd();
     }
 
-    @FXML
-    private void goToFavorites() {
-        NavigationUtil.goToFavorites();
-    }
+
 
     @FXML
     private void goToProfile() {

@@ -22,7 +22,6 @@
                 <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
                 <Label text="My Ads" styleClass="heading-title"/>
                 <Button text="➕ New Ad" onAction="#goToCreateAd" styleClass="button-primary"/>
-                <Button text="❤ Favorites" onAction="#goToFavorites" styleClass="button-secondary"/>
                 <Pane HBox.hgrow="ALWAYS"/>
                 <Button text="↻ Refresh" onAction="#refreshAll" styleClass="button-secondary"/>
             </HBox>
