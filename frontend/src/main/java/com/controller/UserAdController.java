@@ -21,47 +21,103 @@ import java.util.Map;
 public class UserAdController {
 
     // ============================================
-    // FXML FIELDS
+    // FXML FIELDS - ALL ADS
     // ============================================
 
     @FXML
-    private ListView<Advertisement> myAdsListView;
+    private ListView<Advertisement> allAdsListView;
 
     @FXML
-    private Label countLabel;
+    private ComboBox<String> allSortByCombo;
 
     @FXML
-    private ComboBox<String> statusFilterCombo;
+    private ComboBox<String> allSortOrderCombo;
 
     @FXML
-    private ComboBox<String> sortByCombo;
-
-    @FXML
-    private Button refreshButton;
-
-    @FXML
-    private VBox dashboardContainer;
-
-    @FXML
-    private Label totalLabel;
-
-    @FXML
-    private Label pendingLabel;
-
-    @FXML
-    private Label activeLabel;
-
-    @FXML
-    private Label rejectedLabel;
-
-    @FXML
-    private Label soldLabel;
-
-    @FXML
-    private Label deletedLabel;
+    private Label allAdsErrorLabel;
 
     // ============================================
-    // NEW: BUTTONS FOR UPDATE & DELETE
+    // FXML FIELDS - PENDING ADS
+    // ============================================
+
+    @FXML
+    private ListView<Advertisement> pendingAdsListView;
+
+    @FXML
+    private ComboBox<String> pendingSortByCombo;
+
+    @FXML
+    private ComboBox<String> pendingSortOrderCombo;
+
+    @FXML
+    private Label pendingErrorLabel;
+
+    // ============================================
+    // FXML FIELDS - ACTIVE ADS
+    // ============================================
+
+    @FXML
+    private ListView<Advertisement> activeAdsListView;
+
+    @FXML
+    private ComboBox<String> activeSortByCombo;
+
+    @FXML
+    private ComboBox<String> activeSortOrderCombo;
+
+    @FXML
+    private Label activeErrorLabel;
+
+    // ============================================
+    // FXML FIELDS - REJECTED ADS
+    // ============================================
+
+    @FXML
+    private ListView<Advertisement> rejectedAdsListView;
+
+    @FXML
+    private ComboBox<String> rejectedSortByCombo;
+
+    @FXML
+    private ComboBox<String> rejectedSortOrderCombo;
+
+    @FXML
+    private Label rejectedErrorLabel;
+
+    // ============================================
+    // FXML FIELDS - SOLD ADS
+    // ============================================
+
+    @FXML
+    private ListView<Advertisement> soldAdsListView;
+
+    @FXML
+    private ComboBox<String> soldSortByCombo;
+
+    @FXML
+    private ComboBox<String> soldSortOrderCombo;
+
+    @FXML
+    private Label soldErrorLabel;
+
+    // ============================================
+    // FXML FIELDS - DELETED ADS
+    // ============================================
+
+    @FXML
+    private ListView<Advertisement> deletedAdsListView;
+
+    @FXML
+    private ComboBox<String> deletedSortByCombo;
+
+    @FXML
+    private ComboBox<String> deletedSortOrderCombo;
+
+    @FXML
+    private Label deletedErrorLabel;
+
+    // ============================================
+    // FXML FIELDS - BUTTONS (Shared across all tabs)
     // ============================================
 
     @FXML
@@ -80,8 +136,12 @@ public class UserAdController {
     // DATA
     // ============================================
 
-    private ObservableList<Advertisement> myAds = FXCollections.observableArrayList();
-    private String currentStatusFilter = "ALL";
+    private ObservableList<Advertisement> allAds = FXCollections.observableArrayList();
+    private ObservableList<Advertisement> pendingAds = FXCollections.observableArrayList();
+    private ObservableList<Advertisement> activeAds = FXCollections.observableArrayList();
+    private ObservableList<Advertisement> rejectedAds = FXCollections.observableArrayList();
+    private ObservableList<Advertisement> soldAds = FXCollections.observableArrayList();
+    private ObservableList<Advertisement> deletedAds = FXCollections.observableArrayList();
 
     // ============================================
     // INITIALIZE
@@ -95,149 +155,239 @@ public class UserAdController {
             return;
         }
 
-        // Setup list view
-        myAdsListView.setItems(myAds);
-        myAdsListView.setCellFactory(lv -> new AdCell());
-        myAdsListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
-                if (selected != null) {
-                    DataHolder.setSelectedAdId(selected.getId());
-                    BazarakFrontendApplication.showAdDetailsPage();
-                }
-            }
-        });
+        // Setup all list views with AdCell
+        setupListView(allAdsListView);
+        setupListView(pendingAdsListView);
+        setupListView(activeAdsListView);
+        setupListView(rejectedAdsListView);
+        setupListView(soldAdsListView);
+        setupListView(deletedAdsListView);
 
-        if (myAds.isEmpty()) {
-            myAdsListView.setPlaceholder(new Label("No ads found"));
-        } else {
-            myAdsListView.setPlaceholder(null);
-        }
-
-        // =====  Enable/Disable/markAsSold buttons based on selection =====
-        myAdsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            boolean isSelected = newVal != null;
-            updateAdButton.setDisable(!isSelected);
-            markAsSoldButton.setDisable(!isSelected);
-            deleteAdButton.setDisable(!isSelected);
-        });
-
-        // Setup filter combo box
-        statusFilterCombo.setItems(FXCollections.observableArrayList(
-                "ALL",
-                "PENDING",
-                "ACCEPTED",
-                "REJECTED",
-                "SOLD",
-                "DELETED"
-        ));
-        statusFilterCombo.setValue("ALL");
-
-        // Setup sort combo box
-        sortByCombo.setItems(FXCollections.observableArrayList(
-                "Newest First",
-                "Oldest First",
-                "Price: Low to High",
-                "Price: High to Low"
-        ));
-        sortByCombo.setValue("Newest First");
+        // Setup sort combo boxes
+        setupSortComboBoxes();
 
         // Initially disable buttons
         updateAdButton.setDisable(true);
         deleteAdButton.setDisable(true);
         markAsSoldButton.setDisable(true);
 
-
-        // Load data
-        loadDashboardStats();
-        loadMyAds();
+        // Load all data
+        loadAllData();
     }
 
     // ============================================
-    // LOAD MY ADS
+    // SETUP LIST VIEW
     // ============================================
 
-    @FXML
-    private void loadMyAds() {
-        String sortBy = parseSortBy(sortByCombo.getValue());
-        String sortOrder = parseSortOrder(sortByCombo.getValue());
-
-        try {
-            List<Advertisement> ads;
-
-            if ("ALL".equals(currentStatusFilter)) {
-                ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
-            } else {
-                ads = UserAdvertisementService.getMyAdsByStatus(currentStatusFilter, sortBy, sortOrder);
+    private void setupListView(ListView<Advertisement> listView) {
+        listView.setCellFactory(lv -> new AdCell());
+        listView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Advertisement selected = listView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    try {
+                        Advertisement fullAd = UserAdvertisementService.getMyAd(selected.getId());
+                        DataHolder.setSelectedAdId(fullAd.getId());
+                        BazarakFrontendApplication.showAdDetailsPage();
+                    } catch (Exception e) {
+                        ShowErrorDialog.showErrorDialog(
+                                "Ad Details Error",
+                                "Failed to load ad details",
+                                e.getMessage(),
+                                "ERROR"
+                        );
+                    }
+                }
             }
+        });
 
-            myAds.clear();
-            myAds.addAll(ads);
-            myAdsListView.setItems(myAds);
-
-            countLabel.setText("Total: " + myAds.size());
-
-        } catch (Exception e) {
-            ShowErrorDialog.showErrorDialog(
-                    "Advertisement Error",
-                    "Failed to load my ads",
-                    e.getMessage(),
-                    "ERROR"
-            );
-        }
+        // Enable/Disable buttons based on selection
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            boolean isSelected = newVal != null;
+            updateAdButton.setDisable(!isSelected);
+            markAsSoldButton.setDisable(!isSelected);
+            deleteAdButton.setDisable(!isSelected);
+        });
     }
 
     // ============================================
-    // DASHBOARD STATS
+    // SETUP SORT COMBO BOXES
     // ============================================
 
-    @FXML
-    private void loadDashboardStats() {
+    private void setupSortComboBoxes() {
+        // All
+        allSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        allSortByCombo.setValue("created_at");
+        allSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        allSortOrderCombo.setValue("desc");
+
+        // Pending
+        pendingSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        pendingSortByCombo.setValue("created_at");
+        pendingSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        pendingSortOrderCombo.setValue("desc");
+
+        // Active
+        activeSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        activeSortByCombo.setValue("created_at");
+        activeSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        activeSortOrderCombo.setValue("desc");
+
+        // Rejected
+        rejectedSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        rejectedSortByCombo.setValue("created_at");
+        rejectedSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        rejectedSortOrderCombo.setValue("desc");
+
+        // Sold
+        soldSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        soldSortByCombo.setValue("created_at");
+        soldSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        soldSortOrderCombo.setValue("desc");
+
+        // Deleted
+        deletedSortByCombo.setItems(FXCollections.observableArrayList("created_at", "title", "price"));
+        deletedSortByCombo.setValue("created_at");
+        deletedSortOrderCombo.setItems(FXCollections.observableArrayList("asc", "desc"));
+        deletedSortOrderCombo.setValue("desc");
+    }
+
+    // ============================================
+    // LOAD ALL DATA
+    // ============================================
+
+    private void loadAllData() {
+        loadAllAds();
+        loadPendingAds();
+        loadActiveAds();
+        loadRejectedAds();
+        loadSoldAds();
+        loadDeletedAds();
+    }
+
+    // ============================================
+    // LOAD ALL ADS
+    // ============================================
+
+    private void loadAllAds() {
         try {
-            Map<String, Map<String, Object>> dashboard = UserAdvertisementService.getMyAdsDashboard();
-
-            totalLabel.setText("Total: " + getCount(dashboard, "total"));
-            pendingLabel.setText("Pending: " + getCount(dashboard, "pending"));
-            activeLabel.setText("Active: " + getCount(dashboard, "active"));
-            rejectedLabel.setText("Rejected: " + getCount(dashboard, "rejected"));
-            soldLabel.setText("Sold: " + getCount(dashboard, "sold"));
-            deletedLabel.setText("Deleted: " + getCount(dashboard, "deleted"));
-
+            String sortBy = allSortByCombo.getValue();
+            String sortOrder = allSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
+            allAds.setAll(ads);
+            allAdsListView.setItems(allAds);
+            allAdsErrorLabel.setText("");
         } catch (Exception e) {
-            ShowErrorDialog.showErrorDialog(
-                    "Dashboard Error",
-                    "Failed to load dashboard statistics",
-                    e.getMessage(),
-                    "ERROR"
-            );
+            allAdsErrorLabel.setText("Failed to load ads: " + e.getMessage());
         }
     }
 
-    private long getCount(Map<String, Map<String, Object>> dashboard, String key) {
-        Map<String, Object> group = dashboard.get(key);
-        if (group != null) {
-            Object count = group.get("count");
-            if (count instanceof Number) {
-                return ((Number) count).longValue();
-            }
+    // ============================================
+    // LOAD PENDING ADS
+    // ============================================
+
+    private void loadPendingAds() {
+        try {
+            String sortBy = pendingSortByCombo.getValue();
+            String sortOrder = pendingSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("PENDING", sortBy, sortOrder);
+            pendingAds.setAll(ads);
+            pendingAdsListView.setItems(pendingAds);
+            pendingErrorLabel.setText("");
+        } catch (Exception e) {
+            pendingErrorLabel.setText("Failed to load pending ads: " + e.getMessage());
         }
-        return 0;
     }
 
     // ============================================
-    // FILTER / SORT
+    // LOAD ACTIVE ADS
+    // ============================================
+
+    private void loadActiveAds() {
+        try {
+            String sortBy = activeSortByCombo.getValue();
+            String sortOrder = activeSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("ACCEPTED", sortBy, sortOrder);
+            activeAds.setAll(ads);
+            activeAdsListView.setItems(activeAds);
+            activeErrorLabel.setText("");
+        } catch (Exception e) {
+            activeErrorLabel.setText("Failed to load active ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD REJECTED ADS
+    // ============================================
+
+    private void loadRejectedAds() {
+        try {
+            String sortBy = rejectedSortByCombo.getValue();
+            String sortOrder = rejectedSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("REJECTED", sortBy, sortOrder);
+            rejectedAds.setAll(ads);
+            rejectedAdsListView.setItems(rejectedAds);
+            rejectedErrorLabel.setText("");
+        } catch (Exception e) {
+            rejectedErrorLabel.setText("Failed to load rejected ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD SOLD ADS
+    // ============================================
+
+    private void loadSoldAds() {
+        try {
+            String sortBy = soldSortByCombo.getValue();
+            String sortOrder = soldSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("SOLD", sortBy, sortOrder);
+            soldAds.setAll(ads);
+            soldAdsListView.setItems(soldAds);
+            soldErrorLabel.setText("");
+        } catch (Exception e) {
+            soldErrorLabel.setText("Failed to load sold ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // LOAD DELETED ADS
+    // ============================================
+
+    private void loadDeletedAds() {
+        try {
+            String sortBy = deletedSortByCombo.getValue();
+            String sortOrder = deletedSortOrderCombo.getValue();
+            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("DELETED", sortBy, sortOrder);
+            deletedAds.setAll(ads);
+            deletedAdsListView.setItems(deletedAds);
+            deletedErrorLabel.setText("");
+        } catch (Exception e) {
+            deletedErrorLabel.setText("Failed to load deleted ads: " + e.getMessage());
+        }
+    }
+
+    // ============================================
+    // SORT ACTIONS
     // ============================================
 
     @FXML
-    private void applyFilter() {
-        currentStatusFilter = statusFilterCombo.getValue();
-        loadMyAds();
-    }
+    private void applyAllSort() { loadAllAds(); }
 
     @FXML
-    private void applySort() {
-        loadMyAds();
-    }
+    private void applyPendingSort() { loadPendingAds(); }
+
+    @FXML
+    private void applyActiveSort() { loadActiveAds(); }
+
+    @FXML
+    private void applyRejectedSort() { loadRejectedAds(); }
+
+    @FXML
+    private void applySoldSort() { loadSoldAds(); }
+
+    @FXML
+    private void applyDeletedSort() { loadDeletedAds(); }
 
     // ============================================
     // REFRESH
@@ -245,17 +395,17 @@ public class UserAdController {
 
     @FXML
     private void refreshAll() {
-        loadDashboardStats();
-        loadMyAds();
+        loadAllData();
     }
 
     // ============================================
-    // UPDATE AD (NEW)
+    // UPDATE AD
     // ============================================
 
     @FXML
     private void handleUpdateAd() {
-        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+        ListView<Advertisement> currentListView = getCurrentListView();
+        Advertisement selected = currentListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
             ShowErrorDialog.showErrorDialog(
                     "Update Error",
@@ -266,9 +416,7 @@ public class UserAdController {
             return;
         }
 
-        // TODO: Navigate to Update Ad page or open a dialog
         DataHolder.setSelectedAdId(selected.getId());
-        // NavigationUtil.goToUpdateAd();
         ShowErrorDialog.showErrorDialog(
                 "Update Feature",
                 "Coming Soon",
@@ -278,52 +426,13 @@ public class UserAdController {
     }
 
     // ============================================
-    // DELETE AD (NEW)
+    // MARK AS SOLD
     // ============================================
 
     @FXML
-    private void handleDeleteAd() {
-        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            ShowErrorDialog.showErrorDialog(
-                    "Delete Error",
-                    "No ad selected",
-                    "Please select an ad to delete.",
-                    "WARNING"
-            );
-            return;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Delete Ad");
-        confirm.setHeaderText("Delete advertisement?");
-        confirm.setContentText("Are you sure you want to delete '" + selected.getTitle() + "'?");
-
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            try {
-                AdService.deleteAd(selected);
-                myAds.remove(selected);
-                loadDashboardStats();
-                ShowErrorDialog.showErrorDialog(
-                        "Success",
-                        "Ad Deleted",
-                        "Advertisement deleted successfully.",
-                        "INFORMATION"
-                );
-            } catch (Exception e) {
-                ShowErrorDialog.showErrorDialog(
-                        "Delete Error",
-                        "Failed to delete ad",
-                        e.getMessage(),
-                        "ERROR"
-                );
-            }
-        }
-    }
-
-    @FXML
     private void handleMarkAsSold() {
-        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+        ListView<Advertisement> currentListView = getCurrentListView();
+        Advertisement selected = currentListView.getSelectionModel().getSelectedItem();
         if (selected == null) {
             ShowErrorDialog.showErrorDialog(
                     "Mark as Sold Error",
@@ -334,7 +443,6 @@ public class UserAdController {
             return;
         }
 
-
         if ("SOLD".equals(selected.getStatus())) {
             ShowErrorDialog.showErrorDialog(
                     "Mark as Sold Error",
@@ -344,7 +452,6 @@ public class UserAdController {
             );
             return;
         }
-
 
         if (!"ACCEPTED".equals(selected.getStatus())) {
             ShowErrorDialog.showErrorDialog(
@@ -363,14 +470,9 @@ public class UserAdController {
 
         if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
             try {
-
                 AdService.markAsSold(selected);
-
-
                 selected.setStatus("SOLD");
-                myAdsListView.refresh();
-                loadDashboardStats();
-
+                loadAllData();
                 ShowErrorDialog.showErrorDialog(
                         "Success",
                         "Ad Marked as Sold",
@@ -389,36 +491,66 @@ public class UserAdController {
     }
 
     // ============================================
-    // HELPER METHODS
+    // DELETE AD
     // ============================================
 
-    private String parseSortBy(String value) {
-        if (value == null) return "created_at";
-        switch (value) {
-            case "Oldest First":
-            case "Newest First":
-                return "created_at";
-            case "Price: Low to High":
-            case "Price: High to Low":
-                return "price";
-            default:
-                return "created_at";
+    @FXML
+    private void handleDeleteAd() {
+        ListView<Advertisement> currentListView = getCurrentListView();
+        Advertisement selected = currentListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ShowErrorDialog.showErrorDialog(
+                    "Delete Error",
+                    "No ad selected",
+                    "Please select an ad to delete.",
+                    "WARNING"
+            );
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Ad");
+        confirm.setHeaderText("Delete advertisement?");
+        confirm.setContentText("Are you sure you want to delete '" + selected.getTitle() + "'?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                AdService.deleteAd(selected);
+                loadAllData();
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        "Ad Deleted",
+                        "Advertisement deleted successfully.",
+                        "INFORMATION"
+                );
+            } catch (Exception e) {
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Error",
+                        "Failed to delete ad",
+                        e.getMessage(),
+                        "ERROR"
+                );
+            }
         }
     }
 
-    private String parseSortOrder(String value) {
-        if (value == null) return "desc";
-        switch (value) {
-            case "Oldest First":
-                return "asc";
-            case "Newest First":
-                return "desc";
-            case "Price: Low to High":
-                return "asc";
-            case "Price: High to Low":
-                return "desc";
-            default:
-                return "desc";
+    // ============================================
+    // HELPER METHODS
+    // ============================================
+
+    private ListView<Advertisement> getCurrentListView() {
+        TabPane tabPane = (TabPane) allAdsListView.getParent().getParent().getParent().getParent();
+        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+        String tabText = selectedTab.getText();
+
+        switch (tabText) {
+            case "All": return allAdsListView;
+            case "Pending": return pendingAdsListView;
+            case "Active": return activeAdsListView;
+            case "Rejected": return rejectedAdsListView;
+            case "Sold": return soldAdsListView;
+            case "Deleted": return deletedAdsListView;
+            default: return allAdsListView;
         }
     }
 
@@ -435,8 +567,6 @@ public class UserAdController {
     private void goToCreateAd() {
         NavigationUtil.goToCreateAd();
     }
-
-
 
     @FXML
     private void goToProfile() {
