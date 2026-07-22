@@ -327,12 +327,15 @@
             <Tab text="Users" closable="false">
                 <VBox spacing="12" styleClass="filter-card">
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <!-- Top row: count + Block/Unblock buttons -->
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Label fx:id="usersCountLabel" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button text="Block User" onAction="#blockUser" styleClass="button-delete"/>
                         <Button text="Unblock User" onAction="#unblockUser" styleClass="button-primary"/>
                     </HBox>
+
+                    <!-- User Table -->
                     <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn fx:id="userIdCol" text="ID" prefWidth="60"/>
@@ -343,6 +346,14 @@
                             <TableColumn fx:id="userRoleCol" text="Role" prefWidth="80"/>
                         </columns>
                     </TableView>
+
+                    <!-- NEW: Filter buttons -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Show All Users" onAction="#showAllUsers" styleClass="button-secondary"/>
+                        <Button text="Show Blocked Users" onAction="#showBlockedUsers" styleClass="button-secondary"/>
+                        <Button text="Show Active Users" onAction="#showActiveUsers" styleClass="button-secondary"/>
+                    </HBox>
+
                     <Label fx:id="usersErrorLabel" styleClass="error-label"/>
                 </VBox>
             </Tab>
