@@ -181,8 +181,8 @@
                             <VBox spacing="5" style="-fx-padding: 5; -fx-background-color: #1E1E1E; -fx-border-color: #2A2A2A; -fx-border-radius: 4;">
                                 <Label text="Add New Spec" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9E9E9E;"/>
                                 <HBox spacing="5">
-                                    <TextField fx:id="specNameField" promptText="Name" prefWidth="80" styleClass="text-field"/>
-                                    <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="80" styleClass="combo-box"/>
+                                    <TextField fx:id="specNameField" promptText="Name" prefWidth="180" styleClass="text-field"/>
+                                    <ComboBox fx:id="specTypeCombo" promptText="Type" prefWidth="180" styleClass="combo-box"/>
                                 </HBox>
                                 <HBox spacing="5" alignment="CENTER_LEFT">
                                     <TextField fx:id="specOptionsField" promptText="Options (comma)"
