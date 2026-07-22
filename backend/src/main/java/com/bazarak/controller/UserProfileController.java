@@ -89,7 +89,7 @@ public class UserProfileController {
             // Load the user from database to get user's password.
             // because we already set the user's password to null
             User currentUser = userService.findById(user.getId()).
-                    orElseThrow(()-> new UserNotFoundException("User not found"));
+                    orElseThrow(() -> new UserNotFoundException("User not found"));
             // Verify old password
             if (!currentUser.getPassword().equals(request.getOldPassword())) {
                 return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
@@ -117,9 +117,9 @@ public class UserProfileController {
     public ResponseEntity<?> updateProfilePhoto(@RequestParam("file") MultipartFile file,
                                                 HttpSession session) {
         // 1. Check if user is logged in
-        User currentUser = userService.getCurrentUserOrThrow(session);
+        User userSession = userService.getCurrentUserOrThrow(session);
+        User currentUser = userService.getUserById(userSession.getId());
         userService.isUserBanned(currentUser);
-
         try {
             // 2. Validate file
             if (file.isEmpty()) {
@@ -168,7 +168,6 @@ public class UserProfileController {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Profile photo updated successfully");
             response.put("photoUrl", photoUrl);
-
             return ResponseEntity.ok(response);
 
         } catch (IOException e) {
