@@ -2,8 +2,10 @@ package com.controller;
 
 import com.BazarakFrontendApplication;
 import com.model.Advertisement;
+import com.model.User;
 import com.service.AdService;
 import com.service.UserAdvertisementService;
+import com.service.UserService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
@@ -19,6 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 public class UserAdController {
+
+    @FXML
+    private Label headerLabel;
+    private Long targetUserId;  // if null, load current user's ads
+    private String targetUsername;
 
     // ============================================
     // FXML FIELDS - ALL ADS
@@ -206,6 +213,25 @@ public class UserAdController {
         loadAllData();
     }
 
+
+    public void loadAdsForUser() {
+        if (DataHolder.getSelectedUser() == null) {
+            loadAllAds();
+            return;
+        }
+        try {
+            List<Advertisement> ads = AdService.getAdsByUser(DataHolder.getSelectedUser());
+            allAds.setAll(ads);
+            allAdsListView.setItems(allAds);
+            allAdsErrorLabel.setText("");
+
+            // Update header with the username
+            setHeaderText("Ads of " + DataHolder.getSelectedUser().getUsername());
+
+        } catch (Exception e) {
+            allAdsErrorLabel.setText("Failed to load ads: " + e.getMessage());
+        }
+    }
     // ============================================
     // SETUP LIST VIEW
     // ============================================
@@ -304,7 +330,14 @@ public class UserAdController {
         try {
             String sortBy = allSortByCombo.getValue();
             String sortOrder = allSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
+            List<Advertisement> ads;
+            if (DataHolder.getSelectedUser() != null) {
+                ads = AdService.getAdsByUser(DataHolder.getSelectedUser());
+                setHeaderText("Ads of " + DataHolder.getSelectedUser().getUsername());
+            } else {
+                ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
+                setHeaderText("My Ads");  // Reset to "My Ads"
+            }
             allAds.setAll(ads);
             allAdsListView.setItems(allAds);
             allAdsErrorLabel.setText("");
@@ -580,6 +613,18 @@ public class UserAdController {
     // ============================================
     // HELPER METHODS
     // ============================================
+    public void setTargetUserId(Long userId) {
+        this.targetUserId = userId;
+    }
+
+    public void setUsername(String username) {
+        this.targetUsername = username;
+    }
+    public void setHeaderText(String text) {
+        if (headerLabel != null) {
+            headerLabel.setText(text);
+        }
+    }
 
     private ListView<Advertisement> getCurrentListView() {
         TabPane tabPane = (TabPane) allAdsListView.getParent().getParent().getParent().getParent();
