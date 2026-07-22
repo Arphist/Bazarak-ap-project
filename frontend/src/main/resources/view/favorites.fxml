@@ -37,7 +37,7 @@
 
     <!-- Action Buttons -->
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Remove Selected" onAction="#removeSelectedFavorite" styleClass="button-secondary" />
+        <Button text="Remove Selected" onAction="#removeSelectedFavorite" styleClass="button-delete" />
         <Button text="View Ad" onAction="#goToAdDetails" styleClass="button-primary" />
     </HBox>
 
