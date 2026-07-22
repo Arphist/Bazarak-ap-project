@@ -176,10 +176,12 @@ public class CategoryService {
         String json = objectMapper.writeValueAsString(requestBody);
         HttpRequest request=HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL+"/categories/"+id))
+                .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode()==200){
             return objectMapper.readValue(response.body(), new TypeReference<Category>() {});
         }else{
