@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
 
+<?import javafx.scene.control.ListView?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.AdDetailsController"
@@ -43,6 +44,13 @@
             <!-- Specifications Section -->
             <VBox fx:id="specificationsContainer" spacing="5" styleClass="filter-card" style="-fx-padding: 10;">
                 <Label text="Specifications" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+            </VBox>
+
+            <!-- Ratings Section -->
+            <VBox spacing="5" styleClass="filter-card" style="-fx-padding: 10;">
+                <Label text="⭐ Ratings" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+                <ListView fx:id="ratingsListView" prefHeight="150" styleClass="list-view"/>
+                <Label fx:id="ratingsErrorLabel" styleClass="error-label" style="-fx-font-size: 11;"/>
             </VBox>
 
             <!-- Favorite Section -->
