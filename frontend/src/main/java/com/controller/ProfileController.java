@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class ProfileController {
 
+    // FXML FIELDS
+
     @FXML
     private TextField oldPasswordVisibleField;
 
@@ -28,9 +30,6 @@ public class ProfileController {
 
     @FXML
     private TextField newPasswordVisibleField;
-
-    @FXML
-    private Label defaultAvatarLabel;
 
     @FXML
     private ToggleButton newPasswordToggle;
@@ -53,6 +52,8 @@ public class ProfileController {
     @FXML
     private TextField phoneField;
 
+
+
     @FXML
     private PasswordField oldPasswordField;
 
@@ -62,37 +63,45 @@ public class ProfileController {
     @FXML
     private PasswordField confirmPasswordField;
 
+    // Time information labels
     @FXML
     private Label createdAtLabel;
 
     @FXML
     private Label updatedAtLabel;
 
+    // Profile photo
     @FXML
     private ImageView profileImageView;
 
     @FXML
     private Button changePhotoButton;
 
+    // INITIALIZE
+
     @FXML
     private void initialize() {
         loadUserProfile();
     }
 
-    private void loadUserProfile() {
-        try {
+    private void loadUserProfile(){
+        try{
             User currentUser = UserService.getMyProfile();
             if (currentUser != null) {
-                System.out.println("📸 Profile photo from backend: " + currentUser.getProfilePhoto());
                 usernameLabel.setText(currentUser.getUsername());
                 fullNameField.setText(currentUser.getFullName());
                 emailField.setText(currentUser.getEmail());
                 phoneField.setText(currentUser.getPhoneNumber());
 
+                // Display time information
                 displayTimeInfo(currentUser);
+
+                // Setup password toggles
                 setupPasswordToggle(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
                 setupPasswordToggle(newPasswordField, newPasswordVisibleField, newPasswordToggle);
                 setupPasswordToggle(confirmPasswordField, confirmPasswordVisibleField, confirmPasswordToggle);
+
+                // Display profile photo
                 loadProfilePhoto(currentUser);
             }
         } catch (Exception e) {
@@ -106,11 +115,19 @@ public class ProfileController {
     }
 
     private void setupPasswordToggle(PasswordField passwordField, TextField visibleField, ToggleButton toggle) {
-        passwordField.textProperty().addListener((obs, old, newVal) -> visibleField.setText(newVal));
-        visibleField.textProperty().addListener((obs, old, newVal) -> passwordField.setText(newVal));
+        // Sync password fields
+        passwordField.textProperty().addListener((obs, old, newVal) -> {
+            visibleField.setText(newVal);
+        });
+
+        visibleField.textProperty().addListener((obs, old, newVal) -> {
+            passwordField.setText(newVal);
+        });
+
         toggle.setTooltip(new javafx.scene.control.Tooltip("Show/Hide Password"));
     }
 
+    // TOGGLE METHODS
     @FXML
     private void toggleOldPasswordVisibility() {
         togglePasswordField(oldPasswordField, oldPasswordVisibleField, oldPasswordToggle);
@@ -146,41 +163,32 @@ public class ProfileController {
 
     private void displayTimeInfo(User user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        createdAtLabel.setText("Account created: " + (user.getCreatedAt() != null ? user.getCreatedAt().format(formatter) : "N/A"));
-        updatedAtLabel.setText("Last updated: " + (user.getUpdatedAt() != null ? user.getUpdatedAt().format(formatter) : "N/A"));
+
+        if (user.getCreatedAt() != null) {
+            createdAtLabel.setText("Account created: " + user.getCreatedAt().format(formatter));
+        } else {
+            createdAtLabel.setText("Account created: N/A");
+        }
+
+        if (user.getUpdatedAt() != null) {
+            updatedAtLabel.setText("Last updated: " + user.getUpdatedAt().format(formatter));
+        } else {
+            updatedAtLabel.setText("Last updated: N/A");
+        }
     }
 
     private void loadProfilePhoto(User user) {
         if (user.getProfilePhoto() != null && !user.getProfilePhoto().isEmpty()) {
             try {
-                // Clean the path - remove leading slash if present
-                String photoPath = user.getProfilePhoto();
-                if (photoPath.startsWith("/")) {
-                    photoPath = photoPath.substring(1);
-                }
-
-                // Build the full URL with /api prefix
-                String photoUrl = Config.BASE_IMAGE_URL + "/" + photoPath;
-
+                // Construct full URL
+                String photoUrl = Config.BASE_IMAGE_URL + user.getProfilePhoto();
                 Image image = new Image(photoUrl, true);
-
-                // Add listener to check if image loaded
-                image.progressProperty().addListener((obs, old, newVal) -> {
-                    if (newVal.doubleValue() == 1.0) {
-                        defaultAvatarLabel.setVisible(false);
-                        defaultAvatarLabel.setManaged(false);
-                    } else if (image.isError()) {
-                        setDefaultProfilePhoto();
-                    }
-                });
-
                 profileImageView.setImage(image);
                 profileImageView.setPreserveRatio(true);
-                profileImageView.setFitWidth(150);
-                profileImageView.setFitHeight(150);
-                profileImageView.setStyle(""); // Clear any background
-
+                profileImageView.setFitWidth(100);
+                profileImageView.setFitHeight(100);
             } catch (Exception e) {
+                // If image fails to load, use default
                 setDefaultProfilePhoto();
             }
         } else {
@@ -190,12 +198,10 @@ public class ProfileController {
 
     private void setDefaultProfilePhoto() {
         profileImageView.setImage(null);
-        // Show default avatar
-        defaultAvatarLabel.setVisible(true);
-        defaultAvatarLabel.setManaged(true);
-        // Set a background color for the image view
-        profileImageView.setStyle("-fx-background-color: #bdc3c7; -fx-background-radius: 75; -fx-opacity: 0.3;");
+        profileImageView.setStyle("-fx-background-color: #bdc3c7; -fx-background-radius: 50;");
     }
+
+    // UPDATE PROFILE PHOTO
 
     @FXML
     private void handleChangeProfilePhoto() {
@@ -210,44 +216,24 @@ public class ProfileController {
 
         if (selectedFile != null) {
             try {
+                // Call UserService.updateProfilePhoto()
                 Map<String, Object> result = UserService.updateProfilePhoto(selectedFile);
                 String message = (String) result.get("message");
                 String photoUrl = (String) result.get("photoUrl");
 
-                if (photoUrl != null && !photoUrl.isEmpty()) {
-                    String cleanedPath = photoUrl.startsWith("/") ? photoUrl.substring(1) : photoUrl;
-                    String fullUrl = Config.BASE_IMAGE_URL + "/" + cleanedPath;
+                // Show success message
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        null,
+                        message,
+                        "INFORMATION"
+                );
 
-                    Image image = new Image(fullUrl, true);
+                // Reload profile to show new photo
+                loadUserProfile();
 
-                    image.progressProperty().addListener((obs, old, newVal) -> {
-                        if (newVal.doubleValue() == 1.0) {
-                            defaultAvatarLabel.setVisible(false);
-                            defaultAvatarLabel.setManaged(false);
-                        }
-                    });
-
-                    profileImageView.setImage(image);
-                    profileImageView.setPreserveRatio(true);
-                    profileImageView.setFitWidth(150);
-                    profileImageView.setFitHeight(150);
-                    profileImageView.setStyle("");
-
-                    defaultAvatarLabel.setVisible(false);
-                    defaultAvatarLabel.setManaged(false);
-                }
-
-                ShowErrorDialog.showErrorDialog("Success", null, message, "INFORMATION");
-
-                // Reload the full profile
-                User updatedUser = UserService.getMyProfile();
-                if (updatedUser != null) {
-                    SessionManager.setCurrentUser(updatedUser);
-                    loadProfilePhoto(updatedUser);
-                }
 
             } catch (Exception e) {
-                e.printStackTrace();
                 ShowErrorDialog.showErrorDialog(
                         "Profile Photo Error",
                         "Failed to update profile photo",
@@ -257,6 +243,8 @@ public class ProfileController {
             }
         }
     }
+
+    // UPDATE PROFILE
 
     @FXML
     private void handleUpdateProfile() {
@@ -290,9 +278,11 @@ public class ProfileController {
             currentUser.setEmail(email);
             currentUser.setPhoneNumber(phone);
 
+            // Call backend to update profile
             Map<String, Object> result = UserService.updateProfile(currentUser);
             User updatedUser = (User) result.get("user");
 
+            // Update session with new user
             SessionManager.setCurrentUser(updatedUser);
 
             ShowErrorDialog.showErrorDialog(
@@ -302,6 +292,7 @@ public class ProfileController {
                     "INFORMATION"
             );
 
+            // Reload profile to show updated data
             loadUserProfile();
 
         } catch (Exception e) {
@@ -313,6 +304,8 @@ public class ProfileController {
             );
         }
     }
+
+    // CHANGE PASSWORD
 
     @FXML
     private void handleChangePassword() {
@@ -341,6 +334,7 @@ public class ProfileController {
         }
 
         try {
+            // Call backend to change password
             String result = UserService.changePassword(oldPassword, newPassword);
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -349,6 +343,7 @@ public class ProfileController {
             alert.setContentText(result);
             alert.showAndWait();
 
+            // Clear password fields
             oldPasswordField.clear();
             newPasswordField.clear();
             confirmPasswordField.clear();
@@ -362,6 +357,8 @@ public class ProfileController {
             );
         }
     }
+
+    // NAVIGATION
 
     @FXML
     private void goToHome() {
