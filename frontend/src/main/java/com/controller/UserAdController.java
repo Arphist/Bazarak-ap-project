@@ -71,6 +71,9 @@ public class UserAdController {
     private Button deleteAdButton;
 
     @FXML
+    private Button markAsSoldButton;
+
+    @FXML
     private Label errorLabel;
 
     // ============================================
@@ -111,17 +114,20 @@ public class UserAdController {
             myAdsListView.setPlaceholder(null);
         }
 
-        // ===== NEW: Enable/Disable buttons based on selection =====
+        // =====  Enable/Disable/markAsSold buttons based on selection =====
         myAdsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             boolean isSelected = newVal != null;
             updateAdButton.setDisable(!isSelected);
+            markAsSoldButton.setDisable(!isSelected);
             deleteAdButton.setDisable(!isSelected);
 
             if (isSelected) {
                 updateAdButton.setStyle(null);
+                markAsSoldButton.setStyle(null);
                 deleteAdButton.setStyle(null);
             } else {
                 updateAdButton.setStyle("-fx-background-color: #555;");
+                markAsSoldButton.setStyle("-fx-background-color: #555;");
                 deleteAdButton.setStyle("-fx-background-color: #555;");
             }
         });
@@ -318,6 +324,73 @@ public class UserAdController {
                 ShowErrorDialog.showErrorDialog(
                         "Delete Error",
                         "Failed to delete ad",
+                        e.getMessage(),
+                        "ERROR"
+                );
+            }
+        }
+    }
+
+    @FXML
+    private void handleMarkAsSold() {
+        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ShowErrorDialog.showErrorDialog(
+                    "Mark as Sold Error",
+                    "No ad selected",
+                    "Please select an ad to mark as sold.",
+                    "WARNING"
+            );
+            return;
+        }
+
+
+        if ("SOLD".equals(selected.getStatus())) {
+            ShowErrorDialog.showErrorDialog(
+                    "Mark as Sold Error",
+                    "Already Sold",
+                    "This ad is already marked as sold.",
+                    "WARNING"
+            );
+            return;
+        }
+
+
+        if (!"ACCEPTED".equals(selected.getStatus())) {
+            ShowErrorDialog.showErrorDialog(
+                    "Mark as Sold Error",
+                    "Invalid Status",
+                    "Only active ads (ACCEPTED) can be marked as sold.",
+                    "WARNING"
+            );
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Mark as Sold");
+        confirm.setHeaderText("Mark advertisement as sold?");
+        confirm.setContentText("Are you sure you want to mark '" + selected.getTitle() + "' as sold?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+
+                AdService.markAsSold(selected);
+
+
+                selected.setStatus("SOLD");
+                myAdsListView.refresh();
+                loadDashboardStats();
+
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        "Ad Marked as Sold",
+                        "Advertisement marked as sold successfully.",
+                        "INFORMATION"
+                );
+            } catch (Exception e) {
+                ShowErrorDialog.showErrorDialog(
+                        "Mark as Sold Error",
+                        "Failed to mark ad as sold",
                         e.getMessage(),
                         "ERROR"
                 );
