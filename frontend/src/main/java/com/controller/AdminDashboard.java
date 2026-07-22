@@ -207,6 +207,35 @@ public class AdminDashboard {
         setupAdListView(soldAdsListView);
         setupAdListView(deletedAdsListView);
 
+
+        if (pendingAds.isEmpty()) {
+            pendingAdsListView.setPlaceholder(new Label("No pending ads found"));
+        } else {
+            pendingAdsListView.setPlaceholder(null);
+        }
+        if (activeAds.isEmpty()) {
+            activeAdsListView.setPlaceholder(new Label("No active ads found"));
+        } else {
+            activeAdsListView.setPlaceholder(null);
+        }
+        if (rejectedAds.isEmpty()) {
+            rejectedAdsListView.setPlaceholder(new Label("No rejected ads found"));
+        } else {
+            rejectedAdsListView.setPlaceholder(null);
+        }
+        if (soldAds.isEmpty()) {
+            soldAdsListView.setPlaceholder(new Label("No sold ads found"));
+        } else {
+            soldAdsListView.setPlaceholder(null);
+        }
+        if (deletedAds.isEmpty()) {
+            deletedAdsListView.setPlaceholder(new Label("No deleted ads found"));
+        } else {
+            deletedAdsListView.setPlaceholder(null);
+        }
+
+
+
         setupUserTable();
 
         // Setup sort combo boxes
