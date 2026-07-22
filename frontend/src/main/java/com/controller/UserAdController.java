@@ -2,6 +2,7 @@ package com.controller;
 
 import com.BazarakFrontendApplication;
 import com.model.Advertisement;
+import com.service.AdService;
 import com.service.UserAdvertisementService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
@@ -28,8 +29,6 @@ public class UserAdController {
 
     @FXML
     private Label countLabel;
-
-
 
     @FXML
     private ComboBox<String> statusFilterCombo;
@@ -62,11 +61,25 @@ public class UserAdController {
     private Label deletedLabel;
 
     // ============================================
+    // NEW: BUTTONS FOR UPDATE & DELETE
+    // ============================================
+
+    @FXML
+    private Button updateAdButton;
+
+    @FXML
+    private Button deleteAdButton;
+
+    @FXML
+    private Label errorLabel;
+
+    // ============================================
     // DATA
     // ============================================
 
     private ObservableList<Advertisement> myAds = FXCollections.observableArrayList();
     private String currentStatusFilter = "ALL";
+
     // ============================================
     // INITIALIZE
     // ============================================
@@ -98,6 +111,21 @@ public class UserAdController {
             myAdsListView.setPlaceholder(null);
         }
 
+        // ===== NEW: Enable/Disable buttons based on selection =====
+        myAdsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            boolean isSelected = newVal != null;
+            updateAdButton.setDisable(!isSelected);
+            deleteAdButton.setDisable(!isSelected);
+
+            if (isSelected) {
+                updateAdButton.setStyle(null);
+                deleteAdButton.setStyle(null);
+            } else {
+                updateAdButton.setStyle("-fx-background-color: #555;");
+                deleteAdButton.setStyle("-fx-background-color: #555;");
+            }
+        });
+
         // Setup filter combo box
         statusFilterCombo.setItems(FXCollections.observableArrayList(
                 "ALL",
@@ -117,6 +145,12 @@ public class UserAdController {
                 "Price: High to Low"
         ));
         sortByCombo.setValue("Newest First");
+
+        // Initially disable buttons
+        updateAdButton.setDisable(true);
+        deleteAdButton.setDisable(true);
+        updateAdButton.setStyle("-fx-background-color: #555; -fx-text-fill: #999;");
+        deleteAdButton.setStyle("-fx-background-color: #555; -fx-text-fill: #999;");
 
         // Load data
         loadDashboardStats();
@@ -193,6 +227,7 @@ public class UserAdController {
         }
         return 0;
     }
+
     // ============================================
     // FILTER / SORT
     // ============================================
@@ -216,6 +251,78 @@ public class UserAdController {
     private void refreshAll() {
         loadDashboardStats();
         loadMyAds();
+    }
+
+    // ============================================
+    // UPDATE AD (NEW)
+    // ============================================
+
+    @FXML
+    private void handleUpdateAd() {
+        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ShowErrorDialog.showErrorDialog(
+                    "Update Error",
+                    "No ad selected",
+                    "Please select an ad to update.",
+                    "WARNING"
+            );
+            return;
+        }
+
+        // TODO: Navigate to Update Ad page or open a dialog
+        DataHolder.setSelectedAdId(selected.getId());
+        // NavigationUtil.goToUpdateAd();
+        ShowErrorDialog.showErrorDialog(
+                "Update Feature",
+                "Coming Soon",
+                "Update feature is not yet implemented.",
+                "INFORMATION"
+        );
+    }
+
+    // ============================================
+    // DELETE AD (NEW)
+    // ============================================
+
+    @FXML
+    private void handleDeleteAd() {
+        Advertisement selected = myAdsListView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            ShowErrorDialog.showErrorDialog(
+                    "Delete Error",
+                    "No ad selected",
+                    "Please select an ad to delete.",
+                    "WARNING"
+            );
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Ad");
+        confirm.setHeaderText("Delete advertisement?");
+        confirm.setContentText("Are you sure you want to delete '" + selected.getTitle() + "'?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                AdService.deleteAd(selected);
+                myAds.remove(selected);
+                loadDashboardStats();
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        "Ad Deleted",
+                        "Advertisement deleted successfully.",
+                        "INFORMATION"
+                );
+            } catch (Exception e) {
+                ShowErrorDialog.showErrorDialog(
+                        "Delete Error",
+                        "Failed to delete ad",
+                        e.getMessage(),
+                        "ERROR"
+                );
+            }
+        }
     }
 
     // ============================================
@@ -251,6 +358,7 @@ public class UserAdController {
                 return "desc";
         }
     }
+
     // ============================================
     // NAVIGATION
     // ============================================
@@ -274,10 +382,4 @@ public class UserAdController {
     private void goToProfile() {
         NavigationUtil.goToProfile();
     }
-
-
-
-
-
-
 }
