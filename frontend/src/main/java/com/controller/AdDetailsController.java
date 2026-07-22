@@ -2,21 +2,28 @@ package com.controller;
 
 import com.model.Advertisement;
 import com.model.AdvertisementSpecification;
+import com.model.Rating;
 import com.model.User;
 import com.service.AdService;
 import com.service.ConversationService;
+import com.service.RatingService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.ShowErrorDialog;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import com.service.FavoriteService;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 
+import java.util.List;
 import java.util.Map;
 
 public class AdDetailsController {
@@ -58,6 +65,12 @@ public class AdDetailsController {
 
     private Long adId;
 
+    @FXML
+    private ListView<Rating> ratingsListView;
+
+    @FXML
+    private Label ratingsErrorLabel;
+
     // Favorite UI elements
     @FXML
     private Button favoriteButton;
@@ -66,6 +79,7 @@ public class AdDetailsController {
     private boolean isFavorited = false;
     private Long favoriteCount = 0L;
 
+    private ObservableList<Rating> ratings = FXCollections.observableArrayList();
     // INITIALIZE
 
     @FXML
@@ -77,6 +91,32 @@ public class AdDetailsController {
             ShowErrorDialog.showErrorDialog("Failed", "No ad selected", "Please select an ad", "ERROR");
             return;
         }
+        ratingsListView.setCellFactory(lv -> new ListCell<Rating>() {
+            @Override
+            protected void updateItem(Rating rating, boolean empty) {
+                super.updateItem(rating, empty);
+                if (empty || rating == null) {
+                    setText(null);
+                    setGraphic(null);
+                    return;
+                }
+
+                String buyerName = rating.getBuyer() != null ?
+                        rating.getBuyer().getUsername() : "Unknown";
+
+                String stars = "⭐".repeat(Math.max(0, rating.getScore()));
+
+                String displayText = String.format(
+                        "%s %d/5 by %s",
+                        stars,
+                        rating.getScore(),
+                        buyerName
+                );
+
+                setText(displayText);
+                setStyle("-fx-padding: 6 12; -fx-border-color: #333333; -fx-border-width: 0 0 1 0;");
+            }
+        });
 
         // Load ad details
         loadAdDetails(adId);
@@ -167,6 +207,9 @@ public class AdDetailsController {
             descriptionArea.setText(ad.getDescription());
             displaySpecifications(ad);
 
+            // Load ratings for this ad
+            loadRatings(adId);
+
             // Load favorite status and count
             loadFavoriteState(adId);
 
@@ -178,6 +221,26 @@ public class AdDetailsController {
                     "There was a problem loading ad details. Please try again later.",
                     "ERROR"
             );
+        }
+    }
+
+    private void loadRatings(Long adId) {
+        try {
+            List<Rating> ratingList = RatingService.getRatingsByAdvertisement(adId);
+            ratings.clear();
+            ratings.addAll(ratingList);
+            ratingsListView.setItems(ratings);
+
+            if (ratings.isEmpty()) {
+                ratingsListView.setPlaceholder(new Label("No ratings yet for this ad."));
+            } else {
+                ratingsListView.setPlaceholder(null);
+            }
+
+            ratingsErrorLabel.setText("");
+
+        } catch (Exception e) {
+            ratingsErrorLabel.setText("Failed to load ratings: " + e.getMessage());
         }
     }
 
