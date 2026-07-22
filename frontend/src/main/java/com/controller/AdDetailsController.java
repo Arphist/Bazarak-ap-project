@@ -14,6 +14,9 @@ import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -22,6 +25,7 @@ import javafx.scene.layout.VBox;
 import com.service.FavoriteService;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +33,6 @@ import java.util.Map;
 public class AdDetailsController {
 
     // FXML FIELDS
-
     @FXML
     private Label titleLabel;
 
@@ -64,6 +67,7 @@ public class AdDetailsController {
     private VBox imageContainer;
 
     private Long adId;
+    private User adOwner;   // ✅ Store seller user
 
     @FXML
     private ListView<Rating> ratingsListView;
@@ -80,8 +84,8 @@ public class AdDetailsController {
     private Long favoriteCount = 0L;
 
     private ObservableList<Rating> ratings = FXCollections.observableArrayList();
-    // INITIALIZE
 
+    // INITIALIZE
     @FXML
     private void initialize() {
         // Get ad ID from DataHolder
@@ -91,6 +95,7 @@ public class AdDetailsController {
             ShowErrorDialog.showErrorDialog("Failed", "No ad selected", "Please select an ad", "ERROR");
             return;
         }
+
         ratingsListView.setCellFactory(lv -> new ListCell<Rating>() {
             @Override
             protected void updateItem(Rating rating, boolean empty) {
@@ -128,18 +133,24 @@ public class AdDetailsController {
         } else {
             ratingsListView.setPlaceholder(null);
         }
+
+        // ✅ Add double-click listener on the seller's username
+        ownerLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                openSellerAds();
+            }
+        });
+        ownerLabel.setStyle("-fx-cursor: hand; -fx-underline: true;"); // Make it look clickable
     }
 
     private void loadFavoriteState(Long adId) {
         try {
-            // Only if user is logged in
             User currentUser = SessionManager.getCurrentUser();
             if (currentUser != null) {
                 isFavorited = FavoriteService.isFavorited(adId);
                 updateFavoriteButton();
             }
 
-            // Load favorite count
             favoriteCount = FavoriteService.getFavoriteCount(adId);
             favoriteCountLabel.setText(String.valueOf(favoriteCount));
 
@@ -157,18 +168,15 @@ public class AdDetailsController {
     private void toggleFavorite() {
         try {
             if (isFavorited) {
-                // Remove from favorites
                 FavoriteService.removeFavorite(adId);
                 isFavorited = false;
                 favoriteCount--;
             } else {
-                // Add to favorites
                 FavoriteService.addToFavorite(adId);
                 isFavorited = true;
                 favoriteCount++;
             }
 
-            // Update UI
             updateFavoriteButton();
             favoriteCountLabel.setText(String.valueOf(favoriteCount));
 
@@ -184,15 +192,15 @@ public class AdDetailsController {
 
     private void updateFavoriteButton() {
         if (isFavorited) {
-            favoriteButton.setText("♥");  // Filled heart
+            favoriteButton.setText("♥");
             favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
         } else {
-            favoriteButton.setText("♡");  // Empty heart
+            favoriteButton.setText("♡");
             favoriteButton.setStyle("-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-cursor: hand; -fx-padding: 0;");
         }
     }
-    // LOAD AD DETAILS
 
+    // LOAD AD DETAILS
     private void loadAdDetails(Long adId) {
         try {
             Map<String, Object> result = AdService.getAdById(adId);
@@ -200,6 +208,7 @@ public class AdDetailsController {
 
             if (ad.getOwner() != null) {
                 DataHolder.setSelectedUserId(ad.getOwner().getId());
+                adOwner = ad.getOwner();   // ✅ Store owner
             }
 
             // Populate UI fields
@@ -207,7 +216,7 @@ public class AdDetailsController {
             priceLabel.setText(ad.getPrice() + " T");
             categoryLabel.setText(ad.getCategory() != null ? ad.getCategory().getName() : "N/A");
             cityLabel.setText(ad.getCity() != null ? ad.getCity().getName() : "N/A");
-            ownerLabel.setText(ad.getOwner() != null ? ad.getOwner().getFullName() : "Unknown");
+            ownerLabel.setText(ad.getOwner() != null ? ad.getOwner().getUsername() : "Unknown");
             statusLabel.setText(ad.getStatus());
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
@@ -218,7 +227,6 @@ public class AdDetailsController {
 
             // Load favorite status and count
             loadFavoriteState(adId);
-
 
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
@@ -236,11 +244,7 @@ public class AdDetailsController {
             ratings.clear();
             ratings.addAll(ratingList);
             ratingsListView.setItems(ratings);
-
-
-
             ratingsErrorLabel.setText("");
-
         } catch (Exception e) {
             ratingsErrorLabel.setText("Failed to load ratings: " + e.getMessage());
         }
@@ -261,14 +265,46 @@ public class AdDetailsController {
         }
     }
 
-    // GO TO RATING
+    // OPEN SELLER ADS ON DOUBLE-CLICK
+    private void openSellerAds() {
+        if (adOwner == null) {
+            ShowErrorDialog.showErrorDialog("Error", "No seller information", "Seller not found.", "ERROR");
+            return;
+        }
 
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/my-ads.fxml"));
+            Parent root = loader.load();
+            UserAdController controller = loader.getController();
+
+            DataHolder.setSelectedUser(adOwner);
+            controller.setTargetUser(adOwner);
+            controller.setHeaderText("Ads of " + adOwner.getUsername());
+            controller.loadAdsForUser();
+
+            Stage stage = new Stage();
+            stage.setTitle("Ads of " + adOwner.getUsername());
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowErrorDialog.showErrorDialog(
+                    "Error",
+                    "Failed to open seller ads",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
+    // GO TO RATING
     @FXML
     private void goToRating() throws Exception {
         if (adId != null) {
             try {
-                Map<String,Object> result = AdService.getAdById(adId);
-                Advertisement currentAd= (Advertisement) result.get("ad");
+                Map<String, Object> result = AdService.getAdById(adId);
+                Advertisement currentAd = (Advertisement) result.get("ad");
 
                 Long sellerId = currentAd.getOwner().getId();
                 Long adId = currentAd.getId();
@@ -276,7 +312,7 @@ public class AdDetailsController {
                 DataHolder.setSelectedUserId(sellerId);
                 NavigationUtil.goToRating();
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 ShowErrorDialog.showErrorDialog(
                         "Rating Error",
                         "Failed to rate seller",
@@ -310,14 +346,12 @@ public class AdDetailsController {
         }
 
         try {
-            // Start conversation with the seller
             Long sellerId = currentAd.getOwner().getId();
             Long adId = currentAd.getId();
 
             Map<String, Object> result = ConversationService.startConversation(sellerId, adId);
             Long conversationId = (Long) result.get("id");
 
-            // Store conversation ID and navigate to chat
             DataHolder.setSelectedConversationId(conversationId);
             NavigationUtil.goToChat();
 
@@ -332,7 +366,6 @@ public class AdDetailsController {
     }
 
     // NAVIGATION
-
     @FXML
     private void goBack() {
         NavigationUtil.goBack();
