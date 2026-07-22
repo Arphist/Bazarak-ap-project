@@ -5,14 +5,19 @@ import com.service.AdminService;
 import com.service.AdminService;
 import com.service.CategoryService;
 import com.service.CityService;
+import com.util.DataHolder;
 import com.util.NavigationUtil;
 import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.List;
 import java.util.Map;
@@ -297,6 +302,36 @@ public class AdminDashboard {
         // Setup category and city list views
         setupSimpleListView(adsByCategoryListView);
         setupSimpleListView(adsByCityListView);
+
+        usersTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                User selected = usersTable.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openUserAds(selected);
+                }
+            }
+        });
+    }
+
+    private void openUserAds(User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/my-ads.fxml"));
+            Parent root = loader.load();
+            UserAdController controller = loader.getController();
+
+            DataHolder.setSelectedUser(user);
+            controller.setTargetUserId(user.getId());
+            controller.setHeaderText("Ads of " + user.getUsername());  // Set header immediately
+            controller.loadAdsForUser();
+
+            Stage stage = new Stage();
+            stage.setTitle("Ads of " + user.getUsername());
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ShowErrorDialog.showErrorDialog("Error", "Failed to open user ads", e.getMessage(), "ERROR");
+        }
     }
 
     /**
