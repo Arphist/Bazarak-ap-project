@@ -120,16 +120,6 @@ public class UserAdController {
             updateAdButton.setDisable(!isSelected);
             markAsSoldButton.setDisable(!isSelected);
             deleteAdButton.setDisable(!isSelected);
-
-            if (isSelected) {
-                updateAdButton.setStyle(null);
-                markAsSoldButton.setStyle("-fx-background-color:#3498DBFF; -fx-text-fill:#FFFFFF; -fx-font-weight: bold;");
-                deleteAdButton.setStyle(null);
-            } else {
-                updateAdButton.setStyle("-fx-background-color: #555;");
-                markAsSoldButton.setStyle("-fx-background-color: #555;");
-                deleteAdButton.setStyle("-fx-background-color: #555;");
-            }
         });
 
         // Setup filter combo box
@@ -156,9 +146,7 @@ public class UserAdController {
         updateAdButton.setDisable(true);
         deleteAdButton.setDisable(true);
         markAsSoldButton.setDisable(true);
-        updateAdButton.setStyle("-fx-background-color: #555; -fx-text-fill: #999;");
-        deleteAdButton.setStyle("-fx-background-color: #555; -fx-text-fill: #999;");
-        markAsSoldButton.setStyle("-fx-background-color: #555; -fx-text-fill: #999;");
+
 
         // Load data
         loadDashboardStats();

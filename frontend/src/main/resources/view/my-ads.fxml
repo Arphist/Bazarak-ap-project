@@ -64,7 +64,7 @@
                 <Button fx:id="updateAdButton" text="✏ Update Ad" onAction="#handleUpdateAd"
                         styleClass="button-edit" disable="true"/>
                 <Button fx:id="markAsSoldButton" text="💰 Mark as Sold" onAction="#handleMarkAsSold"
-                        styleClass="button-primary" disable="true"/>
+                        style="-fx-background-color: #3498DBFF;-fx-text-fill: #FFFFFF;-fx-font-weight: bold; -fx-background-radius: 6;-fx-padding: 8 16;-fx-cursor: hand;" disable="true"/>
                 <Button fx:id="deleteAdButton" text="🗑 Delete Ad" onAction="#handleDeleteAd"
                         styleClass="button-delete" disable="true"/>
             </HBox>
