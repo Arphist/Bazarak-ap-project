@@ -227,6 +227,14 @@
                         <ComboBox fx:id="pendingSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyPendingSort" styleClass="button-primary"/>
                     </HBox>
+
+                    <!-- Action Buttons for Pending -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Approve" onAction="#approveAd" styleClass="button-primary"/>
+                        <Button text="Reject" onAction="#rejectAd" styleClass="button-edit"/>
+                        <Button text="Delete" onAction="#deleteAd" styleClass="button-delete"/>
+                    </HBox>
+
                     <ListView fx:id="pendingAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="pendingErrorLabel" styleClass="error-label"/>
                 </VBox>
@@ -244,6 +252,12 @@
                         <ComboBox fx:id="activeSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyActiveSort" styleClass="button-primary"/>
                     </HBox>
+
+                    <!-- Action Buttons for Active -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Delete" onAction="#deleteAd" styleClass="button-delete"/>
+                    </HBox>
+
                     <ListView fx:id="activeAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="activeErrorLabel" styleClass="error-label"/>
                 </VBox>
@@ -261,6 +275,12 @@
                         <ComboBox fx:id="rejectedSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyRejectedSort" styleClass="button-primary"/>
                     </HBox>
+
+                    <!-- Action Buttons for Rejected -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Delete" onAction="#deleteAd" styleClass="button-delete"/>
+                    </HBox>
+
                     <ListView fx:id="rejectedAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="rejectedErrorLabel" styleClass="error-label"/>
                 </VBox>
@@ -294,9 +314,10 @@
                         <Label text="Order:" style="-fx-text-fill: #E0E0E0;"/>
                         <ComboBox fx:id="deletedSortOrderCombo" prefWidth="100" styleClass="combo-box"/>
                         <Button text="Apply" onAction="#applyDeletedSort" styleClass="button-primary"/>
-                        <Button text="Restore Selected" onAction="#restoreAd" styleClass="button-secondary"/>
-                        <Button text="Delete Selected" onAction="#deleteAd" styleClass="button-secondary"/>
+                        <!-- Only Restore button remains -->
+                        <Button text="↩ Restore" onAction="#restoreAd" styleClass="button-edit"/>
                     </HBox>
+
                     <ListView fx:id="deletedAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                     <Label fx:id="deletedErrorLabel" styleClass="error-label"/>
                 </VBox>
