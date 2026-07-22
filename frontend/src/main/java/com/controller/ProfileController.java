@@ -154,18 +154,30 @@ public class ProfileController {
         if (user.getProfilePhoto() != null && !user.getProfilePhoto().isEmpty()) {
             try {
                 String photoPath = user.getProfilePhoto();
-                if (photoPath.startsWith("/")) {
-                    photoPath = photoPath.substring(1);
-                }
+                if (photoPath.startsWith("/")) photoPath = photoPath.substring(1);
 
-                // ✅ ADD CACHE BUSTER TO FORCE REFRESH
                 String photoUrl = Config.BASE_IMAGE_URL + "/" + photoPath + "?t=" + System.currentTimeMillis();
                 System.out.println("📸 Loading photo from URL: " + photoUrl);
 
-                Image image = new Image(photoUrl, 150, 150, true, true, true);
+                Image image = new Image(photoUrl, true);
 
-                // Clear the image first to force refresh
-                profileImageView.setImage(null);
+                // When the image loads, center it
+                image.progressProperty().addListener((obs, old, progress) -> {
+                    if (progress.equals(1.0)  && image.getWidth() > 0 && image.getHeight() > 0) {
+                        // Calculate center crop
+                        double w = image.getWidth();
+                        double h = image.getHeight();
+                        double size = Math.min(w, h);
+                        double x = (w - size) / 2;
+                        double y = (h - size) / 2;
+
+                        profileImageView.setViewport(new javafx.geometry.Rectangle2D(x, y, size, size));
+                        System.out.println("📐 Centered: " + w + "x" + h + " → crop " + size + "x" + size);
+                    }
+                });
+
+                // Clear previous viewport and set image
+                profileImageView.setViewport(null);
                 profileImageView.setImage(image);
                 profileImageView.setPreserveRatio(true);
                 profileImageView.setFitWidth(150);
@@ -176,7 +188,6 @@ public class ProfileController {
                 defaultAvatarLabel.setManaged(false);
 
             } catch (Exception e) {
-                System.err.println("❌ Failed to load profile photo: " + e.getMessage());
                 setDefaultProfilePhoto();
             }
         } else {
