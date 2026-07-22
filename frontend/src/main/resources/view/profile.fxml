@@ -42,18 +42,17 @@
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
                     </columnConstraints>
 
-                    <!-- Row 0: Profile Photo - FIXED CLIP -->
+                    <!-- Row 0: Profile Photo -->
                     <StackPane GridPane.rowIndex="0"
                                style="-fx-padding: 5; -fx-alignment: CENTER;">
-                        <StackPane>
-                            <ImageView fx:id="profileImageView"
-                                       fitWidth="150"
-                                       fitHeight="150"
-                                       preserveRatio="true"/>
+                        <ImageView fx:id="profileImageView"
+                                   fitWidth="150"
+                                   fitHeight="150"
+                                   preserveRatio="true">
                             <clip>
                                 <Circle centerX="75" centerY="75" radius="75"/>
                             </clip>
-                        </StackPane>
+                        </ImageView>
                         <!-- Default avatar placeholder -->
                         <Label fx:id="defaultAvatarLabel"
                                text="👤"
