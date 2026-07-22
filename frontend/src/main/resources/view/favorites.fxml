@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.layout.Pane?>
 <VBox xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.controller.FavoriteController"
@@ -21,6 +22,8 @@
     <HBox spacing="10" alignment="CENTER_LEFT" styleClass="header-bar">
         <Button text="← Back" onAction="#goBack" styleClass="button-secondary" />
         <Label text="My Favorites" styleClass="heading-title" />
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="↻ Refresh" onAction="#loadFavorites" styleClass="button-secondary"/>
     </HBox>
 
     <!-- Count Label -->
@@ -35,7 +38,6 @@
     <!-- Action Buttons -->
     <HBox spacing="10" alignment="CENTER">
         <Button text="Remove Selected" onAction="#removeSelectedFavorite" styleClass="button-secondary" />
-        <Button text="Refresh" onAction="#loadFavorites" styleClass="button-secondary" />
         <Button text="View Ad" onAction="#goToAdDetails" styleClass="button-primary" />
     </HBox>
 
