@@ -309,7 +309,7 @@
                     <HBox spacing="12" alignment="CENTER_LEFT">
                         <Label fx:id="usersCountLabel" style="-fx-font-weight: bold; -fx-text-fill: #E0E0E0;"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="Block User" onAction="#blockUser" styleClass="button-secondary"/>
+                        <Button text="Block User" onAction="#blockUser" styleClass="button-delete"/>
                         <Button text="Unblock User" onAction="#unblockUser" styleClass="button-primary"/>
                     </HBox>
                     <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
