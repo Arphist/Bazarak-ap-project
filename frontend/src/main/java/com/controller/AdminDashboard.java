@@ -773,13 +773,16 @@ public class AdminDashboard {
 
     private void loadCategories() {
         try {
-            List<Category> categories = CategoryService.getAllCategories();
-            categoryListView.getItems().setAll(categories);
+            List<Category> categoryList = CategoryService.getAllCategories();
+            categories.setAll(categoryList);  // Update the ObservableList
+            categoryListView.setItems(categories);
+
             if (categories.isEmpty()) {
                 categoryListView.setPlaceholder(new Label("No category found"));
             } else {
                 categoryListView.setPlaceholder(null);
             }
+
             categoryListView.setCellFactory(lv -> new ListCell<Category>() {
                 @Override
                 protected void updateItem(Category cat, boolean empty) {
@@ -796,7 +799,7 @@ public class AdminDashboard {
                 }
             });
 
-            // Update parent combo box
+            // Update parent combo box with the new list
             updateCategoryParentCombo();
 
         } catch (Exception e) {
@@ -808,7 +811,6 @@ public class AdminDashboard {
             );
         }
     }
-
     // SEARCH METHODS
 
     @FXML
@@ -951,9 +953,32 @@ public class AdminDashboard {
     }
 
     private void updateCategoryParentCombo() {
+        // Clear and repopulate with ALL categories
         categoryParentCombo.getItems().clear();
-        categoryParentCombo.getItems().addAll(categories);
+
+        // Add categories to the combo (excluding the current one being edited if needed)
+        for (Category cat : categories) {
+            categoryParentCombo.getItems().add(cat);
+        }
+
         categoryParentCombo.setPromptText("Parent (optional)");
+
+        // Optional: Set cell factory to show names
+        categoryParentCombo.setCellFactory(lv -> new ListCell<Category>() {
+            @Override
+            protected void updateItem(Category category, boolean empty) {
+                super.updateItem(category, empty);
+                setText(empty || category == null ? null : category.getName());
+            }
+        });
+
+        categoryParentCombo.setButtonCell(new ListCell<Category>() {
+            @Override
+            protected void updateItem(Category category, boolean empty) {
+                super.updateItem(category, empty);
+                setText(empty || category == null ? null : category.getName());
+            }
+        });
     }
 
     // SORT ACTIONS
@@ -1366,7 +1391,7 @@ public class AdminDashboard {
             categoryNameField.clear();
             categoryDescriptionField.clear();
             categoryParentCombo.setValue(null);
-            loadCategories();
+            loadCategories(); // This will refresh both list and parent combo
             ShowErrorDialog.showErrorDialog(
                     "Add Category Success",
                     "Category added successfully",
@@ -1382,7 +1407,6 @@ public class AdminDashboard {
             );
         }
     }
-
     @FXML
     private void handleEditCategory() {
         Category selected = categoryListView.getSelectionModel().getSelectedItem();
