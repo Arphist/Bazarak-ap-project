@@ -4,52 +4,64 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 
-<VBox xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.controller.AdDetailsController"
-      spacing="12" alignment="TOP_CENTER" style="-fx-padding: 20;"
-      stylesheets="@styles.css">
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.controller.AdDetailsController"
+            stylesheets="@styles.css">
 
-    <!-- Title -->
-    <Label fx:id="titleLabel" styleClass="heading-title" />
+    <!-- TOP: Header -->
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 15 20;">
+            <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
+            <Label text="Ad Details" styleClass="heading-title" style="-fx-font-size: 18;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🏠 Home" onAction="#goToHome" styleClass="button-secondary"/>
+        </HBox>
+    </top>
 
-    <!-- Navigation Buttons -->
-    <HBox spacing="10">
-        <Button text="← Back" onAction="#goBack" styleClass="button-secondary" />
-        <Button text="🏠 Home" onAction="#goToHome" styleClass="button-secondary" />
-    </HBox>
+    <!-- CENTER: Content -->
+    <center>
+        <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 20;">
 
-    <!-- Ad Details -->
-    <Label fx:id="priceLabel" styleClass="sub-title" style="-fx-font-size: 16px; -fx-text-fill: #4CAF50;" />
-    <Label fx:id="categoryLabel" styleClass="sub-title" />
-    <Label fx:id="cityLabel" styleClass="sub-title" />
-    <Label fx:id="ownerLabel" styleClass="sub-title" />
-    <Label fx:id="statusLabel" styleClass="sub-title" />
+            <!-- Title -->
+            <Label fx:id="titleLabel" styleClass="heading-title" style="-fx-font-size: 22;"/>
 
-    <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="100" styleClass="text-field" />
+            <!-- Ad Details -->
+            <Label fx:id="priceLabel" styleClass="sub-title" style="-fx-font-size: 16px; -fx-text-fill: #4CAF50;"/>
+            <Label fx:id="categoryLabel" styleClass="sub-title"/>
+            <Label fx:id="cityLabel" styleClass="sub-title"/>
+            <Label fx:id="ownerLabel" styleClass="sub-title"/>
+            <Label fx:id="statusLabel" styleClass="sub-title"/>
 
-    <!-- Specifications Section -->
-    <VBox fx:id="specificationsContainer" spacing="5" styleClass="filter-card" style="-fx-padding: 10;">
-        <Label text="Specifications" styleClass="sub-title" style="-fx-font-weight: bold;"/>
-    </VBox>
+            <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="100" styleClass="text-field"/>
 
-    <!-- Favorite Section -->
-    <HBox spacing="15" alignment="CENTER_LEFT">
-        <Button fx:id="favoriteButton" text="♡" onAction="#toggleFavorite"
-                style="-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #CF6679; -fx-cursor: hand; -fx-padding: 0;"/>
-        <Label fx:id="favoriteCountLabel" text="0" styleClass="sub-title"/>
-        <Label text="favorites" styleClass="sub-title"/>
-    </HBox>
+            <!-- Specifications Section -->
+            <VBox fx:id="specificationsContainer" spacing="5" styleClass="filter-card" style="-fx-padding: 10;">
+                <Label text="Specifications" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+            </VBox>
 
-    <!-- Action Buttons -->
-    <HBox spacing="10">
-        <Button text="💬 Contact Seller" onAction="#goToChat" styleClass="button-primary"/>
-        <Button text="⭐ Rate Seller" onAction="#goToRating" styleClass="button-secondary"/>
-    </HBox>
+            <!-- Favorite Section -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Button fx:id="favoriteButton" text="♡" onAction="#toggleFavorite"
+                        style="-fx-font-size: 28px; -fx-background-color: transparent; -fx-text-fill: #CF6679; -fx-cursor: hand; -fx-padding: 0;"/>
+                <Label fx:id="favoriteCountLabel" text="0" styleClass="sub-title"/>
+                <Label text="favorites" styleClass="sub-title"/>
+            </HBox>
 
-    <Label fx:id="errorLabel" styleClass="error-label" />
+            <!-- Action Buttons -->
+            <HBox spacing="10">
+                <Button text="💬 Contact Seller" onAction="#goToChat" styleClass="button-primary"/>
+                <Button text="⭐ Rate Seller" onAction="#goToRating" styleClass="button-secondary"/>
+            </HBox>
 
-</VBox>
+            <Label fx:id="errorLabel" styleClass="error-label"/>
+
+        </VBox>
+    </center>
+
+</BorderPane>
