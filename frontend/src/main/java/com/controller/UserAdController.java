@@ -163,6 +163,37 @@ public class UserAdController {
         setupListView(soldAdsListView);
         setupListView(deletedAdsListView);
 
+        if (allAds.isEmpty()) {
+            allAdsListView.setPlaceholder(new Label("No ads found"));
+        } else {
+            allAdsListView.setPlaceholder(null);
+        }
+        if (pendingAds.isEmpty()) {
+            pendingAdsListView.setPlaceholder(new Label("No pending ads found"));
+        } else {
+            pendingAdsListView.setPlaceholder(null);
+        }
+        if (activeAds.isEmpty()) {
+            activeAdsListView.setPlaceholder(new Label("No active ads found"));
+        } else {
+            activeAdsListView.setPlaceholder(null);
+        }
+        if (rejectedAds.isEmpty()) {
+            rejectedAdsListView.setPlaceholder(new Label("No rejected ads found"));
+        } else {
+            rejectedAdsListView.setPlaceholder(null);
+        }
+        if (soldAds.isEmpty()) {
+            soldAdsListView.setPlaceholder(new Label("No sold ads found"));
+        } else {
+            soldAdsListView.setPlaceholder(null);
+        }
+        if (deletedAds.isEmpty()) {
+            deletedAdsListView.setPlaceholder(new Label("No deleted ads found"));
+        } else {
+            deletedAdsListView.setPlaceholder(null);
+        }
+
         // Setup sort combo boxes
         setupSortComboBoxes();
 
@@ -372,22 +403,34 @@ public class UserAdController {
     // ============================================
 
     @FXML
-    private void applyAllSort() { loadAllAds(); }
+    private void applyAllSort() {
+        loadAllAds();
+    }
 
     @FXML
-    private void applyPendingSort() { loadPendingAds(); }
+    private void applyPendingSort() {
+        loadPendingAds();
+    }
 
     @FXML
-    private void applyActiveSort() { loadActiveAds(); }
+    private void applyActiveSort() {
+        loadActiveAds();
+    }
 
     @FXML
-    private void applyRejectedSort() { loadRejectedAds(); }
+    private void applyRejectedSort() {
+        loadRejectedAds();
+    }
 
     @FXML
-    private void applySoldSort() { loadSoldAds(); }
+    private void applySoldSort() {
+        loadSoldAds();
+    }
 
     @FXML
-    private void applyDeletedSort() { loadDeletedAds(); }
+    private void applyDeletedSort() {
+        loadDeletedAds();
+    }
 
     // ============================================
     // REFRESH
@@ -544,13 +587,20 @@ public class UserAdController {
         String tabText = selectedTab.getText();
 
         switch (tabText) {
-            case "All": return allAdsListView;
-            case "Pending": return pendingAdsListView;
-            case "Active": return activeAdsListView;
-            case "Rejected": return rejectedAdsListView;
-            case "Sold": return soldAdsListView;
-            case "Deleted": return deletedAdsListView;
-            default: return allAdsListView;
+            case "All":
+                return allAdsListView;
+            case "Pending":
+                return pendingAdsListView;
+            case "Active":
+                return activeAdsListView;
+            case "Rejected":
+                return rejectedAdsListView;
+            case "Sold":
+                return soldAdsListView;
+            case "Deleted":
+                return deletedAdsListView;
+            default:
+                return allAdsListView;
         }
     }
 
