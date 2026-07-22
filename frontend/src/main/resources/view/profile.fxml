@@ -10,6 +10,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -17,7 +18,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<?import javafx.scene.layout.ColumnConstraints?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.controller.ProfileController"
@@ -36,36 +36,50 @@
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
             <VBox spacing="12" alignment="TOP_CENTER" style="-fx-padding: 30 40 40 40;">
 
-                <!-- Profile Header - Using GridPane for precise control -->
+                <!-- Profile Header -->
                 <GridPane alignment="CENTER" hgap="0" vgap="8" style="-fx-padding: 10 0 30 0;">
                     <columnConstraints>
                         <ColumnConstraints halignment="CENTER" hgrow="NEVER"/>
                     </columnConstraints>
 
-                    <!-- Row 0: Profile Photo -->
-                    <StackPane GridPane.rowIndex="0" style="-fx-padding: 5;">
-                        <ImageView fx:id="profileImageView" fitWidth="150" fitHeight="150" preserveRatio="true">
+                    <!-- Row 0: Profile Photo - FIXED CLIP -->
+                    <StackPane GridPane.rowIndex="0"
+                               style="-fx-padding: 5; -fx-alignment: CENTER;">
+                        <StackPane>
+                            <ImageView fx:id="profileImageView"
+                                       fitWidth="150"
+                                       fitHeight="150"
+                                       preserveRatio="true"/>
                             <clip>
                                 <Circle centerX="75" centerY="75" radius="75"/>
                             </clip>
-                        </ImageView>
+                        </StackPane>
                         <!-- Default avatar placeholder -->
-                        <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 100; -fx-text-fill: #888888;"/>
+                        <Label fx:id="defaultAvatarLabel"
+                               text="👤"
+                               style="-fx-font-size: 100; -fx-text-fill: #888888;"
+                               StackPane.alignment="CENTER"/>
                     </StackPane>
 
-                    <!-- Row 1: Spacer (20px) -->
+                    <!-- Row 1: Spacer -->
                     <Region prefHeight="20" GridPane.rowIndex="1"/>
 
                     <!-- Row 2: Change Photo Button -->
-                    <Button fx:id="changePhotoButton" text="Change Photo" onAction="#handleChangeProfilePhoto"
-                            styleClass="button-secondary" GridPane.rowIndex="2">
+                    <Button fx:id="changePhotoButton"
+                            text="Change Photo"
+                            onAction="#handleChangeProfilePhoto"
+                            styleClass="button-secondary"
+                            GridPane.rowIndex="2">
                         <padding>
                             <Insets top="8" right="20" bottom="8" left="20"/>
                         </padding>
                     </Button>
 
                     <!-- Row 3: Username -->
-                    <Label fx:id="usernameLabel" styleClass="heading-title" style="-fx-padding: 8 0 0 0;" GridPane.rowIndex="3"/>
+                    <Label fx:id="usernameLabel"
+                           styleClass="heading-title"
+                           style="-fx-padding: 8 0 0 0;"
+                           GridPane.rowIndex="3"/>
 
                     <!-- Row 4: Time Information -->
                     <VBox spacing="2" alignment="CENTER" style="-fx-padding: 5 0;" GridPane.rowIndex="4">
