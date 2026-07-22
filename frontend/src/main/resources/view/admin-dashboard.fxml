@@ -120,8 +120,8 @@
 
                             <!-- ALL IN ONE LINE: Fields + Buttons -->
                             <HBox spacing="5" alignment="CENTER_LEFT">
-                                <TextField fx:id="cityNameField" promptText="City Name" prefWidth="120" styleClass="text-field"/>
-                                <TextField fx:id="cityProvinceField" promptText="Province" prefWidth="100" styleClass="text-field"/>
+                                <TextField fx:id="cityNameField" promptText="City Name" prefWidth="180" styleClass="text-field"/>
+                                <TextField fx:id="cityProvinceField" promptText="Province" prefWidth="180" styleClass="text-field"/>
 
                                 <Separator orientation="VERTICAL" style="-fx-background-color: #333333;"/>
 
@@ -152,9 +152,9 @@
 
                             <!-- ALL IN ONE LINE: Fields + Parent Combo + Buttons -->
                             <HBox spacing="5" alignment="CENTER_LEFT">
-                                <TextField fx:id="categoryNameField" promptText="Name" prefWidth="100" styleClass="text-field"/>
-                                <TextField fx:id="categoryDescriptionField" promptText="Description" prefWidth="120" styleClass="text-field"/>
-                                <ComboBox fx:id="categoryParentCombo" promptText="Parent" prefWidth="100" styleClass="combo-box"/>
+                                <TextField fx:id="categoryNameField" promptText="Name" prefWidth="180" styleClass="text-field"/>
+                                <TextField fx:id="categoryDescriptionField" promptText="Description" prefWidth="180" styleClass="text-field"/>
+                                <ComboBox fx:id="categoryParentCombo" promptText="Parent" prefWidth="180" styleClass="combo-box"/>
 
                                 <Separator orientation="VERTICAL" style="-fx-background-color: #333333;"/>
 
