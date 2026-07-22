@@ -4,17 +4,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve profile photos from the profile-photos directory
-        registry.addResourceHandler("/uploads/profile/**")
-                .addResourceLocations("file:profile-photos/");
+        // Get absolute path to the profile-photos directory
+        String uploadPath = Paths.get("profile-photos").toAbsolutePath().toString();
 
-        // If you have other upload directories, add them here too
-        // registry.addResourceHandler("/uploads/ads/**")
-        //         .addResourceLocations("file:ad-photos/");
+        registry.addResourceHandler("/uploads/profile/**")
+                .addResourceLocations("file:" + uploadPath + "/");
+
+        System.out.println("📁 Serving profile photos from: " + uploadPath);
     }
 }
