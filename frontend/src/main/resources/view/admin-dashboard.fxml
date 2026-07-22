@@ -46,87 +46,96 @@
                             <padding>
                                 <Insets top="20" right="20" bottom="20" left="20"/>
                             </padding>
-                            <Label text="📊 Statistics" styleClass="heading-title" style="-fx-font-size: 16;"/>
 
-                            <!-- Statistics Cards (existing GridPane) -->
-                            <GridPane hgap="15" vgap="15">
-                                <columnConstraints>
-                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
-                                </columnConstraints>
+                            <!-- Wrap everything in a ScrollPane for scrolling -->
+                            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                                <VBox spacing="15">
+                                    <padding>
+                                        <Insets top="5" right="5" bottom="5" left="5"/>
+                                    </padding>
 
-                                <!-- Total Ads -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="📦 Total Ads" styleClass="sub-title"/>
-                                    <Label fx:id="totalAdsLabel" styleClass="heading-title" style="-fx-text-fill: #ffffff;"/>
+                                    <!-- Title -->
+                                    <Label text="📊 Statistics" styleClass="heading-title" style="-fx-font-size: 16;"/>
+
+                                    <!-- Statistics Cards (existing GridPane) -->
+                                    <GridPane hgap="15" vgap="15">
+                                        <columnConstraints>
+                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
+                                        </columnConstraints>
+
+                                        <!-- Total Ads -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="📦 Total Ads" styleClass="sub-title"/>
+                                            <Label fx:id="totalAdsLabel" styleClass="heading-title" style="-fx-text-fill: #ffffff;"/>
+                                        </VBox>
+
+                                        <!-- Pending -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="Pending" styleClass="sub-title"/>
+                                            <Label fx:id="pendingCountLabel" styleClass="heading-title" style="-fx-text-fill: #F39C12;"/>
+                                        </VBox>
+
+                                        <!-- Active -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="Active" styleClass="sub-title"/>
+                                            <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
+                                        </VBox>
+
+                                        <!-- Rejected -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="Rejected" styleClass="sub-title"/>
+                                            <Label fx:id="rejectedCountLabel" styleClass="heading-title" style="-fx-text-fill: #E74C3C;"/>
+                                        </VBox>
+
+                                        <!-- Sold -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="Sold" styleClass="sub-title"/>
+                                            <Label fx:id="soldCountLabel" styleClass="heading-title" style="-fx-text-fill: #3498DB;"/>
+                                        </VBox>
+
+                                        <!-- Deleted -->
+                                        <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="stat-card">
+                                            <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                            <Label text="Deleted" styleClass="sub-title"/>
+                                            <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
+                                        </VBox>
+                                    </GridPane>
+
+                                    <Separator style="-fx-opacity: 0.3;"/>
+
+                                    <!-- ===== THREE SECTIONS STACKED VERTICALLY ===== -->
+
+                                    <!-- 1. Recent Ads -->
+                                    <VBox spacing="8" styleClass="stat-card" prefHeight="250">
+                                        <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                        <Label text="🕒 Recent Ads (Last Week)" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                        <ListView fx:id="recentAdsListView" prefHeight="200" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+                                    </VBox>
+
+                                    <!-- 2. Ads by Category -->
+                                    <VBox spacing="8" styleClass="stat-card" prefHeight="250">
+                                        <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                        <Label text="📊 Ads by Category" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                        <ListView fx:id="adsByCategoryListView" prefHeight="200" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+                                    </VBox>
+
+                                    <!-- 3. Ads by City -->
+                                    <VBox spacing="8" styleClass="stat-card" prefHeight="250">
+                                        <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+                                        <Label text="📍 Ads by City" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                        <ListView fx:id="adsByCityListView" prefHeight="200" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+                                    </VBox>
+
+                                    <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
                                 </VBox>
-
-                                <!-- Pending -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Pending" styleClass="sub-title"/>
-                                    <Label fx:id="pendingCountLabel" styleClass="heading-title" style="-fx-text-fill: #F39C12;"/>
-                                </VBox>
-
-                                <!-- Active -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="0" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Active" styleClass="sub-title"/>
-                                    <Label fx:id="activeCountLabel" styleClass="heading-title" style="-fx-text-fill: #2ECC71;"/>
-                                </VBox>
-
-                                <!-- Rejected -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Rejected" styleClass="sub-title"/>
-                                    <Label fx:id="rejectedCountLabel" styleClass="heading-title" style="-fx-text-fill: #E74C3C;"/>
-                                </VBox>
-
-                                <!-- Sold -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Sold" styleClass="sub-title"/>
-                                    <Label fx:id="soldCountLabel" styleClass="heading-title" style="-fx-text-fill: #3498DB;"/>
-                                </VBox>
-
-                                <!-- Deleted -->
-                                <VBox alignment="CENTER" spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="stat-card">
-                                    <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
-                                    <Label text="Deleted" styleClass="sub-title"/>
-                                    <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
-                                </VBox>
-                            </GridPane>
-
-                            <!-- Separator -->
-                            <Separator style="-fx-opacity: 0.3;"/>
-
-                            <!-- ===== NEW SECTIONS ===== -->
-
-                            <!-- 1. Recent Ads -->
-                            <VBox spacing="8">
-                                <Label text="Recent Ads (Last Week)" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                <ListView fx:id="recentAdsListView" prefHeight="200" styleClass="list-view"/>
-                            </VBox>
-
-                            <Separator style="-fx-opacity: 0.3;"/>
-
-                            <!-- 2. Ads by Category -->
-                            <VBox spacing="8">
-                                <Label text="Ads by Category" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                <ListView fx:id="adsByCategoryListView" prefHeight="150" styleClass="list-view"/>
-                            </VBox>
-
-                            <Separator style="-fx-opacity: 0.3;"/>
-
-                            <!-- 3. Ads by City -->
-                            <VBox spacing="8">
-                                <Label text="Ads by City" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                <ListView fx:id="adsByCityListView" prefHeight="150" styleClass="list-view"/>
-                            </VBox>
-
-                            <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
+                            </ScrollPane>
                         </VBox>
 
                         <!-- Cities View -->
