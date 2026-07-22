@@ -1,5 +1,8 @@
 package com.service;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.model.Category;
 import com.model.CategorySpecification;
@@ -36,9 +39,25 @@ public class CategoryService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
-            return objectMapper.readValue(response.body(), new TypeReference<List<Category>>() {});
+            try {
+                // Use JsonParser with lenient mode to handle problematic characters
+                JsonFactory factory = JsonFactory.builder()
+                        .enable(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS)
+                        .enable(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
+                        .build();
+
+                JsonParser parser = factory.createParser(response.body());
+                ObjectMapper lenientMapper = new ObjectMapper(factory);
+
+                return lenientMapper.readValue(parser, new TypeReference<List<Category>>() {});
+            } catch (Exception e) {
+                System.err.println("Error parsing JSON: " + e.getMessage());
+                System.err.println("Response body: " + response.body());
+                throw e;
+            }
         } else {
-            throw new Exception("Failed to fetch categories: " + response.statusCode());
+            Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
+            throw new Exception(error.getOrDefault("error", "Failed to load categories"));
         }
     }
 
