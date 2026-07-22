@@ -7,25 +7,22 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.layout.Region?>
-<BorderPane style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/21"
+<BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.controller.ConversationController">
+            fx:controller="com.controller.ConversationController"
+            stylesheets="@styles.css">
 
     <!-- TOP: Header -->
     <top>
-        <VBox spacing="8" style="-fx-padding: 15 25; -fx-background-color: #ffffff; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
-            <HBox spacing="15" alignment="CENTER_LEFT">
-                <Button text="← Back" onAction="#goBack"
-                        style="-fx-background-color: transparent; -fx-text-fill: #4a6fa5; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 0;"/>
-                <Label text="Messages" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1a1a2e;"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button text="↻ Refresh" onAction="#refreshConversations"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6c757d; -fx-cursor: hand; -fx-padding: 5 0;"/>
-            </HBox>
-        </VBox>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 15 20;">
+            <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
+            <Label text="Messages" styleClass="heading-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="↻ Refresh" onAction="#refreshConversations" styleClass="button-secondary"/>
+        </HBox>
     </top>
 
     <!-- CENTER: Conversations + Messages -->
@@ -34,27 +31,23 @@
 
             <!-- Left: Conversation List -->
             <VBox spacing="10" HBox.hgrow="NEVER" prefWidth="320" minWidth="250">
-                <Label text="Conversations" style="-fx-font-weight: bold; -fx-text-fill: #495057;"/>
-                <ListView fx:id="conversationListView" VBox.vgrow="ALWAYS"
-                          style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+                <Label text="Conversations" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+                <ListView fx:id="conversationListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
             </VBox>
 
             <!-- Right: Chat Area -->
             <VBox spacing="10" HBox.hgrow="ALWAYS">
-                <Label fx:id="conversationTitleLabel" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #495057;"/>
+                <Label fx:id="conversationTitleLabel" styleClass="sub-title" style="-fx-font-weight: bold;"/>
 
-                <ListView fx:id="messageListView" VBox.vgrow="ALWAYS"
-                          style="-fx-background-color: white; -fx-border-color: #e9ecef; -fx-border-radius: 4;"/>
+                <ListView fx:id="messageListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
 
                 <HBox spacing="10">
                     <TextArea fx:id="messageInput" promptText="Type a message..." HBox.hgrow="ALWAYS"
-                              prefHeight="60" wrapText="true"
-                              style="-fx-padding: 10; -fx-background-radius: 4; -fx-border-radius: 4; -fx-border-color: #ced4da; -fx-border-width: 1; -fx-background-color: white;"/>
-                    <Button text="Send" onAction="#sendMessage"
-                            style="-fx-background-color: #4a6fa5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                              prefHeight="60" wrapText="true" styleClass="text-field"/>
+                    <Button text="Send" onAction="#sendMessage" styleClass="button-primary"/>
                 </HBox>
 
-                <Label fx:id="errorLabel" style="-fx-text-fill: #dc3545; -fx-font-size: 12;"/>
+                <Label fx:id="errorLabel" styleClass="error-label"/>
             </VBox>
 
         </HBox>
