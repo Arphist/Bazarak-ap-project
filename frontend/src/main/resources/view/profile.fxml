@@ -37,15 +37,15 @@
                 <!-- Profile Header -->
                 <VBox spacing="8" alignment="CENTER" style="-fx-padding: 10 0 15 0;">
 
-                    <!-- Profile Photo - Circular -->
+                    <!-- Profile Photo - Circular (BIGGER) -->
                     <StackPane>
-                        <ImageView fx:id="profileImageView" fitWidth="80" fitHeight="80" preserveRatio="true">
+                        <ImageView fx:id="profileImageView" fitWidth="150" fitHeight="150" preserveRatio="true">
                             <clip>
-                                <Circle centerX="40" centerY="40" radius="40"/>
+                                <Circle centerX="75" centerY="75" radius="75"/>
                             </clip>
                         </ImageView>
                         <!-- Default avatar placeholder -->
-                        <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 40; -fx-text-fill: #888888;"/>
+                        <Label fx:id="defaultAvatarLabel" text="👤" style="-fx-font-size: 100; -fx-text-fill: #888888;"/>
                     </StackPane>
 
                     <!-- Change Photo Button -->
