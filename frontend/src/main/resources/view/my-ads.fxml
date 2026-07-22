@@ -58,11 +58,14 @@
             <!-- Ad List -->
             <ListView fx:id="myAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
 
-            <!-- ===== NEW: Action Buttons (Update / Delete) ===== -->
+
+            <!-- Action Buttons (Update / Mark as Sold / Delete) -->
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button fx:id="updateAdButton" text="✏ Update Ad" onAction="#handleUpdateAd"
+                <Button fx:id="updateAdButton" text="✏️ Update Ad" onAction="#handleUpdateAd"
                         styleClass="button-edit" disable="true"/>
-                <Button fx:id="deleteAdButton" text="🗑 Delete Ad" onAction="#handleDeleteAd"
+                <Button fx:id="markAsSoldButton" text="💰 Mark as Sold" onAction="#handleMarkAsSold"
+                        styleClass="button-primary" disable="true"/>
+                <Button fx:id="deleteAdButton" text="🗑️ Delete Ad" onAction="#handleDeleteAd"
                         styleClass="button-delete" disable="true"/>
             </HBox>
 
