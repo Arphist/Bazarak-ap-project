@@ -92,6 +92,12 @@ public class UserAdController {
             }
         });
 
+        if (myAds.isEmpty()) {
+            myAdsListView.setPlaceholder(new Label("No ads found"));
+        } else {
+            myAdsListView.setPlaceholder(null);
+        }
+
         // Setup filter combo box
         statusFilterCombo.setItems(FXCollections.observableArrayList(
                 "ALL",
