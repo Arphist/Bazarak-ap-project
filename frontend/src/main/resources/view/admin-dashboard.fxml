@@ -48,6 +48,7 @@
                             </padding>
                             <Label text="📊 Statistics" styleClass="heading-title" style="-fx-font-size: 16;"/>
 
+                            <!-- Statistics Cards (existing GridPane) -->
                             <GridPane hgap="15" vgap="15">
                                 <columnConstraints>
                                     <ColumnConstraints halignment="CENTER" hgrow="ALWAYS"/>
@@ -97,6 +98,33 @@
                                     <Label fx:id="deletedCountLabel" styleClass="heading-title" style="-fx-text-fill: #95A5A6;"/>
                                 </VBox>
                             </GridPane>
+
+                            <!-- Separator -->
+                            <Separator style="-fx-opacity: 0.3;"/>
+
+                            <!-- ===== NEW SECTIONS ===== -->
+
+                            <!-- 1. Recent Ads -->
+                            <VBox spacing="8">
+                                <Label text="Recent Ads (Last Week)" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <ListView fx:id="recentAdsListView" prefHeight="200" styleClass="list-view"/>
+                            </VBox>
+
+                            <Separator style="-fx-opacity: 0.3;"/>
+
+                            <!-- 2. Ads by Category -->
+                            <VBox spacing="8">
+                                <Label text="Ads by Category" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <ListView fx:id="adsByCategoryListView" prefHeight="150" styleClass="list-view"/>
+                            </VBox>
+
+                            <Separator style="-fx-opacity: 0.3;"/>
+
+                            <!-- 3. Ads by City -->
+                            <VBox spacing="8">
+                                <Label text="Ads by City" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                                <ListView fx:id="adsByCityListView" prefHeight="150" styleClass="list-view"/>
+                            </VBox>
 
                             <Label fx:id="dashboardErrorLabel" styleClass="error-label"/>
                         </VBox>
