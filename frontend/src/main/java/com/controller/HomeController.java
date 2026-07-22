@@ -462,6 +462,9 @@ public class HomeController {
     }
 
     @FXML
+    private void goToMyRatings() {NavigationUtil.goToMyRatings();}
+
+    @FXML
     private void goToChat() {
         NavigationUtil.goToChat();
     }
