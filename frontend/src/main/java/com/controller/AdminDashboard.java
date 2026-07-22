@@ -774,7 +774,12 @@ public class AdminDashboard {
     private void loadCategories() {
         try {
             List<Category> categoryList = CategoryService.getAllCategories();
-            categories.setAll(categoryList);  // Update the ObservableList
+
+            if (categories == null) {
+                categories = FXCollections.observableArrayList();
+            }
+
+            categories.setAll(categoryList);
             categoryListView.setItems(categories);
 
             if (categories.isEmpty()) {
@@ -799,14 +804,13 @@ public class AdminDashboard {
                 }
             });
 
-            // Update parent combo box with the new list
             updateCategoryParentCombo();
 
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
                     "Load Categories Error",
                     "Failed to load categories",
-                    "There was a problem loading categories. Please try again later.",
+                    e.getMessage(),
                     "ERROR"
             );
         }
