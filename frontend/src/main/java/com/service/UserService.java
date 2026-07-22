@@ -32,7 +32,7 @@ public class UserService {
      */
     public static User getMyProfile() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL + "/profile"))
+                .uri(URI.create(Config.BASE_URL + "/users/me/profile"))
                 .GET().build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
