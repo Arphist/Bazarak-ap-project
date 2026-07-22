@@ -279,12 +279,6 @@ public class HomeController {
         testAds.add(ad5);
 
         adListView.setItems(testAds);
-        ShowErrorDialog.showErrorDialog(
-                "Test Data",
-                null,
-                testAds.size() + " test ads loaded",
-                "INFORMATION"
-        );
     }
 
     // SEARCH
