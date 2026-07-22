@@ -23,7 +23,7 @@
         <VBox spacing="10" styleClass="header-bar" style="-fx-padding: 15;">
             <HBox spacing="15" alignment="CENTER_LEFT">
                 <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
-                <Label text="My Ads" styleClass="heading-title"/>
+                <Label fx:id="headerLabel" text="My Ads" styleClass="heading-title"/>
                 <Button text="➕ New Ad" onAction="#goToCreateAd" styleClass="button-primary"/>
                 <Pane HBox.hgrow="ALWAYS"/>
                 <Button text="↻ Refresh" onAction="#refreshAll" styleClass="button-secondary"/>
