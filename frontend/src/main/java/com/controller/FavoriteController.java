@@ -53,6 +53,12 @@ public class FavoriteController {
             }
         });
 
+        if (favorites.isEmpty()) {
+            favoritesListView.setPlaceholder(new Label("No favorited ads found"));
+        } else {
+            favoritesListView.setPlaceholder(null);
+        }
+
         // Load favorites from backend
         loadFavorites();
     }
