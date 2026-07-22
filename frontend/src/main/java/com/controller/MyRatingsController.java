@@ -44,6 +44,12 @@ public class MyRatingsController {
         ratingsListView.setItems(ratings);
         ratingsListView.setCellFactory(lv -> new RatingCell());
 
+        if (ratings.isEmpty()) {
+            ratingsListView.setPlaceholder(new Label("No ratings found"));
+        } else {
+            ratingsListView.setPlaceholder(null);
+        }
+
         // Load ratings
         loadMyRatings();
     }
