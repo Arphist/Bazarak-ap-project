@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.controller.MyRatingsController"
+            stylesheets="@styles.css">
+
+    <!-- TOP: Header -->
+    <top>
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 15 20;">
+            <Button text="← Back" onAction="#goBack" styleClass="button-secondary"/>
+            <Label text="⭐ My Ratings" styleClass="heading-title" style="-fx-font-size: 18;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🏠 Home" onAction="#goToHome" styleClass="button-secondary"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER: Content -->
+    <center>
+        <VBox spacing="12" style="-fx-padding: 20;">
+            <Label fx:id="countLabel" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+
+            <ListView fx:id="ratingsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+
+            <Label fx:id="errorLabel" styleClass="error-label"/>
+        </VBox>
+    </center>
+
+</BorderPane>
