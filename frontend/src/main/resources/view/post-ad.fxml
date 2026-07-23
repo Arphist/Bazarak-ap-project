@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -53,6 +54,16 @@
                 <!-- Specifications Container -->
                 <Label text="Specifications" styleClass="sub-title" style="-fx-font-weight: bold;"/>
                 <VBox fx:id="specificationsContainer" spacing="8" maxWidth="500" styleClass="filter-card" style="-fx-padding: 10;"/>
+
+                <!-- Image Upload Section -->
+                <Label text="Images" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT" maxWidth="500">
+                    <Button text="📷 Select Images" onAction="#handleSelectImages" styleClass="button-secondary"/>
+                    <Label fx:id="imageCountLabel" text="No images selected" styleClass="sub-title" style="-fx-font-size: 12px;"/>
+                </HBox>
+
+                <ListView fx:id="imageListView" maxWidth="500" prefHeight="80" styleClass="list-view"/>
 
                 <!-- Error Label -->
                 <Label fx:id="errorLabel" text="" styleClass="error-label"/>
