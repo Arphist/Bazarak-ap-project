@@ -1,5 +1,6 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
@@ -14,6 +15,7 @@ public class AdvertisementSpecification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "advertisement_id", nullable = false)
+    @JsonIgnore
     private Advertisement advertisement;
 
     @ManyToOne(fetch = FetchType.LAZY)
