@@ -1084,53 +1084,39 @@ public class AdminDashboard {
             pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
             activeCountLabel.setText("Active: " + stats.get("activeAds"));
 
-            // --- 1. Recent Ads --- convert properly ---
+            // --- 1. Recent Ads --- (already working)
             Object recentAdsObj = stats.get("recentAds");
-            System.out.println("📡 recentAdsObj class: " + (recentAdsObj != null ? recentAdsObj.getClass().getName() : "null"));
-            System.out.println("📡 recentAdsObj value: " + recentAdsObj);
-
             if (recentAdsObj instanceof List) {
                 List<?> rawList = (List<?>) recentAdsObj;
-                System.out.println("📡 Raw list size: " + rawList.size());
-
                 List<Advertisement> recentAds = new ArrayList<>();
                 for (Object item : rawList) {
-                    try {
-                        Advertisement ad = HttpClientUtil.getObjectMapper().convertValue(item, Advertisement.class);
-                        recentAds.add(ad);
-                        System.out.println("✅ Converted ad: " + ad.getTitle());
-                    } catch (Exception e) {
-                        System.err.println("❌ Failed to convert item: " + e.getMessage());
-                        e.printStackTrace();
-                    }
+                    Advertisement ad = HttpClientUtil.getObjectMapper().convertValue(item, Advertisement.class);
+                    recentAds.add(ad);
                 }
-                System.out.println("✅ Total recent ads converted: " + recentAds.size());
-
                 if (!recentAds.isEmpty()) {
                     ObservableList<Advertisement> recentObs = FXCollections.observableArrayList(recentAds);
                     recentAdsListView.setItems(recentObs);
-                    recentAdsListView.setPlaceholder(null);
-                    recentAdsListView.refresh();
                 } else {
                     recentAdsListView.setPlaceholder(new Label("No recent ads"));
                 }
             } else {
-                System.err.println("❌ recentAdsObj is not a List: " + recentAdsObj);
                 recentAdsListView.setPlaceholder(new Label("No recent ads"));
             }
 
-            // --- 2. Ads by Category --- safe iteration ---
+            // --- 2. Ads by Category --- (FIXED for array data)
             Object categoryDataObj = stats.get("adsByCategory");
             if (categoryDataObj instanceof List) {
                 List<?> rawCategoryList = (List<?>) categoryDataObj;
                 ObservableList<String> categoryItems = FXCollections.observableArrayList();
                 for (Object entry : rawCategoryList) {
-                    if (entry instanceof Map) {
-                        Map<?, ?> entryMap = (Map<?, ?>) entry;
-                        String category = (String) entryMap.get("category");
-                        Number count = (Number) entryMap.get("count");
-                        if (category != null && count != null) {
-                            categoryItems.add(category + ": " + count);
+                    if (entry instanceof List) {
+                        List<?> entryList = (List<?>) entry;
+                        if (entryList.size() >= 2) {
+                            String category = (String) entryList.get(0);
+                            Number count = (Number) entryList.get(1);
+                            if (category != null && count != null) {
+                                categoryItems.add(category + ": " + count);
+                            }
                         }
                     }
                 }
@@ -1143,18 +1129,20 @@ public class AdminDashboard {
                 adsByCategoryListView.setPlaceholder(new Label("No category data"));
             }
 
-            // --- 3. Ads by City --- safe iteration ---
+            // --- 3. Ads by City --- (FIXED for array data)
             Object cityDataObj = stats.get("adsByCity");
             if (cityDataObj instanceof List) {
                 List<?> rawCityList = (List<?>) cityDataObj;
                 ObservableList<String> cityItems = FXCollections.observableArrayList();
                 for (Object entry : rawCityList) {
-                    if (entry instanceof Map) {
-                        Map<?, ?> entryMap = (Map<?, ?>) entry;
-                        String city = (String) entryMap.get("city");
-                        Number count = (Number) entryMap.get("count");
-                        if (city != null && count != null) {
-                            cityItems.add(city + ": " + count);
+                    if (entry instanceof List) {
+                        List<?> entryList = (List<?>) entry;
+                        if (entryList.size() >= 2) {
+                            String city = (String) entryList.get(0);
+                            Number count = (Number) entryList.get(1);
+                            if (city != null && count != null) {
+                                cityItems.add(city + ": " + count);
+                            }
                         }
                     }
                 }
