@@ -122,8 +122,8 @@ public class AdvertisementService {
      * Find advertisement by ID
      */
     public Advertisement findById(Long id) {
-        return adRepository.findById(id)
-                .orElseThrow(() -> new AdNotFoundException("Advertisement not found with id: " + id));
+        return adRepository.findByIdWithOwner(id)
+                .orElseThrow(() -> new AdNotFoundException("Ad not found with id: " + id));
     }
 
     /**
