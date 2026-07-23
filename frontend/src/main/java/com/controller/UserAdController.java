@@ -215,19 +215,16 @@ public class UserAdController {
 
 
     public void loadAdsForUser() {
-        if (DataHolder.getSelectedUser() == null) {
+        if (targetUser == null) {
             loadAllAds();
             return;
         }
         try {
-            List<Advertisement> ads = AdService.getAdsByUser(DataHolder.getSelectedUser());
+            List<Advertisement> ads = AdService.getAdsByUser(targetUser);
             allAds.setAll(ads);
             allAdsListView.setItems(allAds);
             allAdsErrorLabel.setText("");
-
-            // Update header with the username
-            setHeaderText("Ads of " + DataHolder.getSelectedUser().getUsername());
-
+            setHeaderText("Ads of " + targetUser.getUsername());
         } catch (Exception e) {
             allAdsErrorLabel.setText("Failed to load ads: " + e.getMessage());
         }
@@ -313,7 +310,7 @@ public class UserAdController {
     // LOAD ALL DATA
     // ============================================
 
-    private void loadAllData() {
+    public void loadAllData() {
         loadAllAds();
         loadPendingAds();
         loadActiveAds();
@@ -331,12 +328,12 @@ public class UserAdController {
             String sortBy = allSortByCombo.getValue();
             String sortOrder = allSortOrderCombo.getValue();
             List<Advertisement> ads;
-            if (DataHolder.getSelectedUser() != null) {
-                ads = AdService.getAdsByUser(DataHolder.getSelectedUser());
-                setHeaderText("Ads of " + DataHolder.getSelectedUser().getUsername());
+            if (targetUser != null) {
+                ads = AdService.getAdsByUser(targetUser);
+                setHeaderText("Ads of " + targetUser.getUsername());
             } else {
                 ads = UserAdvertisementService.getMyAds(sortBy, sortOrder);
-                setHeaderText("My Ads");  // Reset to "My Ads"
+                setHeaderText("My Ads");
             }
             allAds.setAll(ads);
             allAdsListView.setItems(allAds);
