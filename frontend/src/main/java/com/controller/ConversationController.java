@@ -123,8 +123,11 @@ public class ConversationController {
     // WEBSOCKET CONNECTION
     private void connectWebSocket() {
         try {
-            webSocketClient = new ChatWebSocketClient(this::handleWebSocketMessage);
-            webSocketClient.connect();
+            Long conversationId = currentConversation != null ? currentConversation.getId() : null;
+            if (conversationId != null) {
+                webSocketClient = new ChatWebSocketClient(this::handleWebSocketMessage, conversationId);
+                webSocketClient.connect();
+            }
         } catch (Exception e) {
             System.err.println("Failed to connect WebSocket: " + e.getMessage());
         }
