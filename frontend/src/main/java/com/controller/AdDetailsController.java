@@ -492,7 +492,7 @@ public class AdDetailsController {
 
             Long sellerId = currentAd.getOwner().getId();
             Map<String, Object> result = ConversationService.startConversation(sellerId, adId);
-            Long conversationId = (Long) result.get("id");
+            Long conversationId = ((Number) result.get("id")).longValue();
 
             DataHolder.setSelectedConversationId(conversationId);
             NavigationUtil.goToChat();
