@@ -62,7 +62,15 @@ public class AdService {
             Map<String, Object> map = new HashMap<>();
             map.put("isFavorited", responseBody.getOrDefault("isFavorited", false));
             map.put("favoriteCount", responseBody.get("favoriteCount"));
-            map.put("ad", responseBody.get("ad"));
+
+            // Convert the ad object from LinkedHashMap to Advertisement
+            Object adObj = responseBody.get("ad");
+            if (adObj != null) {
+                Advertisement ad = objectMapper.convertValue(adObj, Advertisement.class);
+                map.put("ad", ad);
+            } else {
+                map.put("ad", null);
+            }
             return map;
         } else {
             throw new Exception("Ad not found");
