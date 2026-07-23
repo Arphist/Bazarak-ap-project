@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -817,14 +818,14 @@ public class AdminDashboard {
             }
 
             categories.setAll(categoryList);
-            categoryListView.setItems(categories);
 
-            if (categories.isEmpty()) {
-                categoryListView.setPlaceholder(new Label("No category found"));
-            } else {
-                categoryListView.setPlaceholder(null);
+            // Build map
+            Map<Long, Category> categoryMap = new HashMap<>();
+            for (Category cat : categoryList) {
+                categoryMap.put(cat.getId(), cat);
             }
 
+            // Set cell factory directly
             categoryListView.setCellFactory(lv -> new ListCell<Category>() {
                 @Override
                 protected void updateItem(Category cat, boolean empty) {
@@ -834,12 +835,30 @@ public class AdminDashboard {
                     } else {
                         String display = cat.getName();
                         if (cat.getParentId() != null) {
-                            display += " (subcategory)";
+                            Category parent = categoryMap.get(cat.getParentId());
+                            if (parent != null) {
+                                display += " - " + parent.getName();
+                                if (parent.getParentId() != null) {
+                                    Category grandParent = categoryMap.get(parent.getParentId());
+                                    if (grandParent != null) {
+                                        display += " - " + grandParent.getName();
+                                    }
+                                }
+                            }
                         }
                         setText(display);
                     }
                 }
             });
+
+            categoryListView.setItems(categories);
+            categoryListView.refresh();
+
+            if (categories.isEmpty()) {
+                categoryListView.setPlaceholder(new Label("No category found"));
+            } else {
+                categoryListView.setPlaceholder(null);
+            }
 
             updateCategoryParentCombo();
 
@@ -938,7 +957,13 @@ public class AdminDashboard {
             } else {
                 results = CategoryService.searchCategories(keyword);
             }
+
+            // Update the items
             categoryListView.getItems().setAll(results);
+
+            // CRITICAL: Reapply the cell factory to ensure hierarchy is shown
+            applyCategoryCellFactory();
+
             if (results.isEmpty()) {
                 ShowErrorDialog.showErrorDialog(
                         "Load Category Error",
@@ -956,6 +981,49 @@ public class AdminDashboard {
                     "ERROR"
             );
         }
+    }
+
+    private void applyCategoryCellFactory() {
+        // Get the current category list
+        List<Category> categoryList = categoryListView.getItems();
+
+        // Build a map for quick lookup
+        Map<Long, Category> categoryMap = new HashMap<>();
+        for (Category cat : categoryList) {
+            categoryMap.put(cat.getId(), cat);
+        }
+
+        // Apply the cell factory
+        categoryListView.setCellFactory(lv -> new ListCell<Category>() {
+            @Override
+            protected void updateItem(Category cat, boolean empty) {
+                super.updateItem(cat, empty);
+                if (empty || cat == null) {
+                    setText(null);
+                } else {
+                    // Build the hierarchy string
+                    String display = cat.getName();
+
+                    // Get parent name if exists
+                    if (cat.getParentId() != null) {
+                        Category parent = categoryMap.get(cat.getParentId());
+                        if (parent != null) {
+                            display += " - " + parent.getName();
+
+                            // Get grandparent name if exists
+                            if (parent.getParentId() != null) {
+                                Category grandParent = categoryMap.get(parent.getParentId());
+                                if (grandParent != null) {
+                                    display += " - " + grandParent.getName();
+                                }
+                            }
+                        }
+                    }
+
+                    setText(display);
+                }
+            }
+        });
     }
 
     private void loadDashboardStats() {
