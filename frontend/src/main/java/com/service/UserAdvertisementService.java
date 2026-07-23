@@ -44,6 +44,9 @@ public class UserAdvertisementService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+        System.out.println("HttpRequest = "+request);
+        System.out.println("HttpResponse = "+response);
+        System.out.println("Response body: " + response.body());
         if (response.statusCode() == 200) {
             Map<String, Object> responseObj = objectMapper.readValue(response.body(), Map.class);
             Object result = responseObj.get("ads");
