@@ -1,5 +1,7 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +16,7 @@ import java.util.List;;
 
 @Entity
 @Table(name = "advertisements")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Advertisement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,18 +53,22 @@ public class Advertisement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
+    @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory"})
     private User owner;  // The user who posted this ad
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory"})
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
+    @JsonIgnoreProperties({"advertisements"})
     private City city;
 
     // Specification values for this advertisement
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"advertisement"})
     private List<AdvertisementSpecification> specificationValues = new ArrayList<>();
 
     // STATUS & TIMESTAMPS
@@ -87,6 +94,7 @@ public class Advertisement {
     // IMAGES (One-to-Many relationship)
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Image> images = new ArrayList<>();
 
     // CONSTRUCTORS

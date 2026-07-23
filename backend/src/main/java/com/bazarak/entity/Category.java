@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@JsonIgnoreProperties({"subCategories", "parentCategory"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "categories")
 public class Category {
 

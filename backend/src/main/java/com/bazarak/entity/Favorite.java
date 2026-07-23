@@ -1,5 +1,6 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "favorites", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"user_id", "ad_id"})
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

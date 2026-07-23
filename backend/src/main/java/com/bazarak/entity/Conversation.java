@@ -1,5 +1,6 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +19,7 @@ import java.util.List;
                 )
         }
 )
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Conversation {
 
     @Id
