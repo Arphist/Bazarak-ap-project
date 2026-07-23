@@ -36,6 +36,26 @@
     -fx-background-color: #252525;
 }
 
+.text-area {
+    -fx-background-color: #1E1E1E;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #666666;
+    -fx-border-color: #333333;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 12;
+}
+.text-area .content {
+    -fx-background-color: #1E1E1E;
+}
+.text-area:focused {
+    -fx-border-color: #00B8D1FF;
+    -fx-background-color: #252525;
+}
+.text-area:focused .content {
+    -fx-background-color: #252525;
+}
+
 .button-primary {
     -fx-background-color: #00B8D1FF;
     -fx-text-fill: #FFFFFF;
