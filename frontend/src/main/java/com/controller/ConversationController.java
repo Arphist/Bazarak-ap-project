@@ -84,8 +84,6 @@ public class ConversationController {
                 sendMessage();
             }
         });
-        // Connect WebSocket
-        connectWebSocket();
 
         // Load conversations
         loadConversations();
@@ -122,15 +120,17 @@ public class ConversationController {
 
     // WEBSOCKET CONNECTION
     private void connectWebSocket() {
-        try {
-            Long conversationId = currentConversation != null ? currentConversation.getId() : null;
-            if (conversationId != null) {
+        Long conversationId = currentConversation != null ? currentConversation.getId() : null;
+        if (conversationId == null) return;
+
+        new Thread(() -> {
+            try {
                 webSocketClient = new ChatWebSocketClient(this::handleWebSocketMessage, conversationId);
-                webSocketClient.connect();
+                webSocketClient.connectBlocking();
+            } catch (Exception e) {
+                System.err.println("Failed to connect WebSocket: " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println("Failed to connect WebSocket: " + e.getMessage());
-        }
+        }, "ws-connect-thread").start();
     }
 
     /**
@@ -205,6 +205,14 @@ public class ConversationController {
 
         this.currentConversation = conversation;
 
+        // Close old connection if switching conversations
+        if (webSocketClient != null && webSocketClient.isConnected()) {
+            webSocketClient.close();
+        }
+
+        connectWebSocket(); // now currentConversation is set
+
+
         try {
             List<Message> messageList = ConversationService.getMessages(conversation.getId());
             messages.clear();
@@ -241,6 +249,15 @@ public class ConversationController {
 
     @FXML
     private void sendMessage() {
+        if (messageInput == null) {
+            ShowErrorDialog.showErrorDialog(
+                    "UI Error",
+                    "Message input field not found",
+                    "Please restart the application.",
+                    "ERROR"
+            );
+            return;
+        }
         String content = messageInput.getText().trim();
         if (content.isEmpty() || currentConversation == null || currentUser == null) {
             return;
