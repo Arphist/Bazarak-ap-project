@@ -64,19 +64,9 @@ public class HomeController {
 
     @FXML
     private void initialize() {
-        // Setup custom cell rendering for ads
-        adListView.setCellFactory(lv -> new ListCell<Advertisement>() {
-            @Override
-            protected void updateItem(Advertisement ad, boolean empty) {
-                super.updateItem(ad, empty);
-                if (empty || ad == null) {
-                    setText("");
-                } else {
-                    // Display ad title and price
-                    setText(ad.getTitle() + " - " + ad.getPrice() + " T");
-                }
-            }
-        });
+        // =====  AdCell  =====
+        adListView.setCellFactory(lv -> new AdCell());
+
         // Handle double-click on ad to show details
         adListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -103,7 +93,6 @@ public class HomeController {
         if (useTestData) {
             createTestAds();
         }
-
 
         // Load data from backend
         loadCategories();

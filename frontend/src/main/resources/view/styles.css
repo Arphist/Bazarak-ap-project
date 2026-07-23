@@ -114,6 +114,73 @@
     -fx-underline: true;
 }
 
+/* ============================================================
+   AD CELL / AD CARD STYLES
+   ============================================================ */
+
+.ad-card {
+    -fx-background-color: #1A1A1A;
+    -fx-border-color: #2A2A2A;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4;
+}
+
+.ad-card:hover {
+    -fx-border-color: #00B8D1FF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 184, 209, 0.15), 8, 0, 0, 2);
+}
+
+.ad-image {
+    -fx-background-color: #2A2A2A;
+    -fx-border-color: #333333;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.ad-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.ad-price {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #4CAF50;
+}
+
+.ad-city {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9E9E9E;
+}
+
+.ad-date {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6C757D;
+}
+
+.ad-status {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.ad-status-sold {
+    -fx-text-fill: #FF9800;
+}
+
+.ad-status-pending {
+    -fx-text-fill: #F39C12;
+}
+
+.ad-status-rejected {
+    -fx-text-fill: #E74C3C;
+}
+
+.ad-status-active {
+    -fx-text-fill: #4CAF50;
+}
+
 .icon-toggle {
     -fx-background-color: transparent;
     -fx-text-fill: #888888;
