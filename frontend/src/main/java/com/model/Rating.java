@@ -82,4 +82,23 @@ public class Rating {
     public boolean hasComment() {
         return comment != null && !comment.trim().isEmpty();
     }
+
+    @Override
+    public String toString() {
+        String BuyerName = (buyer != null && buyer.getUsername() != null)
+                ? buyer.getUsername()
+                : "Unknown buyer";
+
+        String adTitle = (advertisement != null && advertisement.getTitle() != null)
+                ? advertisement.getTitle()
+                : "Unknown Ad";
+
+        String stars = "⭐".repeat(score != null ? Math.min(score, 5) : 0);
+
+        return String.format("%s %d/5 by %s                ad : %s",
+                stars,
+                score != null ? score : 0,
+                BuyerName,
+                adTitle);
+    }
 }
