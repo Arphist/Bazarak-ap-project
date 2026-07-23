@@ -4,6 +4,7 @@ import com.model.Advertisement;
 import com.model.Favorite;
 import com.service.FavoriteService;
 import com.util.NavigationUtil;
+import com.view.AdCell;
 import com.view.ShowErrorDialog;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -41,7 +42,7 @@ public class FavoriteController {
     @FXML
     private void initialize() {
         // Setup custom cell rendering for favorites
-        favoritesListView.setCellFactory(lv -> new FavoriteCell());
+        favoritesListView.setCellFactory(lv -> new AdCell());
 
         // Handle double-click on ad to show details
         favoritesListView.setOnMouseClicked(event -> {
@@ -123,13 +124,8 @@ public class FavoriteController {
         }
 
         try {
-            // Call backend to remove favorite
             FavoriteService.removeFavorite(selected.getId());
-
-            // Remove from local list
             favorites.remove(selected);
-
-            // Update count label
             countLabel.setText("You have " + favorites.size() + " favorite ad(s)");
 
             ShowErrorDialog.showErrorDialog(
@@ -171,96 +167,5 @@ public class FavoriteController {
         }
     }
 
-    // INNER CLASS: FavoriteCell (Custom List View Cell)
 
-    private class FavoriteCell extends ListCell<Advertisement> {
-
-        private final VBox cellLayout = new VBox(5);
-        private final Label titleLabel = new Label();
-        private final Label priceLabel = new Label();
-        private final Label statusLabel = new Label();
-        private final Button removeButton = new Button("✕");
-        private final HBox contentBox = new HBox(10);
-
-        public FavoriteCell() {
-            // Style the remove button
-            removeButton.setStyle("-fx-background-color: #ff4444; -fx-text-fill: white; -fx-font-weight: bold;");
-            removeButton.setPrefSize(30, 30);
-
-            // Style the labels
-            titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
-            priceLabel.setStyle("-fx-text-fill: #2e7d32; -fx-font-weight: bold;");
-            statusLabel.setStyle("-fx-font-size: 12px;");
-
-            // Handle remove button click
-            removeButton.setOnAction(event -> {
-                Advertisement ad = getItem();  // ✅ Get the current item
-                if (ad != null) {
-                    try {
-                        FavoriteService.removeFavorite(ad.getId());
-
-                        // Update the UI from the cell
-                        Platform.runLater(() -> {
-                            favorites.remove(ad);
-                            countLabel.setText("You have " + favorites.size() + " favorite ad(s)");
-                            ShowErrorDialog.showErrorDialog(
-                                    "Success",
-                                    null,
-                                    "Advertisement removed from favorites successfully.",
-                                    "INFORMATION"
-                            );
-                        });
-
-                    } catch (Exception e) {
-                        Platform.runLater(() -> {
-                            ShowErrorDialog.showErrorDialog(
-                                    "Favorite Error",
-                                    "Failed to remove favorite",
-                                    e.getMessage(),
-                                    "ERROR"
-                            );
-                        });
-                    }
-                }
-            });
-
-            // Layout
-            VBox infoBox = new VBox(3, titleLabel, priceLabel, statusLabel);
-            contentBox.getChildren().addAll(infoBox, removeButton);
-            contentBox.setSpacing(10);
-
-            cellLayout.getChildren().add(contentBox);
-            cellLayout.setStyle("-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;");
-        }
-
-
-        @Override
-        protected void updateItem(Advertisement ad, boolean empty) {
-            super.updateItem(ad, empty);
-
-            if (empty || ad == null) {
-                setGraphic(null);
-                setText(null);
-                return;
-            }
-
-            // Set data
-            titleLabel.setText(ad.getTitle());
-            priceLabel.setText("Price: " + ad.getPrice() + " T");
-            statusLabel.setText("Status: " + (ad.getStatus() != null ? ad.getStatus() : "N/A"));
-
-            // Color status based on value
-            if ("ACTIVE".equals(ad.getStatus())) {
-                statusLabel.setStyle("-fx-text-fill: #2e7d32;");
-            } else if ("SOLD".equals(ad.getStatus())) {
-                statusLabel.setStyle("-fx-text-fill: #ff9800;");
-            } else if ("REJECTED".equals(ad.getStatus())) {
-                statusLabel.setStyle("-fx-text-fill: #f44336;");
-            } else {
-                statusLabel.setStyle("-fx-text-fill: #9e9e9e;");
-            }
-
-            setGraphic(cellLayout);
-        }
-    }
 }
