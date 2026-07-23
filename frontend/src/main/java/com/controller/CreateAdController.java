@@ -51,12 +51,8 @@ public class CreateAdController {
     @FXML
     private Label errorLabel;
 
-    // ===== NEW: Image Upload Fields =====
     @FXML
     private ListView<File> imageListView;
-
-    @FXML
-    private Label imageCountLabel;
 
     private ObservableList<File> selectedImages = FXCollections.observableArrayList();
 
@@ -77,6 +73,7 @@ public class CreateAdController {
 
         // Setup image list view
         imageListView.setItems(selectedImages);
+        imageListView.setPlaceholder(new Label("No images selected"));
         imageListView.setCellFactory(lv -> new ListCell<File>() {
             @Override
             protected void updateItem(File file, boolean empty) {
@@ -90,7 +87,6 @@ public class CreateAdController {
                     removeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-cursor: hand;");
                     removeBtn.setOnAction(e -> {
                         selectedImages.remove(file);
-                        updateImageCountLabel();
                     });
                     setGraphic(removeBtn);
                     setContentDisplay(ContentDisplay.RIGHT);
@@ -107,8 +103,6 @@ public class CreateAdController {
                 specValues.clear();
             }
         });
-
-        updateImageCountLabel();
     }
 
     // ============================================
@@ -125,16 +119,6 @@ public class CreateAdController {
         List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
         if (files != null && !files.isEmpty()) {
             selectedImages.addAll(files);
-            updateImageCountLabel();
-        }
-    }
-
-    private void updateImageCountLabel() {
-        int count = selectedImages.size();
-        if (count == 0) {
-            imageCountLabel.setText("No images selected");
-        } else {
-            imageCountLabel.setText(count + " image(s) selected");
         }
     }
 
@@ -274,7 +258,6 @@ public class CreateAdController {
         Category selectedCategory = categoryCombo.getValue();
         City selectedCity = cityCombo.getValue();
 
-        // Validate fields
         if (title.isEmpty() || description.isEmpty() || priceText.isEmpty()) {
             ShowErrorDialog.showErrorDialog(
                     "Validation Error",
@@ -334,7 +317,6 @@ public class CreateAdController {
                 return;
             }
 
-            // Build ad object
             Advertisement ad = new Advertisement();
             ad.setTitle(title);
             ad.setDescription(description);
@@ -342,11 +324,10 @@ public class CreateAdController {
             ad.setCategory(selectedCategory);
             ad.setCity(selectedCity);
 
-            // ===== 1. Create Ad =====
             Map<String, Object> result = AdService.createAd(ad, specValues);
             Long adId = ((Number) result.get("id")).longValue();
 
-            // ===== 2. Upload Images =====
+            // Upload images
             if (!selectedImages.isEmpty()) {
                 boolean isFirst = true;
                 for (File file : selectedImages) {
@@ -359,7 +340,6 @@ public class CreateAdController {
                 }
             }
 
-            // Show success message
             ShowErrorDialog.showErrorDialog(
                     "Success",
                     null,
