@@ -81,6 +81,8 @@ public class BazarakFrontendApplication extends Application {
     public static void showConversationPage() {loadPage("/view/conversation.fxml", "Bazarak - conversation");}
 
     public static void showMyRatingsPage() {loadPage("/view/my-ratings.fxml", "Bazarak - My Ratings");}
+
+    public static void showUpdateAdPage() {loadPage("/view/update-ad.fxml", "Bazarak - Update Ad");}
     // HELPER METHODS
 
     private static void loadPage(String fxmlPath, String title) {
