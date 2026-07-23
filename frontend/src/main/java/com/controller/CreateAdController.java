@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CreateAdController {
 
@@ -37,13 +38,10 @@ public class CreateAdController {
     private TextField priceField;
 
     @FXML
-    private ComboBox<Category> categoryCombo;
+    private ComboBox<Category> categoryCombo;  // Now shows hierarchy and selects leaf
 
     @FXML
     private ComboBox<City> cityCombo;
-
-    @FXML
-    private ComboBox<Category> subCategoryCombo;
 
     @FXML
     private VBox specificationsContainer;
@@ -58,9 +56,6 @@ public class CreateAdController {
 
     private Map<Long, String> specValues = new HashMap<>();
     private List<CategorySpecification> currentSpecs = new ArrayList<>();
-
-    private ObservableList<Category> rootCategories = FXCollections.observableArrayList();
-    private ObservableList<Category> subCategories = FXCollections.observableArrayList();
 
     // ============================================
     // INITIALIZE
@@ -85,9 +80,7 @@ public class CreateAdController {
                     setText(file.getName());
                     Button removeBtn = new Button("✕");
                     removeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-cursor: hand;");
-                    removeBtn.setOnAction(e -> {
-                        selectedImages.remove(file);
-                    });
+                    removeBtn.setOnAction(e -> selectedImages.remove(file));
                     setGraphic(removeBtn);
                     setContentDisplay(ContentDisplay.RIGHT);
                 }
@@ -106,50 +99,50 @@ public class CreateAdController {
     }
 
     // ============================================
-    // IMAGE UPLOAD METHODS
-    // ============================================
-
-    @FXML
-    private void handleSelectImages() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Images");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp")
-        );
-        List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
-        if (files != null && !files.isEmpty()) {
-            selectedImages.addAll(files);
-        }
-    }
-
-    // ============================================
     // LOAD DATA FROM BACKEND
     // ============================================
 
     private void loadCategories() {
         try {
             List<Category> allCategories = CategoryService.getAllCategories();
-            categoryCombo.setItems(FXCollections.observableArrayList(allCategories));
+
+            // Build a map for quick lookup of parent names
+            Map<Long, Category> categoryMap = allCategories.stream()
+                    .collect(Collectors.toMap(Category::getId, c -> c));
+
+            // ✅ Filter only leaf categories (categories with no subcategories)
+            List<Category> leafCategories = allCategories.stream()
+                    .filter(cat -> !hasSubcategories(cat.getId(), categoryMap))
+                    .collect(Collectors.toList());
+
+            ObservableList<Category> displayList = FXCollections.observableArrayList(leafCategories);
+
+            // Set the combo items
+            categoryCombo.setItems(displayList);
             categoryCombo.setPromptText("Select Category");
 
-            List<Category> roots = CategoryService.getRootCategories();
-            rootCategories.setAll(roots);
-            subCategoryCombo.setItems(rootCategories);
-            subCategoryCombo.setPromptText("Select Sub-Category");
+            // Set cell factory to show the hierarchy
+            categoryCombo.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category category, boolean empty) {
+                    super.updateItem(category, empty);
+                    if (empty || category == null) {
+                        setText(null);
+                    } else {
+                        setText(buildCategoryPath(category, categoryMap));
+                    }
+                }
+            });
 
-            subCategoryCombo.setOnAction(e -> {
-                Category selected = subCategoryCombo.getValue();
-                if (selected != null) {
-                    try {
-                        List<Category> subs = CategoryService.getSubCategories(selected.getId());
-                        subCategories.setAll(subs);
-                    } catch (Exception ex) {
-                        ShowErrorDialog.showErrorDialog(
-                                "Category Error",
-                                "Failed to load sub-categories",
-                                ex.getMessage(),
-                                "ERROR"
-                        );
+            // Set button cell to show the selected category's path
+            categoryCombo.setButtonCell(new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category category, boolean empty) {
+                    super.updateItem(category, empty);
+                    if (empty || category == null) {
+                        setText(categoryCombo.getPromptText());
+                    } else {
+                        setText(buildCategoryPath(category, categoryMap));
                     }
                 }
             });
@@ -162,6 +155,36 @@ public class CreateAdController {
                     "ERROR"
             );
         }
+    }
+
+    /**
+     * Checks if a category has subcategories (children).
+     */
+    private boolean hasSubcategories(Long categoryId, Map<Long, Category> categoryMap) {
+        for (Category cat : categoryMap.values()) {
+            if (cat.getParentId() != null && cat.getParentId().equals(categoryId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Builds a full hierarchical path for a category (e.g., "Electronics - Phones - Smartphones").
+     */
+    private String buildCategoryPath(Category cat, Map<Long, Category> categoryMap) {
+        List<String> path = new ArrayList<>();
+        Category current = cat;
+        while (current != null) {
+            path.add(current.getName());
+            if (current.getParentId() == null) {
+                break;
+            }
+            current = categoryMap.get(current.getParentId());
+        }
+        // Reverse to show from root to leaf
+        Collections.reverse(path);
+        return String.join(" - ", path);
     }
 
     private void loadCities() {
@@ -211,9 +234,7 @@ public class CreateAdController {
             case "TEXT":
                 TextField textField = new TextField();
                 textField.setPromptText("Enter " + spec.getName());
-                textField.textProperty().addListener((obs, old, newVal) -> {
-                    specValues.put(spec.getId(), newVal);
-                });
+                textField.textProperty().addListener((obs, old, newVal) -> specValues.put(spec.getId(), newVal));
                 return textField;
             case "NUMBER":
                 TextField numberField = new TextField();
@@ -227,9 +248,7 @@ public class CreateAdController {
                 return numberField;
             case "BOOLEAN":
                 CheckBox checkBox = new CheckBox();
-                checkBox.selectedProperty().addListener((obs, old, newVal) -> {
-                    specValues.put(spec.getId(), newVal ? "true" : "false");
-                });
+                checkBox.selectedProperty().addListener((obs, old, newVal) -> specValues.put(spec.getId(), newVal ? "true" : "false"));
                 return checkBox;
             case "DROPDOWN":
                 ComboBox<String> combo = new ComboBox<>();
@@ -237,9 +256,7 @@ public class CreateAdController {
                     combo.getItems().addAll(spec.getOptions().split(","));
                 }
                 combo.setPromptText("Select " + spec.getName());
-                combo.valueProperty().addListener((obs, old, newVal) -> {
-                    specValues.put(spec.getId(), newVal);
-                });
+                combo.valueProperty().addListener((obs, old, newVal) -> specValues.put(spec.getId(), newVal));
                 return combo;
             default:
                 return new Label("Unsupported type");
@@ -321,7 +338,7 @@ public class CreateAdController {
             ad.setTitle(title);
             ad.setDescription(description);
             ad.setPrice(price);
-            ad.setCategory(selectedCategory);
+            ad.setCategory(selectedCategory);  // selectedCategory is the leaf
             ad.setCity(selectedCity);
 
             Map<String, Object> result = AdService.createAd(ad, specValues);
@@ -356,6 +373,23 @@ public class CreateAdController {
                     e.getMessage(),
                     "ERROR"
             );
+        }
+    }
+
+    // ============================================
+    // IMAGE UPLOAD METHODS
+    // ============================================
+
+    @FXML
+    private void handleSelectImages() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Images");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp")
+        );
+        List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
+        if (files != null && !files.isEmpty()) {
+            selectedImages.addAll(files);
         }
     }
 
