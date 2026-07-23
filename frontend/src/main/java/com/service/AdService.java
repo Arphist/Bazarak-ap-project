@@ -176,7 +176,7 @@ public class AdService {
         }
 
         String json = objectMapper.writeValueAsString(requestBody);
-
+        System.out.println("📡 Request body: " + json);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads"))
                 .header("Content-Type", "application/json")
@@ -186,6 +186,7 @@ public class AdService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 201) {
+            System.out.println("📡 Create Ad Response: " + response.body());  // ✅ Add this
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
 
             // Just return what we got from the response
