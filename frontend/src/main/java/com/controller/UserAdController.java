@@ -14,6 +14,7 @@ import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
@@ -620,26 +621,41 @@ public class UserAdController {
     }
 
     private ListView<Advertisement> getCurrentListView() {
-        TabPane tabPane = (TabPane) allAdsListView.getParent().getParent().getParent().getParent();
-        Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
-        String tabText = selectedTab.getText();
+        // Use the selected tab text to determine which ListView to return
+        // We can check which tab is selected by looking at the TabPane
+        try {
+            // Find the TabPane that contains the allAdsListView
+            TabPane tabPane = null;
+            Node node = allAdsListView;
+            while (node != null && !(node instanceof TabPane)) {
+                node = node.getParent();
+            }
+            if (node instanceof TabPane) {
+                tabPane = (TabPane) node;
+                Tab selectedTab = tabPane.getSelectionModel().getSelectedItem();
+                String tabText = selectedTab.getText();
 
-        switch (tabText) {
-            case "All":
-                return allAdsListView;
-            case "Pending":
-                return pendingAdsListView;
-            case "Active":
-                return activeAdsListView;
-            case "Rejected":
-                return rejectedAdsListView;
-            case "Sold":
-                return soldAdsListView;
-            case "Deleted":
-                return deletedAdsListView;
-            default:
-                return allAdsListView;
+                switch (tabText) {
+                    case "All":
+                        return allAdsListView;
+                    case "Pending":
+                        return pendingAdsListView;
+                    case "Active":
+                        return activeAdsListView;
+                    case "Rejected":
+                        return rejectedAdsListView;
+                    case "Sold":
+                        return soldAdsListView;
+                    case "Deleted":
+                        return deletedAdsListView;
+                    default:
+                        return allAdsListView;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return allAdsListView;
     }
 
     // ============================================
