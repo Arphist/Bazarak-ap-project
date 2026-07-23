@@ -181,8 +181,8 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
     /**
      * Get ads created in the last N days
      */
-    @Query("SELECT a FROM Advertisement a WHERE a.createdAt >= :since AND a.status = :status ORDER BY a.createdAt DESC")
-    List<Advertisement> findRecentAds(@Param("since") LocalDateTime since, @Param("status") AdStatus status);
+    @Query("SELECT a FROM Advertisement a WHERE a.createdAt >= :since ORDER BY a.createdAt DESC")
+    List<Advertisement> findRecentAds(@Param("since") LocalDateTime since);
 
     /**
      * Get top expensive active ads
