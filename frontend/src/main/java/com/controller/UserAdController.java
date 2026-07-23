@@ -482,6 +482,7 @@ public class UserAdController {
     private void handleUpdateAd() {
         ListView<Advertisement> currentListView = getCurrentListView();
         Advertisement selected = currentListView.getSelectionModel().getSelectedItem();
+
         if (selected == null) {
             ShowErrorDialog.showErrorDialog(
                     "Update Error",
@@ -492,13 +493,8 @@ public class UserAdController {
             return;
         }
 
-        DataHolder.setSelectedAdId(selected.getId());
-        ShowErrorDialog.showErrorDialog(
-                "Update Feature",
-                "Coming Soon",
-                "Update feature is not yet implemented.",
-                "INFORMATION"
-        );
+        DataHolder.setSelectedAd(selected);
+        NavigationUtil.goToUpdateAd();
     }
 
     // ============================================
