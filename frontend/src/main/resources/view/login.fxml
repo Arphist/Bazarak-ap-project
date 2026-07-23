@@ -40,8 +40,6 @@
     <VBox spacing="10" alignment="CENTER" maxWidth="320">
         <Button text="Login" onAction="#handleLogin" maxWidth="Infinity" styleClass="button-primary"/>
         <Button text="Don't have an account? Register" onAction="#goToRegister" styleClass="button-link"/>
-        <Button text="Skip Login (Test Mode)" onAction="#handleSkipLogin" maxWidth="Infinity" styleClass="button-secondary"/>
-        <Button text="🚀 Skip to Admin Dashboard (Test)" onAction="#skipToAdmin" maxWidth="Infinity" styleClass="button-secondary"/>
     </VBox>
 
 </VBox>
