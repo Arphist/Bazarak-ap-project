@@ -23,8 +23,7 @@ public class ConversationService {
     private ConversationRepository conversationRepository;
     @Autowired
     private MessageRepository messageRepository;
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+
 
     // CONVERSATION METHODS
     /**
@@ -121,12 +120,6 @@ public class ConversationService {
         chatMessage.setSenderUsername(sender.getUsername());
         chatMessage.setContent(content);
         chatMessage.setTimestamp(savedMessage.getSentAt());
-
-        // Broadcast to the specific conversation topic
-        messagingTemplate.convertAndSend(
-                "/topic/conversation/" + conversationId,
-                chatMessage
-        );
 
         return savedMessage;
     }
