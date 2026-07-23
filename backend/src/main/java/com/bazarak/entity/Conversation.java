@@ -43,6 +43,7 @@ public class Conversation {
 
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sentAt ASC")
+    @com.fasterxml.jackson.annotation.JsonManagedReference
     private List<Message> messages = new ArrayList<>();
 
     @CreationTimestamp
