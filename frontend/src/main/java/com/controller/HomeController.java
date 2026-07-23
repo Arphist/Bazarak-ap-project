@@ -32,7 +32,7 @@ public class HomeController {
 
 
     // ===== TEST DATA (TODO: remove after testing) =====
-    private boolean useTestData = true;
+    private boolean useTestData = false;
     private ObservableList<Advertisement> testAds = FXCollections.observableArrayList();
 
     // Advanced search fields
