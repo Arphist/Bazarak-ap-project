@@ -1,5 +1,6 @@
 package com.bazarak.service;
 
+import com.bazarak.entity.Advertisement;
 import com.bazarak.entity.Image;
 import com.bazarak.exception.image.*;
 import com.bazarak.repository.ImageRepository;
@@ -15,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ import java.util.UUID;
 public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
+    @Autowired
+    private AdvertisementService advertisementService;
 
     /*
     @Value	                        Spring annotation to inject values
@@ -58,10 +62,15 @@ public class ImageService {
         Path filePathObj = uploadPath.resolve(uniqueFileName);
         Files.copy(file.getInputStream(), filePathObj, StandardCopyOption.REPLACE_EXISTING);
 
-        // 5. Create Image entity
+        // 5. Get the advertisement
+        Advertisement ad = advertisementService.findById(adId);  // Fetch the ad
+
+        // 6. Create Image entity
         Image image = new Image(originalFileName, filePath, file.getContentType(), file.getSize());
         image.setPrimary(isPrimary);
         image.setDisplayOrder(imageRepository.countByAdvertisementId(adId));
+        image.setAdvertisement(ad);  // THIS IS THE CRITICAL LINE
+        image.setCreatedAt(LocalDateTime.now());  // Also set the timestamp
 
         return imageRepository.save(image);
     }

@@ -174,7 +174,6 @@ public class UserService {
 
     /**
      *  Update user's fields but the ID
-     * @param existingUser the user
      * @param updatedUser updated-user with new fields
      * @return updated-user
      */
