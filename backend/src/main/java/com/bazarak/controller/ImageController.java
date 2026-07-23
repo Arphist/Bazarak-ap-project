@@ -43,7 +43,7 @@ public class ImageController {
      */
     @PostMapping("/upload/{adId}")
     public ResponseEntity<?> uploadImage(@PathVariable Long adId, @RequestParam("file") MultipartFile file,
-                                         @RequestParam(required = false, defaultValue = "false") boolean isPrimary, HttpSession session) {
+                                         @RequestParam(required = false,value = "isPrimary", defaultValue = "false") boolean isPrimary, HttpSession session) {
         // Check if user is logged in
         User currentUser = userService.getCurrentUserOrThrow(session);
         userService.isUserBanned(currentUser);
