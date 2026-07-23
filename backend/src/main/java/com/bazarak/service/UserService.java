@@ -178,7 +178,8 @@ public class UserService {
      * @param updatedUser updated-user with new fields
      * @return updated-user
      */
-    public User updateUser( User existingUser, User updatedUser) {
+    public User updateUser( User user, User updatedUser) {
+        User existingUser = getUserById(user.getId());
         if (updatedUser.getFullName() != null) {
             existingUser.setFullName(updatedUser.getFullName());
         }
