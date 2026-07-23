@@ -2,6 +2,7 @@ package com.bazarak.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -70,7 +71,7 @@ public class Advertisement {
     // ========== SPECIFICATION VALUES ==========
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore  // Ignored - not needed for list view
+    @JsonProperty("specificationDetails")   // <-- matches frontend's Advertisement.specificationDetails
     private List<AdvertisementSpecification> specificationValues = new ArrayList<>();
 
     // ========== STATUS & TIMESTAMPS ==========
