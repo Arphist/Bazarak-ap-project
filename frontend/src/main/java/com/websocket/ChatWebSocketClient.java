@@ -3,6 +3,7 @@ package com.websocket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.model.ChatMessage;
 import com.util.Config;
+import com.util.HttpClientUtil;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ServerHandshake;
@@ -12,7 +13,7 @@ import java.util.function.Consumer;
 
 public class ChatWebSocketClient extends WebSocketClient {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = HttpClientUtil.getObjectMapper();
     private Consumer<ChatMessage> messageHandler;
     private boolean isConnected = false;
 
