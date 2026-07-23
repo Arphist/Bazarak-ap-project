@@ -23,9 +23,9 @@ public class Message {
     @Column(nullable = false, length = 2000)
     private String content;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonBackReference
     private Conversation conversation;
 
     @NotNull
