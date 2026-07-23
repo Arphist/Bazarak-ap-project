@@ -113,10 +113,10 @@
                                     <!-- ===== THREE SECTIONS STACKED VERTICALLY ===== -->
 
                                     <!-- 1. Recent Ads -->
-                                    <VBox spacing="8" styleClass="stat-card" prefHeight="250">
+                                    <VBox spacing="8" styleClass="stat-card" prefHeight="350">
                                         <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
                                         <Label text="🕒 Recent Ads (Last Week)" styleClass="sub-title" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                                        <ListView fx:id="recentAdsListView" prefHeight="200" VBox.vgrow="ALWAYS" styleClass="list-view"/>
+                                        <ListView fx:id="recentAdsListView" VBox.vgrow="ALWAYS" styleClass="list-view"/>
                                     </VBox>
 
                                     <!-- 2. Ads by Category -->
