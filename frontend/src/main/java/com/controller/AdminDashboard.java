@@ -303,6 +303,28 @@ public class AdminDashboard {
         setupAdListView(recentAdsListView);  // reuse the same cell factory
         recentAdsListView.setPlaceholder(new Label("No recent ads"));
 
+        // Setup recent ads list view with text-only cells (no images)
+        recentAdsListView.setCellFactory(lv -> new ListCell<Advertisement>() {
+            @Override
+            protected void updateItem(Advertisement ad, boolean empty) {
+                super.updateItem(ad, empty);
+                if (empty || ad == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    String text = ad.getTitle() + " - " + ad.getPrice() + " T";
+                    if (ad.getOwner() != null) {
+                        text += " (by " + ad.getOwner().getUsername() + ")";
+                    }
+                    if (ad.getCreatedAt() != null) {
+                        text += " | " + ad.getCreatedAt().toLocalDate().toString();
+                    }
+                    setText(text);
+                    setStyle("-fx-padding: 6 12; -fx-border-color: #333333; -fx-border-width: 0 0 1 0; -fx-background-color: transparent;");
+                }
+            }
+        });
+
         // Setup category and city list views
         setupSimpleListView(adsByCategoryListView);
         setupSimpleListView(adsByCityListView);
@@ -1064,21 +1086,36 @@ public class AdminDashboard {
 
             // --- 1. Recent Ads --- convert properly ---
             Object recentAdsObj = stats.get("recentAds");
+            System.out.println("📡 recentAdsObj class: " + (recentAdsObj != null ? recentAdsObj.getClass().getName() : "null"));
+            System.out.println("📡 recentAdsObj value: " + recentAdsObj);
+
             if (recentAdsObj instanceof List) {
                 List<?> rawList = (List<?>) recentAdsObj;
+                System.out.println("📡 Raw list size: " + rawList.size());
+
                 List<Advertisement> recentAds = new ArrayList<>();
                 for (Object item : rawList) {
-                    // Convert each LinkedHashMap to Advertisement
-                    Advertisement ad = HttpClientUtil.getObjectMapper().convertValue(item, Advertisement.class);
-                    recentAds.add(ad);
+                    try {
+                        Advertisement ad = HttpClientUtil.getObjectMapper().convertValue(item, Advertisement.class);
+                        recentAds.add(ad);
+                        System.out.println("✅ Converted ad: " + ad.getTitle());
+                    } catch (Exception e) {
+                        System.err.println("❌ Failed to convert item: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
+                System.out.println("✅ Total recent ads converted: " + recentAds.size());
+
                 if (!recentAds.isEmpty()) {
                     ObservableList<Advertisement> recentObs = FXCollections.observableArrayList(recentAds);
                     recentAdsListView.setItems(recentObs);
+                    recentAdsListView.setPlaceholder(null);
+                    recentAdsListView.refresh();
                 } else {
                     recentAdsListView.setPlaceholder(new Label("No recent ads"));
                 }
             } else {
+                System.err.println("❌ recentAdsObj is not a List: " + recentAdsObj);
                 recentAdsListView.setPlaceholder(new Label("No recent ads"));
             }
 
