@@ -25,7 +25,7 @@ public class FavoriteService {
      */
     @Transactional
     public Favorite addToFavorite(User user, Advertisement ad) {
-        if (!favoriteRepository.existsByUserAndAdvertisement(user, ad)) {
+        if (favoriteRepository.existsByUserAndAdvertisement(user, ad)) {
             throw new InvalidFavoriteOperationException("This ad is already in your favorites");
         }
         // Create and save favorite
