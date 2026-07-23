@@ -92,5 +92,5 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
             "LEFT JOIN FETCH c.seller " +
             "LEFT JOIN FETCH c.advertisement " +
             "WHERE c.id = :conversationId")
-    Optional<Conversation> findConversationWithDetails(@Param("conId") Long conId);
+    Optional<Conversation> findConversationWithDetails(@Param("conversationId") Long conId);
 }
