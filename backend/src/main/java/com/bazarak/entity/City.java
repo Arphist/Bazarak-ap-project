@@ -1,5 +1,6 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,6 +26,7 @@ public class City {
 
     // Relationship with advertisements (one city has many ads)
     @OneToMany(mappedBy = "city")
+    @JsonIgnore
     private List<Advertisement> advertisements = new ArrayList<>();
 
     // Constructors

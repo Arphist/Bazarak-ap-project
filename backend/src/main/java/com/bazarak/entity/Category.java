@@ -38,10 +38,12 @@ public class Category {
 
     // One category can have many advertisements
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private List<Advertisement> advertisements = new ArrayList<>();
 
     // Specifications for this category
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<CategorySpecification> specifications = new ArrayList<>();
 
     // Constructors
