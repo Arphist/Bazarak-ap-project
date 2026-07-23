@@ -36,6 +36,7 @@
                 <Label fx:id="titleLabel" styleClass="heading-title" style="-fx-font-size: 22;"/>
 
                 <!-- Ad Details -->
+                <Label fx:id="dateLabel" styleClass="sub-title"/>
                 <Label fx:id="priceLabel" styleClass="sub-title" style="-fx-font-size: 16px; -fx-text-fill: #4CAF50;"/>
                 <Label fx:id="categoryLabel" styleClass="sub-title"/>
                 <Label fx:id="cityLabel" styleClass="sub-title"/>
