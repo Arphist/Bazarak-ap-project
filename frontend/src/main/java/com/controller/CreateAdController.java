@@ -5,6 +5,7 @@ import com.model.*;
 import com.service.AdService;
 import com.service.CategoryService;
 import com.service.CityService;
+import com.service.ImageService;
 import com.util.NavigationUtil;
 import com.util.SessionManager;
 import com.view.ShowErrorDialog;
@@ -13,13 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 public class CreateAdController {
 
@@ -48,6 +48,18 @@ public class CreateAdController {
     @FXML
     private VBox specificationsContainer;
 
+    @FXML
+    private Label errorLabel;
+
+    // ===== NEW: Image Upload Fields =====
+    @FXML
+    private ListView<File> imageListView;
+
+    @FXML
+    private Label imageCountLabel;
+
+    private ObservableList<File> selectedImages = FXCollections.observableArrayList();
+
     private Map<Long, String> specValues = new HashMap<>();
     private List<CategorySpecification> currentSpecs = new ArrayList<>();
 
@@ -63,6 +75,29 @@ public class CreateAdController {
         loadCategories();
         loadCities();
 
+        // Setup image list view
+        imageListView.setItems(selectedImages);
+        imageListView.setCellFactory(lv -> new ListCell<File>() {
+            @Override
+            protected void updateItem(File file, boolean empty) {
+                super.updateItem(file, empty);
+                if (empty || file == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(file.getName());
+                    Button removeBtn = new Button("✕");
+                    removeBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-cursor: hand;");
+                    removeBtn.setOnAction(e -> {
+                        selectedImages.remove(file);
+                        updateImageCountLabel();
+                    });
+                    setGraphic(removeBtn);
+                    setContentDisplay(ContentDisplay.RIGHT);
+                }
+            }
+        });
+
         // Listener for category selection
         categoryCombo.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -73,9 +108,93 @@ public class CreateAdController {
             }
         });
 
+        updateImageCountLabel();
     }
 
-    // Method to load specifications
+    // ============================================
+    // IMAGE UPLOAD METHODS
+    // ============================================
+
+    @FXML
+    private void handleSelectImages() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Images");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp")
+        );
+        List<File> files = fileChooser.showOpenMultipleDialog(new Stage());
+        if (files != null && !files.isEmpty()) {
+            selectedImages.addAll(files);
+            updateImageCountLabel();
+        }
+    }
+
+    private void updateImageCountLabel() {
+        int count = selectedImages.size();
+        if (count == 0) {
+            imageCountLabel.setText("No images selected");
+        } else {
+            imageCountLabel.setText(count + " image(s) selected");
+        }
+    }
+
+    // ============================================
+    // LOAD DATA FROM BACKEND
+    // ============================================
+
+    private void loadCategories() {
+        try {
+            List<Category> allCategories = CategoryService.getAllCategories();
+            categoryCombo.setItems(FXCollections.observableArrayList(allCategories));
+            categoryCombo.setPromptText("Select Category");
+
+            List<Category> roots = CategoryService.getRootCategories();
+            rootCategories.setAll(roots);
+            subCategoryCombo.setItems(rootCategories);
+            subCategoryCombo.setPromptText("Select Sub-Category");
+
+            subCategoryCombo.setOnAction(e -> {
+                Category selected = subCategoryCombo.getValue();
+                if (selected != null) {
+                    try {
+                        List<Category> subs = CategoryService.getSubCategories(selected.getId());
+                        subCategories.setAll(subs);
+                    } catch (Exception ex) {
+                        ShowErrorDialog.showErrorDialog(
+                                "Category Error",
+                                "Failed to load sub-categories",
+                                ex.getMessage(),
+                                "ERROR"
+                        );
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Category Error",
+                    "Failed to load categories",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
+    private void loadCities() {
+        try {
+            List<City> cities = CityService.getAllCities();
+            cityCombo.setItems(FXCollections.observableArrayList(cities));
+            cityCombo.setPromptText("Select City");
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "City Error",
+                    "Failed to load cities",
+                    e.getMessage(),
+                    "ERROR"
+            );
+        }
+    }
+
     private void loadSpecificationsForCategory(Category category) {
         try {
             specificationsContainer.getChildren().clear();
@@ -144,73 +263,11 @@ public class CreateAdController {
     }
 
     // ============================================
-    // LOAD DATA FROM BACKEND
-    // ============================================
-
-    private void loadCategories() {
-        try {
-            // Load all categories for parent combo
-            List<Category> allCategories = CategoryService.getAllCategories();
-            categoryCombo.setItems(FXCollections.observableArrayList(allCategories));
-            categoryCombo.setPromptText("Select Category");
-
-            // Load root categories for sub-category selection
-            List<Category> roots = CategoryService.getRootCategories();
-            rootCategories.setAll(roots);
-            subCategoryCombo.setItems(rootCategories);
-            subCategoryCombo.setPromptText("Select Sub-Category");
-
-            // Add listener for sub-category selection
-            subCategoryCombo.setOnAction(e -> {
-                Category selected = subCategoryCombo.getValue();
-                if (selected != null) {
-                    try {
-                        List<Category> subs = CategoryService.getSubCategories(selected.getId());
-                        subCategories.setAll(subs);
-                        // You could show sub-categories in another combo or list
-                    } catch (Exception ex) {
-                        ShowErrorDialog.showErrorDialog(
-                                "Category Error",
-                                "Failed to load sub-categories",
-                                ex.getMessage(),
-                                "ERROR"
-                        );
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            ShowErrorDialog.showErrorDialog(
-                    "Category Error",
-                    "Failed to load categories",
-                    e.getMessage(),
-                    "ERROR"
-            );
-        }
-    }
-
-    private void loadCities() {
-        try {
-            List<City> cities = CityService.getAllCities();
-            cityCombo.setItems(FXCollections.observableArrayList(cities));
-            cityCombo.setPromptText("Select City");
-        } catch (Exception e) {
-            ShowErrorDialog.showErrorDialog(
-                    "City Error",
-                    "Failed to load cities",
-                    e.getMessage(),
-                    "ERROR"
-            );
-        }
-    }
-
-    // ============================================
     // HANDLE CREATE AD
     // ============================================
 
     @FXML
     private void handleCreateAd() {
-        // Get input values
         String title = titleField.getText().trim();
         String description = descriptionArea.getText().trim();
         String priceText = priceField.getText().trim();
@@ -248,7 +305,6 @@ public class CreateAdController {
             return;
         }
 
-        // Validate price
         long price;
         try {
             String cleanPrice = priceText.replace(",", "");
@@ -267,7 +323,6 @@ public class CreateAdController {
         }
 
         try {
-            // Get current user
             User currentUser = SessionManager.getCurrentUser();
             if (currentUser == null) {
                 ShowErrorDialog.showErrorDialog(
@@ -287,9 +342,22 @@ public class CreateAdController {
             ad.setCategory(selectedCategory);
             ad.setCity(selectedCity);
 
-            // Send to backend
-            // Pass specifications
+            // ===== 1. Create Ad =====
             Map<String, Object> result = AdService.createAd(ad, specValues);
+            Long adId = ((Number) result.get("id")).longValue();
+
+            // ===== 2. Upload Images =====
+            if (!selectedImages.isEmpty()) {
+                boolean isFirst = true;
+                for (File file : selectedImages) {
+                    try {
+                        ImageService.uploadImage(adId, file, isFirst);
+                        isFirst = false;
+                    } catch (Exception e) {
+                        System.err.println("Failed to upload image: " + file.getName() + " - " + e.getMessage());
+                    }
+                }
+            }
 
             // Show success message
             ShowErrorDialog.showErrorDialog(
@@ -299,7 +367,6 @@ public class CreateAdController {
                     "INFORMATION"
             );
 
-            // Go back to home page
             BazarakFrontendApplication.showHomePage();
 
         } catch (Exception e) {
@@ -320,9 +387,9 @@ public class CreateAdController {
     private void cancel() {
         NavigationUtil.goBack();
     }
+
     @FXML
     private void goBack() {
         NavigationUtil.goBack();
     }
-
 }
