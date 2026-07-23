@@ -914,7 +914,7 @@ public class AdminDashboard {
                         "Load City Error",
                         "No cities found",
                         "There was a problem loading cities. Please try again later.",
-                        "NONE"
+                        "WARNING"
                 );
             }
 
@@ -944,7 +944,7 @@ public class AdminDashboard {
                         "Load Category Error",
                         "No categories found",
                         "There was a problem loading categories. Please try again later.",
-                        "NONE"
+                        "WARNING"
                 );
             }
 
