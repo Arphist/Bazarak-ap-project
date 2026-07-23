@@ -49,7 +49,7 @@ public class AdService {
      * @return a map containing the advertisement, favorite status, and favorite count
      * @throws Exception if the advertisement cannot be loaded
      */
-    public static Map<String,Object> getAdById(Long id) throws Exception {
+    public static Map<String, Object> getAdById(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Config.BASE_URL + "/ads/" + id))
                 .GET()
@@ -72,13 +72,13 @@ public class AdService {
     /**
      * Searches advertisements using the provided filters and sorting options.
      *
-     * @param keyword search keyword
+     * @param keyword    search keyword
      * @param categoryId category identifier
-     * @param cityId city identifier
-     * @param minPrice minimum price
-     * @param maxPrice maximum price
-     * @param sortBy field used for sorting
-     * @param sortOrder sorting order (asc or desc)
+     * @param cityId     city identifier
+     * @param minPrice   minimum price
+     * @param maxPrice   maximum price
+     * @param sortBy     field used for sorting
+     * @param sortOrder  sorting order (asc or desc)
      * @return list of matching advertisements
      * @throws Exception if the search request fails
      */
@@ -150,7 +150,7 @@ public class AdService {
     /**
      * Creates a new advertisement with specification values.
      *
-     * @param ad the advertisement to create
+     * @param ad                  the advertisement to create
      * @param specificationValues map of specification ID → value
      * @return a map containing the created advertisement and the server message
      * @throws Exception if the advertisement cannot be created
@@ -163,7 +163,6 @@ public class AdService {
         requestBody.put("categoryId", ad.getCategory().getId());
         requestBody.put("cityId", ad.getCity().getId());
 
-        // Add specification values
         if (specificationValues != null && !specificationValues.isEmpty()) {
             requestBody.put("specifications", specificationValues);
         }
@@ -180,11 +179,17 @@ public class AdService {
 
         if (response.statusCode() == 201) {
             Map<String, Object> result = objectMapper.readValue(response.body(), Map.class);
-            Long id = ((Number) result.get("id")).longValue();
 
+            // Just return what we got from the response
             Map<String, Object> map = new HashMap<>();
-            map.put("message", result.get("message"));
-            map.put("ad", getAdById(id));
+            map.put("message", result.getOrDefault("message", "Ad created successfully"));
+            Object idObj = result.get("id");
+            if (idObj instanceof Number) {
+                map.put("id", ((Number) idObj).longValue());
+            } else {
+                map.put("id", idObj);
+            }
+            map.put("status", result.get("status"));
             return map;
         } else {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
@@ -195,7 +200,7 @@ public class AdService {
     /**
      * Updates an existing advertisement with specification values.
      *
-     * @param ad the advertisement with updated information
+     * @param ad                  the advertisement with updated information
      * @param specificationValues map of specification ID → value
      * @return a map containing the updated advertisement and the server message
      * @throws Exception if the update operation fails
@@ -249,11 +254,11 @@ public class AdService {
      */
     public static void deleteAd(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/ads/"+ad.getId()))
+                .uri(URI.create(Config.BASE_URL + "/ads/" + ad.getId()))
                 .DELETE()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
@@ -277,13 +282,13 @@ public class AdService {
      * @return a map containing the updated advertisement and the server message
      * @throws Exception if the operation fails
      */
-    public static Map<String, Object> markAsSold(Advertisement ad) throws Exception{
+    public static Map<String, Object> markAsSold(Advertisement ad) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/ads/"+ad.getId()+"/sold"))
+                .uri(URI.create(Config.BASE_URL + "/ads/" + ad.getId() + "/sold"))
                 .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
@@ -310,20 +315,21 @@ public class AdService {
      * @return list of the user's advertisements
      * @throws Exception if the request fails
      */
-    public static List<Advertisement> getAdsByUser(User user) throws Exception{
+    public static List<Advertisement> getAdsByUser(User user) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(Config.BASE_URL+"/ads/user/"+user.getId()))
+                .uri(URI.create(Config.BASE_URL + "/ads/user/" + user.getId()))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Object adsObj = responseBody.get("ads");
             if (adsObj != null) {
                 String adsJson = objectMapper.writeValueAsString(adsObj);
-                return objectMapper.readValue(adsJson, new TypeReference<List<Advertisement>>() {});
+                return objectMapper.readValue(adsJson, new TypeReference<List<Advertisement>>() {
+                });
             }
             return new ArrayList<>();
         } else {
