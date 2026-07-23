@@ -15,4 +15,9 @@ public class City {
     public void setName(String name) { this.name = name; }
     public String getProvince() { return province; }
     public void setProvince(String province) { this.province = province; }
+
+    @Override
+    public String toString() {
+        return (name != null && !name.isEmpty()) ? name : "Unknown City";
+    }
 }
