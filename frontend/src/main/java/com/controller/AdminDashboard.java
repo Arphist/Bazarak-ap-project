@@ -6,6 +6,7 @@ import com.service.AdminService;
 import com.service.CategoryService;
 import com.service.CityService;
 import com.util.DataHolder;
+import com.util.HttpClientUtil;
 import com.util.NavigationUtil;
 import com.view.AdCell;
 import com.view.ShowErrorDialog;
@@ -1057,50 +1058,80 @@ public class AdminDashboard {
         try {
             Map<String, Object> stats = AdminService.getDashboardStats();
 
-            // Update labels (already there)
             totalAdsLabel.setText("Total: " + stats.get("totalAds"));
             pendingCountLabel.setText("Pending: " + stats.get("pendingAds"));
             activeCountLabel.setText("Active: " + stats.get("activeAds"));
 
-            // --- 1. Recent Ads ---
-            List<Advertisement> recentAds = (List<Advertisement>) stats.get("recentAds");
-            if (recentAds != null && !recentAds.isEmpty()) {
-                ObservableList<Advertisement> recentObs = FXCollections.observableArrayList(recentAds);
-                recentAdsListView.setItems(recentObs);
+            // --- 1. Recent Ads --- convert properly ---
+            Object recentAdsObj = stats.get("recentAds");
+            if (recentAdsObj instanceof List) {
+                List<?> rawList = (List<?>) recentAdsObj;
+                List<Advertisement> recentAds = new ArrayList<>();
+                for (Object item : rawList) {
+                    // Convert each LinkedHashMap to Advertisement
+                    Advertisement ad = HttpClientUtil.getObjectMapper().convertValue(item, Advertisement.class);
+                    recentAds.add(ad);
+                }
+                if (!recentAds.isEmpty()) {
+                    ObservableList<Advertisement> recentObs = FXCollections.observableArrayList(recentAds);
+                    recentAdsListView.setItems(recentObs);
+                } else {
+                    recentAdsListView.setPlaceholder(new Label("No recent ads"));
+                }
             } else {
                 recentAdsListView.setPlaceholder(new Label("No recent ads"));
             }
 
-            // --- 2. Ads by Category ---
-            List<Map<String, Object>> categoryData = (List<Map<String, Object>>) stats.get("adsByCategory");
-            if (categoryData != null && !categoryData.isEmpty()) {
+            // --- 2. Ads by Category --- safe iteration ---
+            Object categoryDataObj = stats.get("adsByCategory");
+            if (categoryDataObj instanceof List) {
+                List<?> rawCategoryList = (List<?>) categoryDataObj;
                 ObservableList<String> categoryItems = FXCollections.observableArrayList();
-                for (Map<String, Object> entry : categoryData) {
-                    // Assuming each map has "category" and "count" keys
-                    String category = (String) entry.get("category");
-                    Number count = (Number) entry.get("count");
-                    categoryItems.add(category + ": " + count);
+                for (Object entry : rawCategoryList) {
+                    if (entry instanceof Map) {
+                        Map<?, ?> entryMap = (Map<?, ?>) entry;
+                        String category = (String) entryMap.get("category");
+                        Number count = (Number) entryMap.get("count");
+                        if (category != null && count != null) {
+                            categoryItems.add(category + ": " + count);
+                        }
+                    }
                 }
-                adsByCategoryListView.setItems(categoryItems);
+                if (!categoryItems.isEmpty()) {
+                    adsByCategoryListView.setItems(categoryItems);
+                } else {
+                    adsByCategoryListView.setPlaceholder(new Label("No category data"));
+                }
             } else {
                 adsByCategoryListView.setPlaceholder(new Label("No category data"));
             }
 
-            // --- 3. Ads by City ---
-            List<Map<String, Object>> cityData = (List<Map<String, Object>>) stats.get("adsByCity");
-            if (cityData != null && !cityData.isEmpty()) {
+            // --- 3. Ads by City --- safe iteration ---
+            Object cityDataObj = stats.get("adsByCity");
+            if (cityDataObj instanceof List) {
+                List<?> rawCityList = (List<?>) cityDataObj;
                 ObservableList<String> cityItems = FXCollections.observableArrayList();
-                for (Map<String, Object> entry : cityData) {
-                    String city = (String) entry.get("city");
-                    Number count = (Number) entry.get("count");
-                    cityItems.add(city + ": " + count);
+                for (Object entry : rawCityList) {
+                    if (entry instanceof Map) {
+                        Map<?, ?> entryMap = (Map<?, ?>) entry;
+                        String city = (String) entryMap.get("city");
+                        Number count = (Number) entryMap.get("count");
+                        if (city != null && count != null) {
+                            cityItems.add(city + ": " + count);
+                        }
+                    }
                 }
-                adsByCityListView.setItems(cityItems);
+                if (!cityItems.isEmpty()) {
+                    adsByCityListView.setItems(cityItems);
+                } else {
+                    adsByCityListView.setPlaceholder(new Label("No city data"));
+                }
             } else {
                 adsByCityListView.setPlaceholder(new Label("No city data"));
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             ShowErrorDialog.showErrorDialog(
                     "Load Data Error",
                     "Failed to load statistics data.",
