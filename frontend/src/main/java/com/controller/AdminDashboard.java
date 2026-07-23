@@ -7,6 +7,7 @@ import com.service.CategoryService;
 import com.service.CityService;
 import com.util.DataHolder;
 import com.util.NavigationUtil;
+import com.view.AdCell;
 import com.view.ShowErrorDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -617,32 +618,7 @@ public class AdminDashboard {
     }
 
     private void setupAdListView(ListView<Advertisement> listView) {
-        listView.setCellFactory(lv -> new ListCell<Advertisement>() {
-            @Override
-            protected void updateItem(Advertisement ad, boolean empty) {
-                super.updateItem(ad, empty);
-                if (empty || ad == null) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    StringBuilder display = new StringBuilder();
-                    display.append(ad.getTitle()).append("\n");
-                    display.append("Price: ").append(ad.getPrice()).append(" T");
-                    if (ad.getDescription() != null && !ad.getDescription().isEmpty()) {
-                        String desc = ad.getDescription();
-                        if (desc.length() > 60) {
-                            desc = desc.substring(0, 60) + "...";
-                        }
-                        display.append("\n").append(desc);
-                    }
-                    if (ad.getOwner() != null) {
-                        display.append("\nOwner: ").append(ad.getOwner().getUsername());
-                    }
-                    setText(display.toString());
-                    setStyle("-fx-padding: 8 12; -fx-border-color: #e9ecef; -fx-border-width: 0 0 1 0;");
-                }
-            }
-        });
+        listView.setCellFactory(lv -> new AdCell());
     }
 
     private void setupUserTable() {
