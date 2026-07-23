@@ -6,17 +6,23 @@ import com.bazarak.entity.User;
 import com.bazarak.service.ConversationService;
 import com.bazarak.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private final ConcurrentHashMap<Long, ConcurrentHashMap<String, WebSocketSession>> conversationSessions = new ConcurrentHashMap<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
     private final ConversationService conversationService;
     private final UserService userService;
 
@@ -38,43 +44,46 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        // Parse incoming message
-        ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
-        Long conversationId = Long.parseLong(chatMessage.getConversationId());
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        try {
+            ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
+            Long conversationId = Long.parseLong(chatMessage.getConversationId());
 
-        // Get sender
-        User sender = userService.getUserById(Long.parseLong(chatMessage.getSenderId()));
-        userService.isUserBanned(sender);
+            User sender = userService.getUserById(Long.parseLong(chatMessage.getSenderId()));
+            userService.isUserBanned(sender);
+            conversationService.validateParticipant(conversationId, sender);
 
-        // Validate participant
-        conversationService.validateParticipant(conversationId, sender);
+            Message savedMessage = conversationService.sendMessage(
+                    conversationId,
+                    sender,
+                    chatMessage.getContent()
+            );
 
-        // Save message to database
-        Message savedMessage = conversationService.sendMessage(
-                conversationId,
-                sender,
-                chatMessage.getContent()
-        );
+            chatMessage.setId(savedMessage.getId().toString());
+            chatMessage.setSenderUsername(sender.getUsername());
+            chatMessage.setTimestamp(savedMessage.getSentAt());
 
-        // Update message with saved data
-        chatMessage.setId(savedMessage.getId().toString());
-        chatMessage.setSenderUsername(sender.getUsername());
-        chatMessage.setTimestamp(savedMessage.getSentAt());
-
-        // Broadcast to all sessions in this conversation EXCEPT sender
-        String messageJson = objectMapper.writeValueAsString(chatMessage);
-        ConcurrentHashMap<String, WebSocketSession> sessions = conversationSessions.get(conversationId);
-        if (sessions != null) {
-            for (WebSocketSession s : sessions.values()) {
-                if (!s.getId().equals(session.getId()) && s.isOpen()) {
-                    s.sendMessage(new TextMessage(messageJson));
+            String messageJson = objectMapper.writeValueAsString(chatMessage);
+            ConcurrentHashMap<String, WebSocketSession> sessions = conversationSessions.get(conversationId);
+            if (sessions != null) {
+                for (WebSocketSession s : sessions.values()) {
+                    if (!s.getId().equals(session.getId()) && s.isOpen()) {
+                        s.sendMessage(new TextMessage(messageJson));
+                    }
                 }
             }
-        }
 
-        // Also send back to sender to confirm (optional)
-        session.sendMessage(new TextMessage(messageJson));
+            session.sendMessage(new TextMessage(messageJson));
+
+        } catch (Exception e) {
+            System.err.println("⚠️ Error handling message: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                session.sendMessage(new TextMessage("{\"error\":\"" + e.getMessage() + "\"}"));
+            } catch (Exception sendError) {
+                System.err.println("Failed to send error message: " + sendError.getMessage());
+            }
+        }
     }
 
     @Override
@@ -88,11 +97,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private Long extractConversationId(String query) {
         if (query == null) return null;
-        String[] parts = query.split("&");
-        for (String part : parts) {
-            if (part.startsWith("conversationId=")) {
-                return Long.parseLong(part.split("=")[1]);
+        try {
+            String[] parts = query.split("&");
+            for (String part : parts) {
+                if (part.startsWith("conversationId=")) {
+                    return Long.parseLong(part.split("=")[1]);
+                }
             }
+        } catch (Exception e) {
+            System.err.println("Failed to parse conversationId: " + e.getMessage());
         }
         return null;
     }
