@@ -127,12 +127,19 @@ public class AdminService {
      * @throws Exception if the operation fails
      */
     public static Map<String, Object> rejectAd(Advertisement ad) throws Exception {
-        String json = objectMapper.writeValueAsString(ad.getRejectionReason());
+        // Send as an object, not a raw string
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("reason", ad.getRejectionReason());
+        String json = objectMapper.writeValueAsString(requestBody);
+
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(adsUrl + ad.getId() + "/reject"))
+                .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
+
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
         if (response.statusCode() == 200) {
             Map<String, Object> responseBody = objectMapper.readValue(response.body(), Map.class);
             Map<String, Object> result = new HashMap<>();
