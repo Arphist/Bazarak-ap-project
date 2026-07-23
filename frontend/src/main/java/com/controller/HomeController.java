@@ -148,7 +148,6 @@ public class HomeController {
     // LOAD ADS
 
     private void loadAds() {
-
         try {
             List<Advertisement> ads = AdService.getActiveAds();
             adListView.setItems(FXCollections.observableArrayList(ads));
@@ -211,6 +210,29 @@ public class HomeController {
         }
     }
 
+    // ============================================
+    // SHOW ALL ADS - NEW METHOD
+    // ============================================
+
+    /**
+     * Shows all active ads, clearing the search field and any filters.
+     */
+    @FXML
+    private void showAllAds() {
+        // 1. Clear search field
+        searchField.clear();
+
+        // 2. Clear all filters
+        categoryCombo.setValue(null);
+        cityCombo.setValue(null);
+        minPriceField.clear();
+        maxPriceField.clear();
+        sortByCombo.setValue("Newest First");
+
+        // 3. Reload all ads
+        loadAds();
+    }
+
     // CLEAR FILTERS
 
     @FXML
@@ -257,7 +279,6 @@ public class HomeController {
 
         // 4. Reload ads
         loadAds();
-
     }
 
     // HELPER METHODS
