@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -812,20 +813,15 @@ public class AdminDashboard {
     private void loadCategories() {
         try {
             List<Category> categoryList = CategoryService.getAllCategories();
-
-            if (categories == null) {
-                categories = FXCollections.observableArrayList();
-            }
-
             categories.setAll(categoryList);
 
-            // Build map
+            // Build hierarchy map for quick lookup
             Map<Long, Category> categoryMap = new HashMap<>();
             for (Category cat : categoryList) {
                 categoryMap.put(cat.getId(), cat);
             }
 
-            // Set cell factory directly
+            // Apply the cell factory
             categoryListView.setCellFactory(lv -> new ListCell<Category>() {
                 @Override
                 protected void updateItem(Category cat, boolean empty) {
@@ -833,26 +829,39 @@ public class AdminDashboard {
                     if (empty || cat == null) {
                         setText(null);
                     } else {
+                        // Build the full hierarchy path
                         String display = cat.getName();
-                        if (cat.getParentId() != null) {
-                            Category parent = categoryMap.get(cat.getParentId());
+                        List<String> parents = new ArrayList<>();
+                        Long parentId = cat.getParentId();
+
+                        // Traverse up the hierarchy
+                        while (parentId != null) {
+                            Category parent = categoryMap.get(parentId);
                             if (parent != null) {
-                                display += " - " + parent.getName();
-                                if (parent.getParentId() != null) {
-                                    Category grandParent = categoryMap.get(parent.getParentId());
-                                    if (grandParent != null) {
-                                        display += " - " + grandParent.getName();
-                                    }
-                                }
+                                parents.add(parent.getName());
+                                parentId = parent.getParentId();
+                            } else {
+                                break;
                             }
                         }
-                        setText(display);
+
+                        // Build the full path from root to current
+                        if (!parents.isEmpty()) {
+                            // Reverse to show from root to child
+                            StringBuilder hierarchy = new StringBuilder();
+                            for (int i = parents.size() - 1; i >= 0; i--) {
+                                hierarchy.append(parents.get(i)).append(" - ");
+                            }
+                            hierarchy.append(display);
+                            setText(hierarchy.toString());
+                        } else {
+                            setText(display);
+                        }
                     }
                 }
             });
 
             categoryListView.setItems(categories);
-            categoryListView.refresh();
 
             if (categories.isEmpty()) {
                 categoryListView.setPlaceholder(new Label("No category found"));
@@ -860,9 +869,12 @@ public class AdminDashboard {
                 categoryListView.setPlaceholder(null);
             }
 
+            // Update parent combo
             updateCategoryParentCombo();
 
         } catch (Exception e) {
+            System.err.println("❌ Error loading categories: " + e.getMessage());
+            e.printStackTrace();
             ShowErrorDialog.showErrorDialog(
                     "Load Categories Error",
                     "Failed to load categories",
@@ -961,23 +973,59 @@ public class AdminDashboard {
             // Update the items
             categoryListView.getItems().setAll(results);
 
-            // CRITICAL: Reapply the cell factory to ensure hierarchy is shown
-            applyCategoryCellFactory();
+            // Build hierarchy map
+            Map<Long, Category> categoryMap = new HashMap<>();
+            for (Category cat : results) {
+                categoryMap.put(cat.getId(), cat);
+            }
+
+            // Reapply the cell factory with hierarchy
+            categoryListView.setCellFactory(lv -> new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category cat, boolean empty) {
+                    super.updateItem(cat, empty);
+                    if (empty || cat == null) {
+                        setText(null);
+                    } else {
+                        String display = cat.getName();
+                        List<String> parents = new ArrayList<>();
+                        Long parentId = cat.getParentId();
+
+                        while (parentId != null) {
+                            Category parent = categoryMap.get(parentId);
+                            if (parent != null) {
+                                parents.add(parent.getName());
+                                parentId = parent.getParentId();
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if (!parents.isEmpty()) {
+                            StringBuilder hierarchy = new StringBuilder();
+                            for (int i = parents.size() - 1; i >= 0; i--) {
+                                hierarchy.append(parents.get(i)).append(" - ");
+                            }
+                            hierarchy.append(display);
+                            setText(hierarchy.toString());
+                        } else {
+                            setText(display);
+                        }
+                    }
+                }
+            });
 
             if (results.isEmpty()) {
-                ShowErrorDialog.showErrorDialog(
-                        "Load Category Error",
-                        "No categories found",
-                        "There was a problem loading categories. Please try again later.",
-                        "WARNING"
-                );
+                categoryListView.setPlaceholder(new Label("No categories found"));
+            } else {
+                categoryListView.setPlaceholder(null);
             }
 
         } catch (Exception e) {
             ShowErrorDialog.showErrorDialog(
-                    "Load Category Error",
-                    "No categories found",
-                    "There was a problem loading categories. Please try again later.",
+                    "Search Category Error",
+                    "Failed to search categories",
+                    e.getMessage(),
                     "ERROR"
             );
         }
