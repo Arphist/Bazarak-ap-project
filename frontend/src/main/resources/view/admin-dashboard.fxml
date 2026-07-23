@@ -191,7 +191,6 @@
                                 <Button text="🔍" onAction="#searchCategories" styleClass="button-secondary"/>
                             </HBox>
 
-                            <!-- List View -->
                             <ListView fx:id="categoryListView" prefHeight="400" VBox.vgrow="ALWAYS" styleClass="list-view"/>
 
                             <!-- ALL IN ONE LINE: Fields + Parent Combo + Buttons -->
