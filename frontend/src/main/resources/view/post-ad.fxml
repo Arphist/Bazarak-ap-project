@@ -43,10 +43,8 @@
                 <!-- Price -->
                 <TextField fx:id="priceField" promptText="Price (Toman) *" maxWidth="500" styleClass="text-field"/>
 
-                <!-- Category -->
-                <ComboBox fx:id="categoryCombo" maxWidth="500" promptText="Select Category" styleClass="combo-box"/>
-
-                <ComboBox fx:id="subCategoryCombo" maxWidth="500" promptText="Select Sub-Category" styleClass="combo-box"/>
+                <!-- Category (single combobox with hierarchy) -->
+                <ComboBox fx:id="categoryCombo" maxWidth="500" promptText="Select Category (subcategory)" styleClass="combo-box"/>
 
                 <!-- City -->
                 <ComboBox fx:id="cityCombo" maxWidth="500" promptText="Select City" styleClass="combo-box"/>
