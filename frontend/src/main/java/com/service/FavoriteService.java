@@ -31,7 +31,7 @@ public class FavoriteService {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 201) {
+        if (response.statusCode() != 200) {
             Map<String, String> error = objectMapper.readValue(response.body(), Map.class);
             throw new Exception(error.getOrDefault("error", "Failed to add favorite"));
         }
