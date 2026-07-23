@@ -1,5 +1,6 @@
 package com.util;
 
+import com.model.Advertisement;
 import com.model.User;
 
 /**
@@ -11,8 +12,22 @@ public class DataHolder {
     private static Long selectedConversationId;
     private static Long selectedUserId;
     private static User selectedUser;
-
+    private static Advertisement selectedAd;
     // AD ID
+
+
+
+    public static void setSelectedAd(Advertisement ad) {
+        selectedAd = ad;
+    }
+
+    public static Advertisement getSelectedAd() {
+        return selectedAd;
+    }
+
+    public static void clearSelectedAd() {
+        selectedAd = null;
+    }
 
     public static void setSelectedAdId(Long id) {
         selectedAdId = id;
