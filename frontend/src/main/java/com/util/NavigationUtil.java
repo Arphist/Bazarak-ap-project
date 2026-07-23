@@ -21,6 +21,7 @@ public class NavigationUtil {
     public static final String PAGE_RATING = "RATING";
     public static final String PAGE_CONVERSATION = "CONVERSATION";
     public static final String PAGE_MY_RATINGS = "MY_RATINGS";
+    public static final String PAGE_UPDATE_AD = "UPDATE_AD";
 
     // PRIVATE HELPER: Navigate with History
 
@@ -132,6 +133,10 @@ public class NavigationUtil {
      */
     public static void goToMyRatings() {navigateTo(PAGE_MY_RATINGS, BazarakFrontendApplication::showMyRatingsPage);}
 
+    /**
+     * Navigate to my update ad page
+     */
+    public static void goToUpdateAd() {navigateTo(PAGE_UPDATE_AD, BazarakFrontendApplication::showUpdateAdPage);}
     // GO BACK (Using History Stack)
 
     /**
