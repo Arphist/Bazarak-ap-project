@@ -109,41 +109,6 @@ public class LoginController {
         }
     }
 
-    //todo delete this later
-    @FXML
-    private void handleSkipLogin() {
-        // Create a fake user for testing
-        User fakeUser = new User();
-        fakeUser.setId(1L);
-        fakeUser.setUsername("test");
-        fakeUser.setFullName("Test User");
-        fakeUser.setRole("USER");
-        fakeUser.setStatus("ACTIVE");
-
-        // Save to session
-        SessionManager.setCurrentUser(fakeUser);
-
-        // Go to main page
-        BazarakFrontendApplication.showHomePage();
-    }
-    //todo delete this later
-    @FXML
-    private void skipToAdmin() {
-        // Create a test admin user
-        User testUser = new User();
-        testUser.setId(1L);
-        testUser.setUsername("admin");
-        testUser.setFullName("Admin User");
-        testUser.setRole("ADMIN");
-        testUser.setStatus("ACTIVE");
-
-        // Set as current user
-        SessionManager.setCurrentUser(testUser);
-
-        // Go to Admin Dashboard
-        BazarakFrontendApplication.showAdminDashboard();
-    }
-
     // ======== NAVIGATION ========
 
     @FXML
