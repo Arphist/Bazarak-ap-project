@@ -491,7 +491,7 @@ public class UserAdController {
             return;
         }
 
-        DataHolder.setSelectedAd(selected);
+        DataHolder.setSelectedAdId(selected.getId());
         NavigationUtil.goToUpdateAd();
     }
 
