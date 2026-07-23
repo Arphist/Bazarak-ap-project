@@ -259,4 +259,11 @@ public interface AdRepository extends JpaRepository<Advertisement, Long> {
             "WHERE a.status = 'ACCEPTED' AND a.owner.id = :userId " +
             "ORDER BY a.createdAt DESC")
     List<Advertisement> findActiveAdsByOwnerIdWithDetails(@Param("userId") Long userId);
+
+    @Query("SELECT a FROM Advertisement a LEFT JOIN FETCH a.owner WHERE a.id = :id")
+    Optional<Advertisement> findByIdWithOwner(@Param("id") Long id);
+
+    // Or if you want to also fetch other relationships:
+    @Query("SELECT a FROM Advertisement a LEFT JOIN FETCH a.owner LEFT JOIN FETCH a.category LEFT JOIN FETCH a.city WHERE a.id = :id")
+    Optional<Advertisement> findByIdWithAllDetails(@Param("id") Long id);
 }
