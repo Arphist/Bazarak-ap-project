@@ -321,10 +321,11 @@ public class AdminDashboard {
             Parent root = loader.load();
             UserAdController controller = loader.getController();
 
-            DataHolder.setSelectedUser(user);
             controller.setTargetUser(user);
-            controller.setHeaderText("Ads of " + user.getUsername());  // Set header immediately
-            controller.loadAdsForUser();
+            controller.setHeaderText("Ads of " + user.getUsername());
+
+            //  Load all data after setting the target
+            controller.loadAllData();  // ← This will use the targetUser now
 
             Stage stage = new Stage();
             stage.setTitle("Ads of " + user.getUsername());
@@ -335,7 +336,6 @@ public class AdminDashboard {
             ShowErrorDialog.showErrorDialog("Error", "Failed to open user ads", e.getMessage(), "ERROR");
         }
     }
-
     /**
      * Helper to set a simple string list view.
      */
