@@ -53,7 +53,6 @@ public class Advertisement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory", "password"})
-    @JsonIgnore
     private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
