@@ -43,6 +43,7 @@
             <HBox spacing="10" alignment="CENTER">
                 <TextField fx:id="searchField" promptText="Search ads..." HBox.hgrow="ALWAYS"/>
                 <Button text="Search" onAction="#handleSearch" styleClass="button-primary"/>
+                <Button text="Show All" onAction="#showAllAds" styleClass="button-secondary"/>
                 <ToggleButton fx:id="filterToggleButton" text="Show Filters ▼" onAction="#toggleFilters" styleClass="button-secondary"/>
             </HBox>
 
