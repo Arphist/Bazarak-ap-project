@@ -64,6 +64,11 @@
                 <!-- Image List View -->
                 <ListView fx:id="imageListView" maxWidth="500" prefHeight="80" styleClass="list-view"/>
 
+                <!-- Existing Images Section -->
+                <Label text="Existing Images" styleClass="sub-title" style="-fx-font-weight: bold;"/>
+
+                <ListView fx:id="existingImagesListView" maxWidth="500" prefHeight="80" styleClass="list-view"/>
+
                 <!-- Error Label -->
                 <Label fx:id="errorLabel" text="" styleClass="error-label"/>
 

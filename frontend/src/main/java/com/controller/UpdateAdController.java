@@ -15,6 +15,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -62,19 +64,39 @@ public class UpdateAdController {
 
     private Advertisement editingAd;
 
+    @FXML
+    private ListView<Image> existingImagesListView;
+
+    private ObservableList<Image> existingImages = FXCollections.observableArrayList();
+
     // ============================================
     // INITIALIZE
     // ============================================
 
     @FXML
     private void initialize() {
-        // Get ad from DataHolder
-        editingAd = DataHolder.getSelectedAd();
-        if (editingAd == null) {
+        // Get ad ID from DataHolder
+        Long adId = DataHolder.getSelectedAdId();
+        if (adId == null) {
             ShowErrorDialog.showErrorDialog(
                     "Error",
                     "No ad selected",
                     "Please select an ad to edit.",
+                    "ERROR"
+            );
+            return;
+        }
+
+        // Load ad from backend
+        try {
+            Map<String, Object> result = AdService.getAdById(adId);
+            editingAd = (Advertisement) result.get("ad");
+            DataHolder.clearSelectedAdId();
+        } catch (Exception e) {
+            ShowErrorDialog.showErrorDialog(
+                    "Error",
+                    "Failed to load ad",
+                    e.getMessage(),
                     "ERROR"
             );
             return;
@@ -116,8 +138,6 @@ public class UpdateAdController {
                 specValues.clear();
             }
         });
-
-        DataHolder.clearSelectedAd();
     }
 
     // ============================================
@@ -125,12 +145,112 @@ public class UpdateAdController {
     // ============================================
 
     private void loadAdData() {
+        // Populate basic fields
         titleField.setText(editingAd.getTitle());
         descriptionArea.setText(editingAd.getDescription());
         priceField.setText(String.valueOf(editingAd.getPrice()));
         categoryCombo.setValue(editingAd.getCategory());
         cityCombo.setValue(editingAd.getCity());
-        // TODO: Load existing images and specifications
+
+        // Load existing specifications
+        loadExistingSpecifications();
+
+        // Load existing images
+        loadExistingImages();
+    }
+
+    // ============================================
+    // LOAD EXISTING SPECIFICATIONS
+    // ============================================
+
+    private void loadExistingSpecifications() {
+        if (editingAd.getSpecificationDetails() != null) {
+            for (AdvertisementSpecification spec : editingAd.getSpecificationDetails()) {
+                specValues.put(spec.getSpecification().getId(), spec.getValue());
+            }
+        }
+    }
+
+    // ============================================
+    // LOAD EXISTING IMAGES
+    // ============================================
+
+    private void loadExistingImages() {
+        try {
+            List<Image> images = ImageService.getImagesByAd(editingAd.getId());
+            existingImages.clear();
+            existingImages.addAll(images);
+            existingImagesListView.setItems(existingImages);
+
+            if (images.isEmpty()) {
+                existingImagesListView.setPlaceholder(new Label("No images for this ad"));
+            } else {
+                existingImagesListView.setPlaceholder(null);
+            }
+
+            // Custom cell for existing images
+            existingImagesListView.setCellFactory(lv -> new ListCell<Image>() {
+                @Override
+                protected void updateItem(Image img, boolean empty) {
+                    super.updateItem(img, empty);
+                    if (empty || img == null) {
+                        setText(null);
+                        setGraphic(null);
+                    } else {
+                        try {
+                            String url = ImageService.getImageUrl(img.getId());
+                            javafx.scene.image.Image fxImage = new javafx.scene.image.Image(url, true);
+                            ImageView thumbView = new ImageView(fxImage);
+                            thumbView.setFitHeight(50);
+                            thumbView.setFitWidth(50);
+                            thumbView.setPreserveRatio(true);
+
+                            Button deleteBtn = new Button("✕");
+                            deleteBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-weight: bold; -fx-cursor: hand;");
+                            deleteBtn.setOnAction(e -> {
+                                deleteExistingImage(img);
+                            });
+
+                            HBox cellBox = new HBox(10);
+                            cellBox.getChildren().addAll(thumbView, deleteBtn);
+                            setGraphic(cellBox);
+                        } catch (Exception e) {
+                            setText("Error loading image");
+                        }
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            System.err.println("Failed to load existing images: " + e.getMessage());
+        }
+    }
+
+    private void deleteExistingImage(Image image) {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Delete Image");
+        confirm.setHeaderText("Delete image?");
+        confirm.setContentText("Are you sure you want to delete this image?");
+
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                ImageService.deleteImage(image.getId());
+                existingImages.remove(image);
+                ShowErrorDialog.showErrorDialog(
+                        "Success",
+                        null,
+                        "Image deleted successfully.",
+                        "INFORMATION"
+                );
+            } catch (Exception e) {
+                ShowErrorDialog.showErrorDialog(
+                        "Error",
+                        "Failed to delete image",
+                        e.getMessage(),
+                        "ERROR"
+                );
+            }
+        }
     }
 
     // ============================================
@@ -168,8 +288,7 @@ public class UpdateAdController {
                 Category selected = subCategoryCombo.getValue();
                 if (selected != null) {
                     try {
-                        List<Category> subs = CategoryService.getSubCategories(selected.getId());
-                        // You can use this list for further selection
+                        CategoryService.getSubCategories(selected.getId());
                     } catch (Exception ex) {
                         ShowErrorDialog.showErrorDialog(
                                 "Category Error",
@@ -344,7 +463,7 @@ public class UpdateAdController {
                 return;
             }
 
-            // Build ad object
+            // Build updated ad object
             Advertisement ad = new Advertisement();
             ad.setId(editingAd.getId());
             ad.setTitle(title);
