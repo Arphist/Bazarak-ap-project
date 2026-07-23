@@ -533,7 +533,7 @@ public class AdvertisementService {
 
     public List<Advertisement> getRecentAds(int days) {
         LocalDateTime since = LocalDateTime.now().minusDays(days);
-        return adRepository.findRecentAds(since, AdStatus.ACCEPTED);
+        return adRepository.findRecentAds(since);
     }
 
     public List<Advertisement> getMostExpensiveAds() {
