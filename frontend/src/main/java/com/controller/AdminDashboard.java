@@ -467,7 +467,10 @@ public class AdminDashboard {
 
         String name = specNameField.getText().trim();
         String type = specTypeCombo.getValue();
-        String options = specOptionsField.getText().trim();
+        String options = null;
+        if(specOptionsField.getText()!=null){
+             options = specOptionsField.getText().trim();
+        }
         boolean required = specRequiredCheck.isSelected();
 
         if (name.isEmpty()) {
