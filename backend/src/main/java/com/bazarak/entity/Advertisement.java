@@ -12,7 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;;
+import java.util.List;
 
 @Entity
 @Table(name = "advertisements")
@@ -32,10 +32,10 @@ public class Advertisement {
     private String title;
 
     @Column(name = "average_rating")
-    private Double averageRating;  // Average of all ratings for this ad
+    private Double averageRating;
 
     @Column(name = "rating_count")
-    private Integer ratingCount = 0;  // How many users rated this ad
+    private Integer ratingCount = 0;
 
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be positive")
@@ -45,37 +45,40 @@ public class Advertisement {
     @Column(name = "favorite_count")
     private Integer favoriteCount = 0;
 
-
     @Column(name = "rejection_reason", length = 100)
     private String rejectionReason;
 
-    // RELATIONSHIPS
+    // ========== RELATIONSHIPS ==========
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
-    @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory"})
-    private User owner;  // The user who posted this ad
+    @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory", "password"})
+    @JsonIgnore
+    private User owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory"})
+    @JsonIgnore
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
     @JsonIgnoreProperties({"advertisements"})
+    @JsonIgnore
     private City city;
 
-    // Specification values for this advertisement
+    // ========== SPECIFICATION VALUES ==========
+
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"advertisement"})
+    @JsonIgnore  // Ignored - not needed for list view
     private List<AdvertisementSpecification> specificationValues = new ArrayList<>();
 
-    // STATUS & TIMESTAMPS
+    // ========== STATUS & TIMESTAMPS ==========
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AdStatus status = AdStatus.PENDING;  // Default: PENDING
+    private AdStatus status = AdStatus.PENDING;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -86,18 +89,18 @@ public class Advertisement {
     private LocalDateTime updatedAt;
 
     @Column(name = "approved_at")
-    private LocalDateTime approvedAt;  // When admin approved/rejected
+    private LocalDateTime approvedAt;
 
     @Column(name = "sold_at")
-    private LocalDateTime soldAt;  // When marked as sold
+    private LocalDateTime soldAt;
 
-    // IMAGES (One-to-Many relationship)
+    // ========== IMAGES ==========
 
     @OneToMany(mappedBy = "advertisement", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @JsonIgnore  // Ignored - not needed for list view
     private List<Image> images = new ArrayList<>();
 
-    // CONSTRUCTORS
+    // ========== CONSTRUCTORS ==========
 
     public Advertisement() {
     }
@@ -111,13 +114,13 @@ public class Advertisement {
         this.city = city;
     }
 
-    // ENUM
+    // ========== ENUM ==========
 
     public enum AdStatus {
         ACCEPTED, PENDING, REJECTED, SOLD, DELETED
     }
 
-    // HELPER METHODS
+    // ========== HELPER METHODS ==========
 
     public boolean isPending() {
         return this.status == AdStatus.PENDING;
@@ -139,8 +142,6 @@ public class Advertisement {
         return this.status == AdStatus.DELETED;
     }
 
-    // SPECIFICATION HELPER METHODS
-
     public void addSpecificationValue(AdvertisementSpecification spec) {
         specificationValues.add(spec);
         spec.setAdvertisement(this);
@@ -155,14 +156,25 @@ public class Advertisement {
         return specificationValues != null && !specificationValues.isEmpty();
     }
 
-    // GETTERS & SETTERS
-    public Integer getFavoriteCount() {
-        return favoriteCount;
+    public void addImage(Image image) {
+        images.add(image);
+        image.setAdvertisement(this);
     }
 
-    public void setFavoriteCount(Integer favoriteCount) {
-        this.favoriteCount = favoriteCount;
+    public void removeImage(Image image) {
+        images.remove(image);
+        image.setAdvertisement(null);
     }
+
+    @JsonIgnore
+    public Image getPrimaryImage() {
+        return images.stream()
+                .filter(Image::isPrimary)
+                .findFirst()
+                .orElse(images.isEmpty() ? null : images.get(0));
+    }
+
+    // ========== GETTERS & SETTERS ==========
 
     public Long getId() {
         return id;
@@ -268,28 +280,36 @@ public class Advertisement {
         this.images = images;
     }
 
-    public Integer getRatingCount(){
+    public Integer getRatingCount() {
         return ratingCount;
     }
 
-    public void setRatingCount(Integer count){
-        this.ratingCount=count;
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
-    public Double getAverageRating(){
+    public Double getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(Double averageRating){
-        this.averageRating=averageRating;
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 
-    public String getRejectionReason (){
-        return this.rejectionReason;
+    public String getRejectionReason() {
+        return rejectionReason;
     }
 
-    public void setRejectionReason(String reason){
-        this.rejectionReason=reason;
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public Integer getFavoriteCount() {
+        return favoriteCount;
+    }
+
+    public void setFavoriteCount(Integer favoriteCount) {
+        this.favoriteCount = favoriteCount;
     }
 
     public List<AdvertisementSpecification> getSpecificationValues() {
@@ -298,26 +318,6 @@ public class Advertisement {
 
     public void setSpecificationValues(List<AdvertisementSpecification> specificationValues) {
         this.specificationValues = specificationValues;
-    }
-
-    // HELPER METHODS FOR IMAGES
-
-    public void addImage(Image image) {
-        images.add(image);
-        // 'setAd' is a method in 'Image' which represents the ad that image relates to
-        image.setAdvertisement(this);
-    }
-
-    public void removeImage(Image image) {
-        images.remove(image);
-        image.setAdvertisement(null);
-    }
-
-    public Image getPrimaryImage() {
-        return images.stream()
-                .filter(Image::isPrimary)
-                .findFirst()
-                .orElse(images.isEmpty() ? null : images.get(0));
     }
 
     @Override
@@ -330,5 +330,4 @@ public class Advertisement {
                 ", owner=" + (owner != null ? owner.getUsername() : null) +
                 '}';
     }
-
 }
