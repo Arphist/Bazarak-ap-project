@@ -17,8 +17,8 @@ public class ChatWebSocketClient extends WebSocketClient {
     private Consumer<ChatMessage> messageHandler;
     private boolean isConnected = false;
 
-    public ChatWebSocketClient(Consumer<ChatMessage> messageHandler) throws Exception {
-        super(new URI(Config.WS_URL), new Draft_6455());
+    public ChatWebSocketClient(Consumer<ChatMessage> messageHandler, Long conversationId) throws Exception {
+        super(new URI(Config.WS_URL + "?conversationId=" + conversationId), new Draft_6455());
         this.messageHandler = messageHandler;
     }
 
