@@ -13,7 +13,6 @@ import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -29,8 +28,6 @@ public class ConversationController {
     private UserService userService;
     @Autowired
     private AdvertisementService advertisementService;
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     // 1. GET ALL CONVERSATION
 
