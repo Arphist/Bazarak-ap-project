@@ -1,9 +1,11 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "advertisement_specifications")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AdvertisementSpecification {
 
     @Id

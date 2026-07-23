@@ -21,7 +21,7 @@ public class Advertisement {
     private List<Image> images = new ArrayList<>();
     private String rejectionReason;
     // For storing specification values when creating/updating ad
-    private Map<Long, String> specificationValues;
+    private List<AdvertisementSpecification> specificationValues = new ArrayList<>();
     // For displaying specifications in ad details
     private List<AdvertisementSpecification> specificationDetails;
 
@@ -54,11 +54,11 @@ public class Advertisement {
     public void setImages(List<Image> images) { this.images = images; }
     public String getRejectionReason() { return rejectionReason; }
     public void setRejectionReason(String rejectionReason) { this.rejectionReason = rejectionReason; }
-    public Map<Long, String> getSpecificationValues() {
+    public List<AdvertisementSpecification> getSpecificationValues() {
         return specificationValues;
     }
 
-    public void setSpecificationValues(Map<Long, String> specificationValues) {
+    public void setSpecificationValues(List<AdvertisementSpecification> specificationValues) {
         this.specificationValues = specificationValues;
     }
 
@@ -68,13 +68,6 @@ public class Advertisement {
 
     public void setSpecificationDetails(List<AdvertisementSpecification> specificationDetails) {
         this.specificationDetails = specificationDetails;
-    }
-
-    public String getSpecificationValue(Long specId) {
-        if (specificationValues != null) {
-            return specificationValues.get(specId);
-        }
-        return null;
     }
 
     public boolean isActive() {

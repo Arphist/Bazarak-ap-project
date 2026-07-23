@@ -1,5 +1,6 @@
 package com.bazarak.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = "email"),
         @UniqueConstraint(columnNames = "phone_number")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 
     @Id

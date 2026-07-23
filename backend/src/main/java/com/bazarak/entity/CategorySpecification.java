@@ -1,11 +1,13 @@
 package com.bazarak.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "category_specifications")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CategorySpecification {
 
     @Id
