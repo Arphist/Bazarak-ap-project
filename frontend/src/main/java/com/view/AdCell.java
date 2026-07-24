@@ -24,6 +24,7 @@ public class AdCell extends ListCell<Advertisement> {
     private final ImageView imageView = new ImageView();
     private final Label titleLabel = new Label();
     private final Label priceLabel = new Label();
+    private final Label sellerLabel = new Label();   // <-- NEW
     private final Label cityLabel = new Label();
     private final Label dateLabel = new Label();
     private final Label statusLabel = new Label();
@@ -45,6 +46,8 @@ public class AdCell extends ListCell<Advertisement> {
 
         priceLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #4CAF50;");
 
+        sellerLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #BDBDBD;");   // <-- NEW
+
         cityLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #9E9E9E;");
         dateLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #9E9E9E;");
 
@@ -57,7 +60,7 @@ public class AdCell extends ListCell<Advertisement> {
         infoBox.getChildren().add(imageView);
 
         VBox textBox = new VBox(3);
-        textBox.getChildren().addAll(titleLabel, priceLabel, cityLabel, dateLabel, statusLabel);
+        textBox.getChildren().addAll(titleLabel, priceLabel, sellerLabel, cityLabel, dateLabel, statusLabel); // <-- added sellerLabel
         VBox.setVgrow(textBox, Priority.ALWAYS);
 
         infoBox.getChildren().add(textBox);
@@ -85,6 +88,10 @@ public class AdCell extends ListCell<Advertisement> {
         // Set text data
         titleLabel.setText(ad.getTitle());
         priceLabel.setText(formatPrice(ad.getPrice()));
+
+        // Seller/owner name  <-- NEW
+        sellerLabel.setText(ad.getOwner() != null ? "by " + ad.getOwner().getUsername() : "Unknown seller");
+
         cityLabel.setText(ad.getCity() != null ? ad.getCity().getName() : "Unknown");
 
         // Set relative date
