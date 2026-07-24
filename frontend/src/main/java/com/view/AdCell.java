@@ -144,13 +144,18 @@ public class AdCell extends ListCell<Advertisement> {
                 javafx.scene.image.Image fxImage = new javafx.scene.image.Image(url, true);
                 imageView.setImage(fxImage);
             } else {
-                imageView.setImage(null);
-                imageView.setStyle("-fx-background-color: #2A2A2A; -fx-border-color: #333333; -fx-border-radius: 6; -fx-background-radius: 6;");
+                setDefaultImage();
             }
         } catch (Exception e) {
-            imageView.setImage(null);
-            imageView.setStyle("-fx-background-color: #2A2A2A; -fx-border-color: #333333; -fx-border-radius: 6; -fx-background-radius: 6;");
+            setDefaultImage();
         }
+    }
+
+    private void setDefaultImage() {
+        javafx.scene.image.Image defaultImage = new javafx.scene.image.Image(
+                getClass().getResourceAsStream("/view/images/default-ad-placeholder.png"));
+        imageView.setImage(defaultImage);
+        imageView.setStyle("-fx-background-color: #2A2A2A; -fx-border-color: #333333; -fx-border-radius: 6; -fx-background-radius: 6;");
     }
 
     private String formatPrice(Long price) {
