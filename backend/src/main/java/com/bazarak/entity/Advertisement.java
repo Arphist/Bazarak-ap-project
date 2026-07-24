@@ -59,13 +59,11 @@ public class Advertisement {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @JsonIgnoreProperties({"advertisements", "specifications", "subCategories", "parentCategory"})
-    @JsonIgnore
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
     @JsonIgnoreProperties({"advertisements"})
-    @JsonIgnore
     private City city;
 
     // ========== SPECIFICATION VALUES ==========
