@@ -4,6 +4,7 @@ import com.BazarakFrontendApplication;
 import com.model.Advertisement;
 import com.model.User;
 import com.service.AdService;
+import com.service.AdminService;
 import com.service.UserAdvertisementService;
 import com.service.UserService;
 import com.util.DataHolder;
@@ -257,11 +258,14 @@ public class UserAdController {
         });
 
         // Enable/Disable buttons based on selection
+        // Modifying actions (update/delete/mark as sold) are owner-only,
+        // so they stay disabled whenever an admin is viewing another user's ads.
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             boolean isSelected = newVal != null;
-            updateAdButton.setDisable(!isSelected);
-            markAsSoldButton.setDisable(!isSelected);
-            deleteAdButton.setDisable(!isSelected);
+            boolean canModify = isSelected && targetUser == null;
+            updateAdButton.setDisable(!canModify);
+            markAsSoldButton.setDisable(!canModify);
+            deleteAdButton.setDisable(!canModify);
         });
     }
 
@@ -352,7 +356,9 @@ public class UserAdController {
         try {
             String sortBy = pendingSortByCombo.getValue();
             String sortOrder = pendingSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("PENDING", sortBy, sortOrder);
+            List<Advertisement> ads = (targetUser != null)
+                    ? AdminService.getUserAdsByStatus(targetUser.getId(), "PENDING", sortBy, sortOrder)
+                    : UserAdvertisementService.getMyAdsByStatus("PENDING", sortBy, sortOrder);
             pendingAds.setAll(ads);
             pendingAdsListView.setItems(pendingAds);
             pendingErrorLabel.setText("");
@@ -369,7 +375,9 @@ public class UserAdController {
         try {
             String sortBy = activeSortByCombo.getValue();
             String sortOrder = activeSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("ACCEPTED", sortBy, sortOrder);
+            List<Advertisement> ads = (targetUser != null)
+                    ? AdminService.getUserAdsByStatus(targetUser.getId(), "ACCEPTED", sortBy, sortOrder)
+                    : UserAdvertisementService.getMyAdsByStatus("ACCEPTED", sortBy, sortOrder);
             activeAds.setAll(ads);
             activeAdsListView.setItems(activeAds);
             activeErrorLabel.setText("");
@@ -386,7 +394,9 @@ public class UserAdController {
         try {
             String sortBy = rejectedSortByCombo.getValue();
             String sortOrder = rejectedSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("REJECTED", sortBy, sortOrder);
+            List<Advertisement> ads = (targetUser != null)
+                    ? AdminService.getUserAdsByStatus(targetUser.getId(), "REJECTED", sortBy, sortOrder)
+                    : UserAdvertisementService.getMyAdsByStatus("REJECTED", sortBy, sortOrder);
             rejectedAds.setAll(ads);
             rejectedAdsListView.setItems(rejectedAds);
             rejectedErrorLabel.setText("");
@@ -403,7 +413,9 @@ public class UserAdController {
         try {
             String sortBy = soldSortByCombo.getValue();
             String sortOrder = soldSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("SOLD", sortBy, sortOrder);
+            List<Advertisement> ads = (targetUser != null)
+                    ? AdminService.getUserAdsByStatus(targetUser.getId(), "SOLD", sortBy, sortOrder)
+                    : UserAdvertisementService.getMyAdsByStatus("SOLD", sortBy, sortOrder);
             soldAds.setAll(ads);
             soldAdsListView.setItems(soldAds);
             soldErrorLabel.setText("");
@@ -420,7 +432,9 @@ public class UserAdController {
         try {
             String sortBy = deletedSortByCombo.getValue();
             String sortOrder = deletedSortOrderCombo.getValue();
-            List<Advertisement> ads = UserAdvertisementService.getMyAdsByStatus("DELETED", sortBy, sortOrder);
+            List<Advertisement> ads = (targetUser != null)
+                    ? AdminService.getUserAdsByStatus(targetUser.getId(), "DELETED", sortBy, sortOrder)
+                    : UserAdvertisementService.getMyAdsByStatus("DELETED", sortBy, sortOrder);
             deletedAds.setAll(ads);
             deletedAdsListView.setItems(deletedAds);
             deletedErrorLabel.setText("");
