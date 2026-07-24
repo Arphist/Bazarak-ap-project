@@ -19,10 +19,11 @@ https://github.com/Arphist/Bazarak-ap-project
 ## Ali Razmjoo
 
 * Set up the overall project structure and repository configuration.
-* Fully implemented the **Image** and **Chat** modules, including backend logic, WebSocket integration, and frontend components.
+* Fully implemented the **Image**, **Chat**, and **Specification** modules, including backend logic, WebSocket integration, and frontend components.
 * Developed approximately half of the backend entities along with their corresponding service and repository layers.
 * Implemented most of the frontend utility classes, service layers, and data models.
 * Played a major role in debugging, troubleshooting, and resolving technical issues throughout the development process.
+* Defining the plan and next steps, and making decisions on the overall execution approach and vision.
 
 ## Shahram Rajaei
 
@@ -59,6 +60,7 @@ Bazarak is a desktop marketplace application that enables users to buy and sell 
 * Profile management
 * Change password
 * Upload profile picture
+* Assign, delete or mark ads as sold
 
 ## Marketplace
 
@@ -86,7 +88,7 @@ Bazarak is a desktop marketplace application that enables users to buy and sell 
 
 ## Administration
 
-* Approve or reject advertisements
+* Approve, delete or reject advertisements
 * Manage users
 * Manage cities
 * Manage categories
@@ -327,7 +329,7 @@ mvn javafx:run
 
 # Screenshots
 
-Screenshots will be added in a future update.
+Screenshots are added at: docs\screenshots\.
 
 ---
 
