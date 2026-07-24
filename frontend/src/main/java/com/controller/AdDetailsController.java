@@ -92,6 +92,13 @@ public class AdDetailsController {
     @FXML
     private Label favoriteCountLabel;
 
+    // ===== Rejection Fields =====
+    @FXML
+    private VBox rejectionContainer;
+
+    @FXML
+    private Label rejectionReasonLabel;
+
     // ============================================
     // DATA
     // ============================================
@@ -221,6 +228,16 @@ public class AdDetailsController {
             statusLabel.setText(ad.getStatus());
             dateLabel.setText(ad.getCreatedAt() != null ? ad.getCreatedAt().toString() : "N/A");
             descriptionArea.setText(ad.getDescription());
+
+            // ===== rejection reason =====
+            if (ad.isRejected() && ad.getRejectionReason() != null && !ad.getRejectionReason().isEmpty()) {
+                rejectionReasonLabel.setText(ad.getRejectionReason());
+                rejectionContainer.setVisible(true);
+                rejectionContainer.setManaged(true);
+            } else {
+                rejectionContainer.setVisible(false);
+                rejectionContainer.setManaged(false);
+            }
 
             // Load ad sections
             displaySpecifications(ad);
