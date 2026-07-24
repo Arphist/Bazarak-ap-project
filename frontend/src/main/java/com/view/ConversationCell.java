@@ -1,16 +1,15 @@
 package com.view;
 
-
 import com.model.Conversation;
 import com.model.Message;
 import com.model.User;
 import javafx.scene.control.ListCell;
 
 public class ConversationCell extends ListCell<Conversation> {
-    private final User otherUser;
+    private final User currentUser;
 
-    public ConversationCell(User otherUser){
-        this.otherUser=otherUser;
+    public ConversationCell(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     @Override
@@ -19,10 +18,13 @@ public class ConversationCell extends ListCell<Conversation> {
         if (empty || conv == null) {
             setText(null);
         } else {
-            // Get latest message (using the model's method)
+            // ===== طرف مقابل رو پیدا کن =====
+            String otherUsername = conv.getOtherParticipantUsername(currentUser.getId());
+
+            // ===== آخرین پیام رو بگیر =====
             Message latestMessage = conv.getLatestMessage();
-            // Show other participant's username and latest message preview
-            StringBuilder display = new StringBuilder(otherUser.getUsername());
+
+            StringBuilder display = new StringBuilder(otherUsername);
             if (latestMessage != null) {
                 String preview = latestMessage.getContent();
                 if (preview.length() > 40) {
