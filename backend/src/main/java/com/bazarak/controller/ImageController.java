@@ -147,28 +147,6 @@ public class ImageController {
         }
     }
 
-    /**
-     * Delete all images of an ad
-     */
-    @DeleteMapping("/{adId}")
-    public ResponseEntity<?> deleteAllImage(@PathVariable Long adId, HttpSession session) {
-        try {
-            Advertisement ad = advertisementService.findById(adId);
-            User currentUser = userService.getCurrentUserOrThrow(session);
-            userService.checkOwnership(currentUser, ad);
-
-            imageService.deleteAllImages(adId);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("message","Images deleted successfully");
-
-            return ResponseEntity.ok(response);
-        } catch (IOException e) {
-            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        } catch (RuntimeException e) {
-            return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
 
     // SET PRIMARY IMAGE
 
