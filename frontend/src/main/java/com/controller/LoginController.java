@@ -73,7 +73,7 @@ public class LoginController {
             if (user.isAdmin()){
                 BazarakFrontendApplication.showAdminDashboard();
             }else{
-                BazarakFrontendApplication.showHomePage();
+                goToHome();
             }
 
         } catch (Exception e) {
@@ -117,6 +117,9 @@ public class LoginController {
     }
 
 
+    private void goToHome() {
+        NavigationUtil.goToHome();
+    }
 
 
 
