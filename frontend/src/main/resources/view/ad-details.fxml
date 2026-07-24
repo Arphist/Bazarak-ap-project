@@ -42,6 +42,11 @@
                 <Label fx:id="cityLabel" styleClass="sub-title"/>
                 <Label fx:id="ownerLabel" styleClass="sub-title"/>
                 <Label fx:id="statusLabel" styleClass="sub-title"/>
+                <!-- Rejection Reason (Hidden by default) -->
+                <VBox fx:id="rejectionContainer" spacing="5" styleClass="filter-card" style="-fx-padding: 10; -fx-border-color: #E74C3C; -fx-border-width: 2; -fx-border-radius: 6;" visible="false" managed="false">
+                    <Label text="❌ Rejection Reason" styleClass="sub-title" style="-fx-font-weight: bold; -fx-text-fill: #E74C3C;"/>
+                    <Label fx:id="rejectionReasonLabel" styleClass="sub-title" style="-fx-text-fill: #E0E0E0; -fx-wrap-text: true;"/>
+                </VBox>
 
                 <TextArea fx:id="descriptionArea" editable="false" wrapText="true" prefHeight="100" styleClass="text-field"/>
 
