@@ -185,6 +185,44 @@ public class AdminAdvertisementController {
     // 5. GET ADS BY STATUS (Admin Only) (with sorting)
 
     /**
+     * Get a specific user's advertisements filtered by status (Admin only)
+     */
+    @GetMapping("/user/{userId}/status/{status}")
+    public ResponseEntity<?> getUserAdsByStatus(@PathVariable Long userId,
+                                                @PathVariable String status,
+                                                @RequestParam(required = false, defaultValue = "created_at") String sortBy,
+                                                @RequestParam(required = false, defaultValue = "desc") String sortOrder,
+                                                HttpSession session) {
+
+        userService.checkAdmin(session);
+
+        try {
+            Advertisement.AdStatus adStatus;
+            try {
+                adStatus = Advertisement.AdStatus.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid status. Valid values: PENDING, ACCEPTED, REJECTED, SOLD, DELETED");
+            }
+
+            List<Advertisement> ads = advertisementService.getAdsByStatusAndOwner(userId, adStatus);
+            ads = advertisementService.applySorting(ads, sortBy, sortOrder);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", userId);
+            response.put("status", adStatus);
+            response.put("count", ads.size());
+            response.put("sortBy", sortBy);
+            response.put("sortOrder", sortOrder);
+            response.put("ads", ads);
+
+            return ResponseEntity.ok(response);
+
+        } catch (RuntimeException e) {
+            return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    /**
      * Get all ads by status (for admin dashboard)
      */
     @GetMapping("/status/{status}")
