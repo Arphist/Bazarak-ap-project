@@ -258,7 +258,8 @@ public class AdDetailsController {
 
             if (imageList.isEmpty()) {
                 thumbnailListView.setPlaceholder(new Label("No images for this ad"));
-                mainImageView.setImage(null);
+                mainImageView.setImage(new javafx.scene.image.Image(
+                        getClass().getResourceAsStream("/view/images/default-ad-placeholder.png")));
                 imageErrorLabel.setText("");
                 return;
             }
@@ -276,6 +277,8 @@ public class AdDetailsController {
 
         } catch (Exception e) {
             imageErrorLabel.setText("Failed to load images: " + e.getMessage());
+            mainImageView.setImage(new javafx.scene.image.Image(
+                    getClass().getResourceAsStream("/images/default-ad-placeholder.png")));
         }
     }
 
