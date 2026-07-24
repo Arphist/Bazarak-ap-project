@@ -101,6 +101,7 @@
             <Button text="My Ads" onAction="#goToMyAds" styleClass="button-secondary"/>
             <Button text="Profile" onAction="#goToProfile" styleClass="button-secondary"/>
             <Button text="My Ratings" onAction="#goToMyRatings" styleClass="button-secondary"/>
+            <Button text="💬 Chat" onAction="#goToChat" styleClass="button-secondary"/>
         </HBox>
     </bottom>
 
