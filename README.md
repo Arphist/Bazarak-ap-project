@@ -329,7 +329,7 @@ mvn javafx:run
 
 # Screenshots
 
-Screenshots are added at: docs\screenshots\.
+Screenshots are added at: docs/screenshots/.
 
 ---
 
